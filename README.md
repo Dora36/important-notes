@@ -1,2 +1,2 @@
-# important-note
-some learning note
+# important-notes
+some learning notes
