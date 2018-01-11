@@ -35,5 +35,17 @@
   <div class="word-wrap">
     <div class="word">你的名字</div>
   </div>
+
+  <script>
+
+    var arr=[1,2,3,4];
+    for (var i = 0; i < arr.length; i++) {
+      (function(i){
+        setTimeout (function(){
+          console.log(arr[i]);
+        },i*1000);
+      })(i);
+    }
+  </script>
 </body>
 </html>
