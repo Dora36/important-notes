@@ -29,12 +29,33 @@
         background-position: -100% 0
       }
     }
+
+    .nomal {
+      width: 300px;
+      height: 270px;
+      text-align: center;
+      line-height: 250px;
+      font-size: 70px;
+      display: inline-block;
+      background: url(https://mdn.mozillademos.org/files/13090/colorful-heart.png) no-repeat center;
+    }
+
+    .text-clip {
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
   </style>
 </head>
 <body>
   <div class="word-wrap">
     <div class="word">你的名字</div>
   </div>
+
+
+  <h2 class="nomal">WOW</h2>
+  <h2 class="nomal text-clip">WOW</h2>
 
   <script>
 
