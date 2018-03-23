@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>鼠标上下滚动的判断</title>
+  <style>
+    body {
+      height: 3000px;
+    }
+  </style>
+</head>
+<body>
+
+  <script>
+    var sign = 0;
+    window.onscroll  = function(){
+      var oScrollTop=document.documentElement.scrollTop || document.body.scrollTop;
+
+      if ( oScrollTop > sign) {
+        sign = oScrollTop;
+        console.log('down');
+      }
+      if ( oScrollTop< sign) {
+        sign = oScrollTop;
+        console.log('up');
+      }
+    }
+
+  </script>
+</body>
+</html>
