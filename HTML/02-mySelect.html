@@ -5,107 +5,152 @@
   <title>自定义select部件</title>
   <style>
     .select {
-        position: relative;
-        display : inline-block;
-      }
-      .select.active,
-      .select:focus {
-        outline: none;
-        box-shadow: 0 0 3px 1px #227755;
-      }
-      .select .optList {
-        position : absolute;
-        top      : 100%;
-        left     : 0;
-      }
-      .select .optList.hidden {
-        max-height: 0;
-        visibility: hidden;
-      }
-      .select {
-        font-size   : 0.625em;
-        font-family : Verdana, Arial, sans-serif;
-        -moz-box-sizing : border-box;
-        box-sizing : border-box;
-        padding : .1em 2.5em .2em .5em;
-        width   : 10em;
-        border : .2em solid #000;
-        border-radius : .4em;
-        box-shadow    : 0 .1em .2em rgba(0,0,0,.45);
-        background : #F0F0F0;
-        background : -webkit-linear-gradient(90deg, #E3E3E3, #fcfcfc 50%, #f0f0f0);
-        background : linear-gradient(0deg, #E3E3E3, #fcfcfc 50%, #f0f0f0);
-      }
+      position: relative;
+      display : inline-block;
+    }
+    .select.active,
+    .select:focus {
+      outline: none;
+      box-shadow: 0 0 3px 1px #227755;
+    }
+    .select .optList {
+      position : absolute;
+      top      : 100%;
+      left     : 0;
+    }
+    .select .optList.hidden {
+      max-height: 0;
+      visibility: hidden;
+    }
+    .select {
+      font-size   : 0.625em;
+      font-family : Verdana, Arial, sans-serif;
+      -moz-box-sizing : border-box;
+      box-sizing : border-box;
+      padding : .1em 2.5em .2em .5em;
+      width   : 10em;
+      border : .2em solid #000;
+      border-radius : .4em;
+      box-shadow    : 0 .1em .2em rgba(0,0,0,.45);
+      background : #F0F0F0;
+      background : -webkit-linear-gradient(90deg, #E3E3E3, #fcfcfc 50%, #f0f0f0);
+      background : linear-gradient(0deg, #E3E3E3, #fcfcfc 50%, #f0f0f0);
+    }
 
-      .select .value {
-        display  : inline-block;
-        width    : 100%;
-        overflow : hidden;
-        vertical-align: top;
-        white-space  : nowrap;
-        text-overflow: ellipsis;
-      }
+    .select .value {
+      display  : inline-block;
+      width    : 100%;
+      overflow : hidden;
+      vertical-align: top;
+      white-space  : nowrap;
+      text-overflow: ellipsis;
+    }
 
-      .select .value {
-        display  : inline-block;
-        width    : 100%;
-        overflow : hidden;
-        vertical-align: top;
-        white-space  : nowrap;
-        text-overflow: ellipsis;
-      }
-      .select:after {
-        content : "▼";
-        position: absolute;
-        z-index : 1;
-        top     : 0;
-        right   : 0;
-        -moz-box-sizing : border-box;
-        box-sizing : border-box;
-        height  : 100%;
-        width   : 2em;
-        padding-top : .1em;
-        border-left  : .2em solid #000;
-        border-radius: 0 .1em .1em 0;
-        background-color : #000;
-        color : #FFF;
-        text-align : center;
-      }
-      .select .optList {
-        z-index : 2; list-style: none;
-        margin : 0;
-        padding: 0;
-        -moz-box-sizing : border-box;
-        box-sizing : border-box;
-        min-width : 100%;
-        max-height: 10em;
-        overflow-y: auto;
-        overflow-x: hidden;
-        border: .2em solid #000;
-        border-top-width : .1em;
-        border-radius: 0 0 .4em .4em;
-        box-shadow: 0 .2em .4em rgba(0,0,0,.4);
-        background: #f0f0f0;
-      }
-      .select .option {
-        padding: .2em .3em;
-      }
-      .select .highlight {
-        background: #000;
-        color: #FFFFFF;
-      }
+    .select .value {
+      display  : inline-block;
+      width    : 100%;
+      overflow : hidden;
+      vertical-align: top;
+      white-space  : nowrap;
+      text-overflow: ellipsis;
+    }
+    .select:after {
+      content : "▼";
+      position: absolute;
+      z-index : 1;
+      top     : 0;
+      right   : 0;
+      -moz-box-sizing : border-box;
+      box-sizing : border-box;
+      height  : 100%;
+      width   : 2em;
+      padding-top : .1em;
+      border-left  : .2em solid #000;
+      border-radius: 0 .1em .1em 0;
+      background-color : #000;
+      color : #FFF;
+      text-align : center;
+    }
+    .select .optList {
+      z-index : 2; list-style: none;
+      margin : 0;
+      padding: 0;
+      -moz-box-sizing : border-box;
+      box-sizing : border-box;
+      min-width : 100%;
+      max-height: 10em;
+      overflow-y: auto;
+      overflow-x: hidden;
+      border: .2em solid #000;
+      border-top-width : .1em;
+      border-radius: 0 0 .4em .4em;
+      box-shadow: 0 .2em .4em rgba(0,0,0,.4);
+      background: #f0f0f0;
+    }
+    .select .option {
+      padding: .2em .3em;
+    }
+    .select .highlight {
+      background: #000;
+      color: #FFFFFF;
+    }
+    .widget select,
+    .no-widget .select {
+      position : absolute;
+      left     : -5000em;
+      height   : 0;
+      overflow : hidden;
+    }
   </style>
 </head>
 <body>
   <div class="select" tabindex="0">
-      <span class="value">Cherry</span>
-      <ul class="optList">
-        <li class="option">Cherry</li>
-        <li class="option">Lemon</li>
-        <li class="option">Banana</li>
-        <li class="option">Strawberry</li>
-        <li class="option">Apple</li>
-      </ul>
-    </div>
+    <span class="value">Cherry</span>
+    <ul class="optList">
+      <li class="option">Cherry</li>
+      <li class="option">Lemon</li>
+      <li class="option">Banana</li>
+      <li class="option">Strawberry</li>
+      <li class="option">Apple</li>
+    </ul>
+  </div>
+
+  <div id="my-select" class="no-widget">
+    <form>
+      <select name="myFruit">
+        <option>Cherry</option>
+        <option>Lemon</option>
+        <option>Banana</option>
+        <option>Strawberry</option>
+        <option>Apple</option>
+      </select>
+
+      <div class="select" tabindex="0">
+        <span class="value">Cherry</span>
+        <ul class="optList hidden">
+          <li class="option">Cherry</li>
+          <li class="option">Lemon</li>
+          <li class="option">Banana</li>
+          <li class="option">Strawberry</li>
+          <li class="option">Apple</li>
+        </ul>
+      </div>
+    </form>
+
+  </div>
+
+
+  <script>
+    window.addEventListener("load", function () {
+      var widget = document.getElementById('my-select');
+      widget.classList.remove("no-widget");
+      widget.classList.add("widget");
+    });
+
+    console.log(document.querySelectorAll('.select'));
+    console.log(typeof(document.querySelectorAll('.select')));
+    console.log(Array.prototype.slice.call(document.querySelectorAll('.select')));
+    console.log(Array.from(document.querySelectorAll('.select')));
+  </script>
 </body>
 </html>
