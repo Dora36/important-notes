@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>form表单</title>
+    <style>
+      .jsyanzheng {
+        max-width: 280px;
+      }
+
+      .jsyanzheng p * {
+        display: block;
+      }
+
+      .jsyanzheng input[type=email],
+      .jsyanzheng input.mail
+      {
+        -webkit-appearance: none;
+
+        width: 100%;
+        border: 1px solid #333;
+        margin: 0;
+
+        font-family: inherit;
+        font-size: 90%;
+
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+
+      /* 验证失败的元素样式 */
+      .jsyanzheng input:invalid,
+      .jsyanzheng input.invalid
+      {
+        border-color: #900;
+        background-color: #FDD;
+      }
+
+      .jsyanzheng input:focus:invalid,
+      .jsyanzheng input.invalid {
+        outline: none;
+      }
+
+      /* 错误消息的样式 */
+      .jsyanzheng .error {
+        width  : 100%;
+        padding: 0;
+
+        font-size: 80%;
+        color: white;
+        background-color: #900;
+        border-radius: 0 0 5px 5px;
+
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+
+      .jsyanzheng .error.active {
+        padding: 0.3em;
+      }
+    </style>
+  </head>
+  <body>
+    <form class="jsyanzheng jsyanzheng1" novalidate>
+      <p>
+        <label for="mail">
+          <span>Please enter an email address:</span>
+          <input type="email" id="mail" name="mail">
+          <span class="error error1"></span>
+        </label>
+      </p>
+
+      <button>Submit</button>
+    </form>
+
+
+    <form class="jsyanzheng jsyanzheng2">
+      <p>
+        <label for="email">
+          <span>Please enter an email address:</span>
+          <input type="text" class="mail" id="email" name="email">
+          <span class="error error2"></span>
+        </label>
+      </p>
+      <button type="submit">Submit</button>
+    </form>
+
+    <script>
+
+      var form1  = document.querySelector('.jsyanzheng1');
+      var email1 = document.getElementById('mail');
+      var error1 = document.querySelector('.error1');
+
+      email1.addEventListener("input", function (event) {
+        // 当用户输入信息时，验证 email 字段
+        if (email1.validity.valid) {
+          // 如果验证通过，清除已显示的错误消息
+          error1.innerHTML = ""; // 重置消息的内容
+          error1.className = "error error1"; // 重置消息的显示状态
+        }
+      }, false);
+      form1.addEventListener("submit", function (event) {
+        // 当用户提交表单时，验证 email 字段
+        if (!email1.validity.valid) {
+
+          // 如果验证失败，显示一个自定义错误
+          error1.innerHTML = "I expect an e-mail, darling!";
+          error1.className = "error error1 active";
+          // 还需要阻止表单提交事件，以取消数据传送
+          event.preventDefault();
+        }
+      }, false);
+
+
+
+      // 使用旧版浏览器选择 DOM 节点的方法较少
+      var form  = document.querySelector('.jsyanzheng2');
+      var email = document.getElementById('email');
+
+      // 以下是在 DOM 中访问下一个兄弟元素的技巧
+      // 这比较危险，很容易引起无限循环
+      // 在现代浏览器中，应该使用 element.nextElementSibling
+      var error = email;
+      while ((error = error.nextSibling).nodeType != 1);
+
+      // 按照 HTML5 规范
+      var emailRegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+      // 许多旧版浏览器不支持 addEventListener 方法
+      // 这只是其中一种简单的处理方法
+      function addEvent(element, event, callback) {
+        var previousEventCallBack = element["on"+event];
+        element["on"+event] = function (e) {
+          var output = callback(e);
+
+          // 返回 `false` 来停止回调链，并中断事件的执行
+          if (output === false) return false;
+
+          if (typeof previousEventCallBack === 'function') {
+            output = previousEventCallBack(e);
+            if(output === false) return false;
+          }
+        }
+      };
+
+      // 现在我们可以重构字段的验证约束了
+      // 由于不使用 CSS 伪类, 我们必须明确地设置 valid 或 invalid 类到 email 字段上
+      addEvent(window, "load", function () {
+        // 在这里验证字段是否为空（请记住，该字段不是必需的）
+        // 如果非空，检查它的内容格式是不是合格的 e-mail 地址
+        var test = email.value.length === 0 || emailRegExp.test(email.value);
+
+        email.className = test ? "valid" : "invalid";
+      });
+
+      // 处理用户输入事件
+      addEvent(email, "input", function () {
+        var test = email.value.length === 0 || emailRegExp.test(email.value);
+        if (test) {
+          email.className = "valid";
+          error.innerHTML = "";
+          error.className = "error";
+        } else {
+          email.className = "invalid";
+        }
+      });
+
+      // 处理表单提交事件
+      addEvent(form, "submit", function () {
+        var test = email.value.length === 0 || emailRegExp.test(email.value);
+
+        if (!test) {
+          email.className = "invalid";
+          error.innerHTML = "I expect an e-mail, darling!";
+          error.className = "error active";
+
+          // 某些旧版浏览器不支持 event.preventDefault() 方法
+          return false;
+        } else {
+          email.className = "valid";
+          error.innerHTML = "";
+          error.className = "error";
+        }
+      });
+    </script>
+  </body>
+</html>
