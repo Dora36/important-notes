@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DOM 操作</title>
+</head>
+<body>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+
+
+  <script>
+    var oP = document.querySelectorAll("p");
+    console.log(oP);
+    console.log(Array.isArray(oP));  // false
+    console.log(Object.prototype.toString.call(oP));   //  [object NodeList]
+
+    var tagP = document.getElementsByTagName("p");
+    console.log(tagP);
+    console.log(Object.prototype.toString.call(tagP));   // [object HTMLCollection]
+
+  </script>
+</body>
+</html>
+
