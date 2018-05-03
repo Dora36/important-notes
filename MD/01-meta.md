@@ -12,16 +12,15 @@
 ## meta 的属性
 `<meta>` 标签的属性定义了与文档相关联的 键/值 对。
 
+
 ### charset 属性
 HTML5中新添加的，用于定义字符集。尽量写在第一行，不然可能会产生乱码。
-
-
 	<meta charset="UTF-8">  
 
 
 ### content 属性
-
 当 meta 有 http-equiv 或 name 属性时，一定要有 content 属性对其进行说明。
+
 
 ### http-equiv 属性
 http-equiv 属性是添加http头部内容的。该属性为 键/值 对提供了键名。并指示服务器在发送实际的文档之前先在要传送给浏览器的 MIME 文档头部包含该 键/值 对。
@@ -38,17 +37,14 @@ http-equiv 属性是添加http头部内容的。该属性为 键/值 对提供�
    - 指定请求和响应遵循的缓存机制
      	<meta http-equiv="cache-control" content="no-cache">
 
-
-     content 参数：
-
-     - no-cache：浏览器和缓存服务器都不应该缓存页面信息。
-     - no-store：请求和响应的信息都不应该被存储在对方的磁盘系统中。
-     - public：缓存所有相应，但并非必须。因为 max-age 也可以做到相同效果。
-     - private：只为单个用户缓存。
-     - maxage：表示当前请求开始，该响应在多久内能被缓存和重用，而不去服务器重新请求。数字代表秒数。例如：max-age=60 表示响应可以再缓存和重用 60 秒。
+     	content 参数：
+     	- no-cache：浏览器和缓存服务器都不应该缓存页面信息。
+     	- no-store：请求和响应的信息都不应该被存储在对方的磁盘系统中。
+     	- public：缓存所有相应，但并非必须。因为 max-age 也可以做到相同效果。
+     	- private：只为单个用户缓存。
+     	- maxage：表示当前请求开始，该响应在多久内能被缓存和重用，而不去服务器重新请求。数字代表秒数。例如：max-age=60 表示响应可以再缓存和重用 60 秒。
 
    - 禁止百度自动转码：禁止当前页面在移动端浏览时，被百度自动转码，不过不保证100%禁止。
-
      	<meta http-equiv="cache-control" content="no-siteapp">
      	<meta http-equiv="cache-control" content="no-transform">
 
@@ -56,7 +52,6 @@ http-equiv 属性是添加http头部内容的。该属性为 键/值 对提供�
    	<meta http-equiv="pragma" content="no-cache">
 
 6. expires：网页到期时间，过期后必须到服务器上重新传输。必须使用 GMT 时间格式，或直接设为0。
-
    	<meta http-equiv="expires" content="0">
 
 
@@ -80,7 +75,9 @@ name 属性是供浏览器进行解析。没有指定具体的值，通常情况
 定义网页搜索引擎爬虫的索引方式，告诉爬虫哪些页面需要索引，哪些不需要索引。
 	<meta name="robots" content="index,follow">
 
+
 content 参数：
+
 - all：默认值，等价于index + follow。
 - index：索引此网页。
 - follow：继续通过此网页的链接索引搜索其它的网页。
