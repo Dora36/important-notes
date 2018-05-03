@@ -14,9 +14,14 @@
 
 ### charset 属性
 HTML5中新添加的，用于定义字符集。尽量写在第一行，不然可能会产生乱码。
+
+
+
 	<meta charset="UTF-8">  
 
+
 ### content 属性
+
 当 meta 有 http-equiv 或 name 属性时，一定要有 content 属性对其进行说明。
 
 ### http-equiv 属性
@@ -30,7 +35,12 @@ http-equiv 属性是添加http头部内容的。该属性为 键/值 对提供�
 4. cache-control
    - 指定请求和响应遵循的缓存机制
      	<meta http-equiv="cache-control" content="no-cache">
+     ​
+
      content 参数：
+
+     ​
+
      - no-cache：浏览器和缓存服务器都不应该缓存页面信息。
      - no-store：请求和响应的信息都不应该被存储在对方的磁盘系统中。
      - public：缓存所有相应，但并非必须。因为 max-age 也可以做到相同效果。
