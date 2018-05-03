@@ -16,7 +16,6 @@
 HTML5中新添加的，用于定义字符集。尽量写在第一行，不然可能会产生乱码。
 
 
-
 	<meta charset="UTF-8">  
 
 
@@ -28,18 +27,19 @@ HTML5中新添加的，用于定义字符集。尽量写在第一行，不然可
 http-equiv 属性是添加http头部内容的。该属性为 键/值 对提供了键名。并指示服务器在发送实际的文档之前先在要传送给浏览器的 MIME 文档头部包含该 键/值 对。
 1. content-type：设定网页类型，设置字符集，适用于旧的HTML版本，推荐使用charset属性。
    	<meta http-equiv="content-Type" content="text/html;charset=utf-8">
+
 2. X-UA-Compatible：浏览器采取何种版本渲染当前页面，一般都设置为最新模式。
    	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
 3. refresh：重定向页面，content 中的数字表示秒数，如果没有url，表示刷新页面；有url，表示5秒后重定向至新的网址。
    	<meta http-equiv="refresh" content="5;url=https://www.baidu.com">
+
 4. cache-control
    - 指定请求和响应遵循的缓存机制
      	<meta http-equiv="cache-control" content="no-cache">
-     ​
+
 
      content 参数：
-
-     ​
 
      - no-cache：浏览器和缓存服务器都不应该缓存页面信息。
      - no-store：请求和响应的信息都不应该被存储在对方的磁盘系统中。
@@ -48,18 +48,25 @@ http-equiv 属性是添加http头部内容的。该属性为 键/值 对提供�
      - maxage：表示当前请求开始，该响应在多久内能被缓存和重用，而不去服务器重新请求。数字代表秒数。例如：max-age=60 表示响应可以再缓存和重用 60 秒。
 
    - 禁止百度自动转码：禁止当前页面在移动端浏览时，被百度自动转码，不过不保证100%禁止。
+
      	<meta http-equiv="cache-control" content="no-siteapp">
      	<meta http-equiv="cache-control" content="no-transform">
+
 5. pragma：cache模式，禁止缓存，无法脱机浏览。
    	<meta http-equiv="pragma" content="no-cache">
+
 6. expires：网页到期时间，过期后必须到服务器上重新传输。必须使用 GMT 时间格式，或直接设为0。
+
    	<meta http-equiv="expires" content="0">
 
 
+
 ### name 属性
+
 name 属性是供浏览器进行解析。没有指定具体的值，通常情况下，可以自由使用对自己和源文档的读者来说富有意义的名称。前提是浏览器能够解析写进去的name属性才可以，不然就是没有意义的。
 1. renderer：这个meta标签的意思就是告诉浏览器，用webkit内核进行解析，当然前提是浏览器有webkit内核才可以。这个 renderer 是在360浏览器里说明的。[360浏览器meta文档说明](http://se.360.cn/v6/help/meta.html)
    	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+
 2. generator：网站的制作软件。
 3. copyright：网站的版权信息。
 4. revisit-after：网站重访天数。
@@ -96,7 +103,10 @@ content 参数：
 ### viewport
 viewport 主要是影响移动端页面布局的
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+
+
 content 参数：
+
 - width：viewport 宽度，数值 device-width
 - height：viewport 高度，数值 device-height
 - initial-scale：初始缩放比例
