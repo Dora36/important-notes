@@ -88,7 +88,7 @@ content 参数：
 
 ### 其它
 	<!-- keywords 页面关键字(因为被滥用，SEO 已经取消了关键字搜索了) -->
-	<meta name="keywords" content="word1,word2,word3"
+	<meta name="keywords" content="word1,word2,word3">
 	<!-- description 页面内容描述 -->
 	<meta name="description" content="ye mian miao shu">
 	<!-- author 定义网页作者 -->
