@@ -35,18 +35,18 @@ http-equiv 属性是添加http头部内容的。该属性为 键/值 对提供�
 
 4. cache-control
    - 指定请求和响应遵循的缓存机制
-             <meta http-equiv="cache-control" content="no-cache">
+         <meta http-equiv="cache-control" content="no-cache">
 
-     	content 参数：
-     	- no-cache：浏览器和缓存服务器都不应该缓存页面信息。
-     	- no-store：请求和响应的信息都不应该被存储在对方的磁盘系统中。
-     	- public：缓存所有相应。
-     	- private：只为单个用户缓存。
-     	- maxage：表示当前请求开始，该响应在多久内能被缓存和重用，而不去服务器重新请求。数字代表秒数。例如：max-age=60 表示响应可以再缓存和重用 60 秒。
+      content 参数：
+     - no-cache：浏览器和缓存服务器都不应该缓存页面信息。
+     - no-store：请求和响应的信息都不应该被存储在对方的磁盘系统中。
+     - public：缓存所有相应。
+     - private：只为单个用户缓存。
+     - maxage：表示当前请求开始，该响应在多久内能被缓存和重用，而不去服务器重新请求。数字代表秒数。例如：max-age=60 表示响应可以再缓存和重用 60 秒。
 
    - 禁止百度自动转码：禁止当前页面在移动端浏览时，被百度自动转码，不过不保证100%禁止。
-         	<meta http-equiv="cache-control" content="no-siteapp">
-         	<meta http-equiv="cache-control" content="no-transform">
+         <meta http-equiv="cache-control" content="no-siteapp">
+         <meta http-equiv="cache-control" content="no-transform">
 
 5. pragma：cache模式，禁止缓存，无法脱机浏览。
    	<meta http-equiv="pragma" content="no-cache">
@@ -61,8 +61,8 @@ http-equiv 属性是添加http头部内容的。该属性为 键/值 对提供�
 name 属性是供浏览器进行解析。没有指定具体的值，通常情况下，可以自由使用对自己和源文档的读者来说富有意义的名称。前提是浏览器能够解析写进去的name属性才可以，不然就是没有意义的。
 
 1. renderer：这个meta标签的意思就是告诉浏览器，用webkit内核进行解析，当然前提是浏览器有webkit内核才可以。这个 renderer 是在360浏览器里说明的。[360浏览器meta文档说明](http://se.360.cn/v6/help/meta.html)
-      
-          <meta name="renderer" content="webkit|ie-comp|ie-stand">
+
+       <meta name="renderer" content="webkit|ie-comp|ie-stand">
 
 2. generator：网站的制作软件。
 3. copyright：网站的版权信息。
