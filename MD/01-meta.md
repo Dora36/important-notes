@@ -1,7 +1,7 @@
 ## meta 标签的概念
 
 > 元数据（metadata）提供有关页面的元信息。元数据不会显示在页面上，但是对于机器是可读的。
-> 典型的情况是，meta 元素被用于规定页面的描述、关键词、文档的作者、最后修改时间以及其他元数据。 标签始终位于 head 元素中。
+> meta 元素常被用于规定页面的描述、关键词、文档的作者、最后修改时间以及其他元数据。标签始终位于 head 元素中。
 > 元数据总是以 键/值 对的形式被成对传递的。
 
 ## meta 的作用
@@ -35,18 +35,18 @@ http-equiv 属性是添加http头部内容的。该属性为 键/值 对提供�
 
 4. cache-control
    - 指定请求和响应遵循的缓存机制
-     	<meta http-equiv="cache-control" content="no-cache">
+             <meta http-equiv="cache-control" content="no-cache">
 
      	content 参数：
      	- no-cache：浏览器和缓存服务器都不应该缓存页面信息。
      	- no-store：请求和响应的信息都不应该被存储在对方的磁盘系统中。
-     	- public：缓存所有相应，但并非必须。因为 max-age 也可以做到相同效果。
+     	- public：缓存所有相应。
      	- private：只为单个用户缓存。
      	- maxage：表示当前请求开始，该响应在多久内能被缓存和重用，而不去服务器重新请求。数字代表秒数。例如：max-age=60 表示响应可以再缓存和重用 60 秒。
 
    - 禁止百度自动转码：禁止当前页面在移动端浏览时，被百度自动转码，不过不保证100%禁止。
-     	<meta http-equiv="cache-control" content="no-siteapp">
-     	<meta http-equiv="cache-control" content="no-transform">
+         	<meta http-equiv="cache-control" content="no-siteapp">
+         	<meta http-equiv="cache-control" content="no-transform">
 
 5. pragma：cache模式，禁止缓存，无法脱机浏览。
    	<meta http-equiv="pragma" content="no-cache">
@@ -59,8 +59,10 @@ http-equiv 属性是添加http头部内容的。该属性为 键/值 对提供�
 ### name 属性
 
 name 属性是供浏览器进行解析。没有指定具体的值，通常情况下，可以自由使用对自己和源文档的读者来说富有意义的名称。前提是浏览器能够解析写进去的name属性才可以，不然就是没有意义的。
+
 1. renderer：这个meta标签的意思就是告诉浏览器，用webkit内核进行解析，当然前提是浏览器有webkit内核才可以。这个 renderer 是在360浏览器里说明的。[360浏览器meta文档说明](http://se.360.cn/v6/help/meta.html)
-   	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+      
+          <meta name="renderer" content="webkit|ie-comp|ie-stand">
 
 2. generator：网站的制作软件。
 3. copyright：网站的版权信息。
@@ -74,7 +76,6 @@ name 属性是供浏览器进行解析。没有指定具体的值，通常情况
 ### robots
 定义网页搜索引擎爬虫的索引方式，告诉爬虫哪些页面需要索引，哪些不需要索引。
 	<meta name="robots" content="index,follow">
-
 
 content 参数：
 
@@ -100,7 +101,6 @@ content 参数：
 ### viewport
 viewport 主要是影响移动端页面布局的
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
-
 
 content 参数：
 
@@ -173,22 +173,4 @@ content 参数：
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<!-- 添加到主屏后的标题 -->
 	<meta name="apple-mobile-web-app-title" content="App Title">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
