@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>cookie的操作</title>
+</head>
+<body>
+
+<script>
+
+  document.cookie="ha=he";
+
+  setCookie("haha1","hehe1",1);
+  setCookie("haha2","hehe2");
+  setCookie("haha3","hehe3");
+  setCookie("haha4","hehe4");
+  setCookie("haha5","hehe5");
+  setCookie("haha6","hehe6");
+
+  function setCookie(name,value,day) {
+    if(day) {
+      var maxage = Number(day) *24*60*60;
+      document.cookie = name + "=" + value +"; max-age=" + maxage;
+    }else{
+      document.cookie = name + "=" + value;
+    }
+  }
+
+
+
+  function getCookie(name) {
+    var item = document.cookie.split(';');
+    for (var i = 0; i < item.length; i++) {
+      var ca = ca[i].trim();
+    }
+
+  }
+</script>
+</body>
+</html>
