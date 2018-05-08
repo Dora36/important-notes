@@ -8,17 +8,9 @@
 
 <script>
 
-  document.cookie="ha=he";
-
-  setCookie("haha1","hehe1",1);
-  setCookie("haha2","hehe2");
-  setCookie("haha3","hehe3");
-  setCookie("haha4","hehe4");
-  setCookie("haha5","hehe5");
-  setCookie("haha6","hehe6");
 
   function setCookie(name,value,day) {
-    if(day) {
+    if(day||day==0) {
       var maxage = Number(day) *24*60*60;
       document.cookie = name + "=" + value +"; max-age=" + maxage;
     }else{
@@ -26,15 +18,30 @@
     }
   }
 
-
-
-  function getCookie(name) {
-    var item = document.cookie.split(';');
+  function getCookie(cname) {
+    var name = cname + "=";
+    var item = document.cookie.split(";");
+    console.log(item);
     for (var i = 0; i < item.length; i++) {
-      var ca = ca[i].trim();
+      var ca = item[i].trim();
+      if(ca.indexOf(name)==0) {
+        return ca.substring(name.length,ca.length);
+      }
     }
-
+    return "";
   }
+
+
+  function checkCookie(cname,value,day) {
+    var name = getCookie(cname);
+    if (name != "") {
+      alert(cname+"cookie已存在！");
+    } else {
+      setCookie(cname,value,day);
+    }
+  }
+
+
 </script>
 </body>
 </html>
