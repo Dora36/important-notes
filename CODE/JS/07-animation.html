@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    div {
+      width: 100px;
+      height: 100px;
+      background-color: pink;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="dong"></div>
+
+
+  <script>
+    var start = null;
+    var element = document.getElementById('dong');
+    element.style.position = 'absolute';
+
+    var myreq;
+    function step(timestamp) {
+      if (!start) start = timestamp;
+
+      // 使得运动的元素从 0px 开始运动
+      var progress = timestamp - start;
+      element.style.left = Math.min(progress / 10, 200) + 'px';
+      if (progress < 2000) {
+        myreq=window.requestAnimationFrame(step);
+        // console.log(myreq);
+      }
+    }
+    myreq=window.requestAnimationFrame(step);
+    // console.log(myreq);
+    // console.log(1);
+    // console.log(2);
+    // console.log(3);
+    // console.log(4);
+    // console.log(5);
+    // window.cancelAnimationFrame(myreq);
+  </script>
+
+</body>
+</html>
