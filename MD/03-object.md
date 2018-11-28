@@ -17,24 +17,24 @@
 - `Object.keys()`：遍历对象自身的（非继承的）可遍历属性。
 - `Object.getOwnPropertyNames()`：遍历对象自身的（非继承的）全部（可遍历+不可遍历）属性
 
-##### 2. 对象属性描述对象的相关方法**
+##### 2. 对象的属性描述对象相关方法
 - `Object.getOwnPropertyDescriptor()`：获取某个属性的描述对象。
 - `Object.getOwnPropertyDescriptors()`：获取对象的所有属性的描述对象。
 - `Object.defineProperty()`：定义某个属性的描述对象。
 - `Object.defineProperties()`：定义多个属性的描述对象。
 
 ##### 3. 控制对象状态的方法
-- `Object.preventExtensions()`：防止对象扩展。
+- `Object.preventExtensions()`：防止对象扩展，无法添加新属性。
 - `Object.isExtensible()`：判断对象是否可扩展。
-- `Object.seal()`：禁止对象配置。
+- `Object.seal()`：禁止对象配置，无法添加新属性，无法删除属性。
 - `Object.isSealed()`：判断一个对象是否可配置。
-- `Object.freeze()`：冻结一个对象。
+- `Object.freeze()`：冻结一个对象，无法添加新属性，无法删除属性，无法改变属性值。
 - `Object.isFrozen()`：判断一个对象是否被冻结。
 
 ##### 4. 原型链相关方法
-- `Object.create()`：该方法可以指定原型对象和属性，返回一个新的对象。
-- `Object.getPrototypeOf()`：获取对象的Prototype对象。
-- `Object.setPrototypeOf()`
+- `Object.create()`：以参数为原型返回一个新的实例对象。
+- `Object.getPrototypeOf()`：获取对象的原型对象。
+- `Object.setPrototypeOf()`：设置对象的原型对象。
 
 ##### 5. 其它
 - `Object.assign()`
@@ -125,7 +125,7 @@
    
     Object.getOwnPropertyDescriptor(obj, 'toString')   // undefined
 
-**`Object.getOwnPropertyDescriptors()`** 可以获取参数对象的所有属性的属性描述对象。
+**`Object.getOwnPropertyDescriptors()`** 可以获取参数对象的所有属性的属性描述对象。ES2017 引入标准。
 
     Object.getOwnPropertyDescriptors(obj)
     // { p1: {value: "a", writable: true, enumerable: true, configurable: true}
@@ -228,16 +228,27 @@
     Object.getPrototypeOf(a) === b // true
     a.x // 1
 
+`new` 命令可以使用 `Object.setPrototypeOf()` 方法模拟。
 
+    var F = function () { this.foo = 'bar'; };
+    
+    var f = new F();
+    // 等同于
+    var f = Object.setPrototypeOf({}, F.prototype);
+    F.call(f);
+    
+#### 8. Object.prototype.\_\_proto__
+实例对象的 `__proto__` 属性，返回该对象的原型。该属性可读写。
 
+    var obj = {};
+    var p = {};
+    
+    obj.__proto__ = p;
+    Object.getPrototypeOf(obj) === p   // true
+    
+根据语言标准，`__proto__` 属性只有浏览器才需要部署，其他环境可以没有这个属性。它前后的两根下划线，表明它本质是一个内部属性，不应该对使用者暴露。因此，应该尽量少用这个属性，而是用 `Object.getPrototypeof()` 和 `Object.setPrototypeOf()`，进行原型对象的读写操作。
 
-
-
-
-
-
-
-#### 8. Object.prototype.isPrototypeOf() , Object.prototype.\_\_proto__
+#### 9. Object.prototype.isPrototypeOf()
 
 实例对象的 `isPrototypeOf()` 方法，用来判断该对象是否为参数对象的原型。
 
@@ -256,6 +267,163 @@
     Object.prototype.isPrototypeOf(Object.create(null))  // false
 
 由于 `Object.prototype` 处于原型链的最顶端，所以对各种实例都返回 `true`，只有直接继承自 `null` 的对象除外。
+
+#### 10. Object.create()
+
+
+
+
+
+### 控制对象状态相关
+
+有时需要冻结对象的读写状态，防止对象被改变。JavaScript 提供了三种冻结方法，最弱的一种是 `Object.preventExtensions()`，其次是 `Object.seal()`，最强的是 `Object.freeze()`。
+
+#### 11. Object.preventExtensions()
+
+`Object.preventExtensions()` 方法可以使得一个对象无法再添加新的属性。
+
+    var obj = new Object();
+    Object.preventExtensions(obj);
+    
+    Object.defineProperty(obj, 'p', { value: 'hello' });
+    // TypeError: Cannot define property p, object is not extensible.
+    
+    obj.p = 1;
+    obj.p      // undefined
+
+#### 12. Object.isExtensible()
+
+`Object.isExtensible()` 方法用于检查是否可以为一个对象添加属性。可以添加返回 `true`，不可以添加返回 `false`。
+
+    var obj = new Object();
+    
+    Object.isExtensible(obj) // true
+    Object.preventExtensions(obj);
+    Object.isExtensible(obj) // false
+
+#### 13. Object.seal()
+
+`Object.seal()` 方法使得一个对象既无法添加新属性，也无法删除旧属性。
+
+    var obj = { p: 'hello' };
+    Object.seal(obj);
+    
+    delete obj.p;
+    obj.p // "hello"
+    
+    obj.x = 'world';
+    obj.x // undefined
+
+`Object.seal` 实质是把属性描述对象的 `configurable` 属性设为 `false`，因此属性描述对象就不能再改变了。
+
+    var obj = { p: 'a' };
+    
+    // seal方法之前
+    Object.getOwnPropertyDescriptor(obj, 'p')  // {... configurable: true }
+    
+    Object.seal(obj);
+    
+    // seal方法之后
+    Object.getOwnPropertyDescriptor(obj, 'p')  // {... configurable: false }
+    
+    Object.defineProperty(obj, 'p', {
+      enumerable: false
+    })
+    // TypeError: Cannot redefine property: p
+
+`Object.seal` 只是禁止新增或删除属性，并不影响修改某个属性的值。
+
+    var obj = { p: 'a' };
+    Object.seal(obj);
+    obj.p = 'b';
+    obj.p // 'b'
+
+`Object.seal` 方法对 p 属性的 `value` 无效，是因为此时 p 属性的可写性由`writable` 决定。
+
+#### 14. Object.isSealed()
+
+`Object.isSealed()` 方法用于检查一个对象是否使用了 `Object.seal` 方法。未使用返回`false`，使用了返回 `true`。
+
+    var obj = { p: 'a' };
+    
+    Object.seal(obj);
+    Object.isSealed(obj) // true
+
+此时，`Object.isExtensible()` 方法也返回 `false`。
+
+    Object.isExtensible(obj) // false
+
+#### 15. Object.freeze()
+
+`Object.freeze()` 方法可以使得一个对象无法添加新属性、无法删除旧属性、也无法改变属性的值，使得这个对象实际上变成了常量。
+
+    var obj = { p: 'hello' };
+    
+    Object.freeze(obj);
+    
+    obj.p = 'world';
+    obj.p             // "hello"
+    
+    obj.t = 'hello';
+    obj.t             // undefined
+    
+    delete obj.p     // false
+    obj.p            // "hello"
+
+#### 16. Object.isFrozen()
+
+`Object.isFrozen()` 方法用于检查一个对象是否使用了Object.freeze方法。未使用返回`false`，使用了返回 `true`。此时 `Object.isExtensible()` 也返回 `false`。
+
+    var obj = { p: 'hello' };
+    
+    Object.freeze(obj);
+    Object.isFrozen(obj)        // true
+    Object.isExtensible(obj)    // false
+
+**局限性**
+
+以上三个方法锁定对象有局限性，并不是完全冻结。
+
+1. 可以通过改变原型对象，来为对象增加新属性。
+
+       var obj = new Object();
+       Object.preventExtensions(obj);
+        
+       var proto = Object.getPrototypeOf(obj);
+       proto.t = 'hello';
+       obj.t   // hello
+
+    解决方案是，把 `obj` 的原型也冻结住。
+
+       Object.preventExtensions(proto);
+        
+       proto.t = 'hello';
+       obj.t // undefined
+
+2. 如果属性值是对象，以上三个方法只能冻结属性指向的对象地址，而不能冻结对象本身。
+
+       var obj = {
+         foo: 1,
+         bar: ['a', 'b']
+       };
+       Object.freeze(obj);
+        
+       obj.bar.push('c');
+       obj.bar // ["a", "b", "c"]
+
+    `obj.bar` 属性指向一个数组，`obj` 对象被冻结以后，这个指向无法改变，即无法指向其他值，但是所指向的数组是可以改变的。
+
+
+
+
+
+## 对象的拷贝
+
+
+
+
+
+
 
 
 
