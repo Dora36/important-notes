@@ -1,10 +1,76 @@
 # Object的各种方法
 
 ## 分类
+
 ### Object() 函数
 
+`Object` 本身是一个函数，用来将任意值转为对象。
 
+如果参数为空（或者为 `undefined` 和 `null`），`Object()` 返回一个空对象。
 
+    var obj = Object();
+    // 等同于
+    var obj = Object(undefined);
+    var obj = Object(null);
+    
+    obj instanceof Object // true
+
+如果参数是原始类型的值，`Object` 方法将其转为对应的包装对象的实例。
+
+    var obj = Object(1);
+    obj instanceof Object // true
+    obj instanceof Number // true
+    
+    var obj = Object('foo');
+    obj instanceof Object // true
+    obj instanceof String // true
+    
+    var obj = Object(true);
+    obj instanceof Object // true
+    obj instanceof Boolean // true
+
+如果 `Object` 方法的参数是一个对象，它总是返回该对象，即不用转换。
+
+    var arr = [];
+    var obj = Object(arr);  // 返回原数组
+    obj === arr             // true
+    
+    var value = {};
+    var obj = Object(value) // 返回原对象
+    obj === value           // true
+    
+    var fn = function () {};
+    var obj = Object(fn);  // 返回原函数
+    obj === fn             // true
+
+因此，可以写一个判断变量是否为对象的函数。这个方法常用于保证某个值一定是对象。
+
+    function isObject(value) {
+      return value === Object(value);
+    }
+    
+    isObject([]) // true
+    isObject(true) // false
+
+### 构造函数 new Object()
+
+`Object` 构造函数的首要用途，是直接通过它来生成新对象。
+
+    var obj = new Object();
+    
+    // 等同于
+    var obj = {}
+
+`new Object()` 构造函数与 `Object()` 的用法很相似，几乎一模一样。使用时，可以接受一个参数，如果该参数是一个对象，则直接返回这个对象；如果是一个原始类型的值，则返回该值对应的包装对象。
+
+    var o1 = {a: 1};
+    var o2 = new Object(o1);
+    o1 === o2 // true
+    
+    var obj = new Object(123);
+    obj instanceof Number // true
+
+两者区别是语义不同。`Object(value)` 表示将 `value` 转成一个对象，`new Object(value)` 则表示新生成一个对象，它的值是 `value`。
 
 ### Object 对象的原生方法
 
@@ -39,12 +105,6 @@
 ##### 5. 其它
 - `Object.assign()`
 - `Object.is()`
-
-
-
-
-
-
 
 #### （2） 实例方法
 
@@ -104,11 +164,143 @@
     obj.hasOwnProperty('p')            // true
     obj.hasOwnProperty('toString')     // false
     
-`hasOwnProperty()` 方法是 JavaScript 之中唯一一个处理对象属性时，不会遍历原型链的方法。
+### 原型链相关
+
+#### 3. Object.getPrototypeOf()
+
+`Object.getPrototypeOf()` 方法返回参数对象的原型。这是获取原型对象的标准方法。
+
+    var F = function () {};
+    var f = new F();
+    Object.getPrototypeOf(f) === F.prototype // true
+
+`Object.prototype` 的原型是 `null`。
+
+    Object.getPrototypeOf(Object.prototype) === null // true
+
+#### 4. Object.setPrototypeOf()
+
+`Object.setPrototypeOf()` 方法为参数对象设置原型，返回该参数对象。它接受两个参数，第一个是现有对象，第二个是原型对象。
+
+    var a = {};
+    var b = {x: 1};
+    Object.setPrototypeOf(a, b);
     
+    Object.getPrototypeOf(a) === b // true
+    a.x // 1
+
+`new` 命令可以使用 `Object.setPrototypeOf()` 方法模拟。
+
+    var F = function () { this.foo = 'bar'; };
+    
+    var f = new F();
+    // 等同于
+    var f = Object.setPrototypeOf({}, F.prototype);
+    F.call(f);
+    
+#### 5. Object.prototype.\_\_proto__
+实例对象的 `__proto__` 属性，返回该对象的原型。该属性可读写。
+
+    var obj = {};
+    var p = {};
+    
+    obj.__proto__ = p;
+    Object.getPrototypeOf(obj) === p   // true
+    
+根据语言标准，`__proto__` 属性只有浏览器才需要部署，其他环境可以没有这个属性。它前后的两根下划线，表明它本质是一个内部属性，不应该对使用者暴露。因此，应该尽量少用这个属性，而是用 `Object.getPrototypeof()` 和 `Object.setPrototypeOf()`，进行原型对象的读写操作。
+
+#### 6. Object.prototype.isPrototypeOf()
+
+实例对象的 `isPrototypeOf()` 方法，用来判断该对象是否为参数对象的原型。
+
+    var o1 = {};
+    var o2 = Object.create(o1);
+    var o3 = Object.create(o2);
+    
+    o2.isPrototypeOf(o3)   // true
+    o1.isPrototypeOf(o3)   // true
+
+只要实例对象处在参数对象的原型链上，`isPrototypeOf()` 方法都返回true。
+
+    Object.prototype.isPrototypeOf({})                   // true
+    Object.prototype.isPrototypeOf([])                   // true
+    Object.prototype.isPrototypeOf(/xyz/)                // true
+    Object.prototype.isPrototypeOf(Object.create(null))  // false
+
+由于 `Object.prototype` 处于原型链的最顶端，所以对各种实例都返回 `true`，只有直接继承自 `null` 的对象除外。
+
+#### 7. Object.create()
+
+`Object.create()` 方法接受一个对象作为参数，目的是以参数对象为原型，返回一个实例对象。该实例完全继承原型对象的属性。
+
+很多时候，需要从一个实例对象 A 生成另一个实例对象 B，如果 A 是由构造函数创建的，那么可以很轻松的得到 A 的构造函数重新生成实例 B，然而很多时候，A 只是一个普通的对象，并不是由构造函数生成的，这时候就需要使用`Object.create()` 方法由 A 生成 B。
+
+    var A = {
+      print: function () {
+        console.log('hello');
+      }
+    };
+    
+    var B = Object.create(A);
+    
+    Object.getPrototypeOf(B) === A    // true
+    B.print()                         // hello
+    B.print === A.print               // true
+
+`Object.create()` 方法兼容性处理，即生成实例的本质：
+
+    if (typeof Object.create !== 'function') {
+      Object.create = function (obj) {
+        function F() {}       // 新建一个空的构造函数 F
+        F.prototype = obj;    // 让 F.prototype 属性指向参数对象 obj
+        return new F();       // 最后返回一个 F 的实例
+      };
+    }
+
+下面三种方式生成的新对象是等价的：
+
+    var obj1 = Object.create({});
+    var obj2 = Object.create(Object.prototype);
+    var obj3 = new Object();
+
+如果想要生成一个不继承任何属性（比如没有 `toString` 和 `valueOf` 方法）的对象，可以将 `Object.create` 的参数设为 `null`。因为生成的实例对象原型是 `null`，所以它就不具备定义在 `Object.prototype` 原型上面的方法。
+
+    var obj = Object.create(null);
+
+`Object.create()` 方法还可以接受第二个参数。该参数是一个属性描述对象，它所描述的对象属性，会添加到实例对象，作为该对象自身的属性。
+
+    var obj = Object.create({}, {
+      p1: {
+        value: 123,
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      },
+      p2: {
+        value: 'abc',
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      }
+    });
+    
+    // 等同于
+    var obj = Object.create({});
+    obj.p1 = 123;
+    obj.p2 = 'abc';
+
+`Object.create()` 方法生成的对象，继承了它的原型对象的构造函数。
+
+    function A() {}
+    var a = new A();
+    var b = Object.create(a);
+    
+    b.constructor === A   // true
+    b instanceof A        // true
+
 ### 属性描述对象相关
 
-#### 3. Object.getOwnPropertyDescriptor() , Object.getOwnPropertyDescriptors()
+#### 8. Object.getOwnPropertyDescriptor() , Object.getOwnPropertyDescriptors()
 
 **`Object.getOwnPropertyDescriptor()`** 可以获取某个属性的属性描述对象。它的第一个参数是对象，第二个参数是对象的某个属性名。返回的是该属性的属性描述对象。
     
@@ -121,7 +313,7 @@
     //   configurable: true
     // }
         
-只能用于对象自身的（非继承的）属性。
+只能用于对象自身的（非继承的）属性。继承的或不存在的属性返回 `undefined`。
    
     Object.getOwnPropertyDescriptor(obj, 'toString')   // undefined
 
@@ -132,7 +324,7 @@
     //   p2: {value: "b", writable: true, enumerable: true, configurable: true}
     // }
 
-#### 4. Object.defineProperty() ，Object.defineProperties()
+#### 9. Object.defineProperty() ，Object.defineProperties()
 
 **`Object.defineProperty()`** 方法允许通过属性描述对象，定义或修改一个属性，然后返回修改后的描述对象。
 
@@ -189,8 +381,8 @@
     //   enumerable: false,
     //   configurable: false
     // }
-
-#### 5. Object.prototype.propertyIsEnumerable()
+    
+#### 10. Object.prototype.propertyIsEnumerable()
 
 实例对象的 `propertyIsEnumerable()` 方法返回一个布尔值，用来判断某个属性是否可遍历。
 
@@ -201,78 +393,6 @@
     obj.propertyIsEnumerable('toString')    // false
 
 注意，这个方法只能用于判断对象自身的属性，对于继承的属性一律返回 `false`。
-
-
-### 原型链相关
-
-#### 6. Object.getPrototypeOf()
-
-`Object.getPrototypeOf()` 方法返回参数对象的原型。这是获取原型对象的标准方法。
-
-    var F = function () {};
-    var f = new F();
-    Object.getPrototypeOf(f) === F.prototype // true
-
-`Object.prototype` 的原型是 `null`。
-
-    Object.getPrototypeOf(Object.prototype) === null // true
-
-#### 7. Object.setPrototypeOf()
-
-`Object.setPrototypeOf()` 方法为参数对象设置原型，返回该参数对象。它接受两个参数，第一个是现有对象，第二个是原型对象。
-
-    var a = {};
-    var b = {x: 1};
-    Object.setPrototypeOf(a, b);
-    
-    Object.getPrototypeOf(a) === b // true
-    a.x // 1
-
-`new` 命令可以使用 `Object.setPrototypeOf()` 方法模拟。
-
-    var F = function () { this.foo = 'bar'; };
-    
-    var f = new F();
-    // 等同于
-    var f = Object.setPrototypeOf({}, F.prototype);
-    F.call(f);
-    
-#### 8. Object.prototype.\_\_proto__
-实例对象的 `__proto__` 属性，返回该对象的原型。该属性可读写。
-
-    var obj = {};
-    var p = {};
-    
-    obj.__proto__ = p;
-    Object.getPrototypeOf(obj) === p   // true
-    
-根据语言标准，`__proto__` 属性只有浏览器才需要部署，其他环境可以没有这个属性。它前后的两根下划线，表明它本质是一个内部属性，不应该对使用者暴露。因此，应该尽量少用这个属性，而是用 `Object.getPrototypeof()` 和 `Object.setPrototypeOf()`，进行原型对象的读写操作。
-
-#### 9. Object.prototype.isPrototypeOf()
-
-实例对象的 `isPrototypeOf()` 方法，用来判断该对象是否为参数对象的原型。
-
-    var o1 = {};
-    var o2 = Object.create(o1);
-    var o3 = Object.create(o2);
-    
-    o2.isPrototypeOf(o3)   // true
-    o1.isPrototypeOf(o3)   // true
-
-只要实例对象处在参数对象的原型链上，`isPrototypeOf()` 方法都返回true。
-
-    Object.prototype.isPrototypeOf({})                   // true
-    Object.prototype.isPrototypeOf([])                   // true
-    Object.prototype.isPrototypeOf(/xyz/)                // true
-    Object.prototype.isPrototypeOf(Object.create(null))  // false
-
-由于 `Object.prototype` 处于原型链的最顶端，所以对各种实例都返回 `true`，只有直接继承自 `null` 的对象除外。
-
-#### 10. Object.create()
-
-
-
-
 
 ### 控制对象状态相关
 
@@ -413,17 +533,119 @@
 
     `obj.bar` 属性指向一个数组，`obj` 对象被冻结以后，这个指向无法改变，即无法指向其他值，但是所指向的数组是可以改变的。
 
+### 其它
+
+#### 17. Object.is()
+
+Object.is() 用来比较两个值是否严格相等，与严格比较运算符（===）的行为基本一致。返回布尔值，相等返回 true，不相等返回 false。
+
+不同之处只有两个：一是+0不等于-0，二是NaN等于自身。
+
+    +0 === -0 //true
+    NaN === NaN // false
+    
+    Object.is(+0, -0) // false
+    Object.is(NaN, NaN) // true
+
+详情见 [JavaScript 的相等比较](https://segmentfault.com/a/1190000016877867)。
+
+
+#### 18. Object.assign()
 
 
 
+#### 19. Object.prototype.valueOf()
+
+`valueOf` 方法的作用是返回一个对象的“值”，默认情况下返回对象本身。
+
+    var obj = new Object();
+    obj.valueOf() === obj      // true
+
+主要用途是，JavaScript 自动类型转换时会默认调用这个方法。因此，如果给实例对象自定义 `valueOf()` 方法，覆盖 `Object.prototype.valueOf()`，就可以得到想要的结果。
+
+    var obj = new Object();
+    obj.valueOf = function () {
+      return 2;
+    };
+    
+    1 + obj // 3
+
+#### 20. Object.prototype.toString()
+
+`toString` 方法的作用是返回一个对象的字符串形式，默认情况下返回类型字符串。
+
+    var obj = {};
+    obj.toString()   // "[object Object]"
+
+JavaScript 自动类型转换时也会调用这个方法。因此可以通过自定义实例对象的 `toString` 方法，覆盖掉 `Object.prototype.toString()`，得到想要的字符串形式。
+
+    var obj = new Object();
+    
+    obj.toString = function () {
+      return 'hello';
+    };
+    
+    obj + ' ' + 'world'     // "hello world"
+
+数组、字符串、函数、Date 对象都分别部署了自定义的 `toString` 方法，覆盖了 `Object.prototype.toString()` 方法。
+
+    [1, 2, 3].toString() // "1,2,3"
+    
+    '123'.toString() // "123"
+    
+    (function () {
+      return 123;
+    }).toString()
+    // "function () {
+    //   return 123;
+    // }"
+    
+    (new Date()).toString()
+    // "Tue May 10 2016 09:11:31 GMT+0800 (CST)"
+
+`Object.prototype.toString.call(value)` 可用于判断数据类型，详情见 [判断数据类型的各种方法](https://segmentfault.com/a/1190000016888845#articleHeader5)。
+
+#### 21. Object.prototype.toLocaleString()
+
+`Object.prototype.toLocaleString` 方法与 `toString` 的返回结果相同，也是返回一个值的字符串形式。
+
+    var obj = {};
+    obj.toString(obj)         // "[object Object]"
+    obj.toLocaleString(obj)   // "[object Object]"
+
+这个方法的主要作用是留出一个接口，让各种不同的对象实现自己版本的 `toLocaleString`，用来返回针对某些地域的特定的值。
+
+目前，主要有三个对象自定义了 `toLocaleString` 方法。
+
+- `Array.prototype.toLocaleString()`
+- `Number.prototype.toLocaleString()`
+- `Date.prototype.toLocaleString()`
+
+日期的实例对象的 `toString` 和 `toLocaleString` 返回值就不一样，而且 `toLocaleString` 的返回值跟用户设定的所在地域相关。
+
+    var date = new Date();
+    date.toString()       // "Thu Nov 29 2018 16:50:00 GMT+0800 (中国标准时间)"
+    date.toLocaleString() // "2018/11/29 下午4:50:00"
 
 ## 对象的拷贝
 
 
 
 
+## 元属性
+JS 提供了一个内部数据结构，用来描述对象的属性，控制它的行为，比如该属性是否可写、可遍历等等。这个内部数据结构称为“属性描述对象”（attributes object）。每个属性都有自己对应的属性描述对象，保存该属性的一些元信息。
 
+属性描述对象的各个属性称为“元属性”，因为它们可以看作是控制属性的属性。
 
+### value
+
+### writable
+
+### enumerable
+
+### configurable
+
+参考链接：[JavaScript 教程 Object 对象](https://wangdoc.com/javascript/stdlib/object.html)
 
 
 
