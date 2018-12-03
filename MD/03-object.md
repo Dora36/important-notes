@@ -80,8 +80,10 @@
 
 本身的方法就是直接定义在 `Object` 对象的方法。
 ##### 1. 遍历对象属性
-- `Object.keys()`：遍历对象自身的（非继承的）可遍历属性。
-- `Object.getOwnPropertyNames()`：遍历对象自身的（非继承的）全部（可遍历+不可遍历）属性
+- `Object.keys()`：遍历对象自身的（非继承的）可遍历属性，返回属性名。
+- `Object.getOwnPropertyNames()`：遍历对象自身的（非继承的）全部（可遍历+不可遍历）属性。
+- `Object.values()`：遍历对象自身的（非继承的）可遍历属性，返回属性值。
+- `Object.entries()`：遍历对象自身的（非继承的）可遍历属性，返回键值对。
 
 ##### 2. 对象的属性描述对象相关方法
 - `Object.getOwnPropertyDescriptor()`：获取某个属性的描述对象。
@@ -154,8 +156,21 @@
 
 一般情况下，几乎总是使用 `Object.keys` 方法，遍历对象的属性。
 
+#### 2. Object.values()
 
-#### 2. Object.prototype.hasOwnProperty()
+`Object.values()` 方法返回一个数组，成员是参数对象自身的（非继承的）所有可遍历属性的属性值。
+
+    var obj = { p1: 123, p2: 456 };
+    Object.values(obj)   // [123, 456]
+
+#### 3. Object.entries()
+
+`Object.entries()` 方法返回一个数组，成员是参数对象自身的（非继承的）所有可遍历属性的键值对数组。
+
+    var obj = { p1: 123, p2: 456 };
+    Object.entries(obj)  // [["p1", "123"], ["p2", 456]]
+
+#### 4. Object.prototype.hasOwnProperty()
 
 实例对象的 `hasOwnProperty()` 方法接受一个字符串作为参数，返回一个布尔值，表示该实例对象自身是否具有该属性。有返回 `true`，没有或是继承的属性都返回 `false`。
 
@@ -166,7 +181,7 @@
     
 ### 原型链相关
 
-#### 3. Object.getPrototypeOf()
+#### 1. Object.getPrototypeOf()
 
 `Object.getPrototypeOf()` 方法返回参数对象的原型。这是获取原型对象的标准方法。
 
@@ -178,7 +193,7 @@
 
     Object.getPrototypeOf(Object.prototype) === null // true
 
-#### 4. Object.setPrototypeOf()
+#### 2. Object.setPrototypeOf()
 
 `Object.setPrototypeOf()` 方法为参数对象设置原型，返回该参数对象。它接受两个参数，第一个是现有对象，第二个是原型对象。
 
@@ -198,7 +213,7 @@
     var f = Object.setPrototypeOf({}, F.prototype);
     F.call(f);
     
-#### 5. Object.prototype.\_\_proto__
+#### 3. Object.prototype.\_\_proto__
 实例对象的 `__proto__` 属性，返回该对象的原型。该属性可读写。
 
     var obj = {};
@@ -209,7 +224,7 @@
     
 根据语言标准，`__proto__` 属性只有浏览器才需要部署，其他环境可以没有这个属性。它前后的两根下划线，表明它本质是一个内部属性，不应该对使用者暴露。因此，应该尽量少用这个属性，而是用 `Object.getPrototypeof()` 和 `Object.setPrototypeOf()`，进行原型对象的读写操作。
 
-#### 6. Object.prototype.isPrototypeOf()
+#### 4. Object.prototype.isPrototypeOf()
 
 实例对象的 `isPrototypeOf()` 方法，用来判断该对象是否为参数对象的原型。
 
@@ -229,7 +244,7 @@
 
 由于 `Object.prototype` 处于原型链的最顶端，所以对各种实例都返回 `true`，只有直接继承自 `null` 的对象除外。
 
-#### 7. Object.create()
+#### 5. Object.create()
 
 `Object.create()` 方法接受一个对象作为参数，目的是以参数对象为原型，返回一个实例对象。该实例完全继承原型对象的属性。
 
@@ -300,7 +315,7 @@
 
 ### 属性描述对象相关
 
-#### 8. Object.getOwnPropertyDescriptor() , Object.getOwnPropertyDescriptors()
+#### 1. Object.getOwnPropertyDescriptor() , Object.getOwnPropertyDescriptors()
 
 **`Object.getOwnPropertyDescriptor()`** 可以获取某个属性的属性描述对象。它的第一个参数是对象，第二个参数是对象的某个属性名。返回的是该属性的属性描述对象。
     
@@ -324,7 +339,7 @@
     //   p2: {value: "b", writable: true, enumerable: true, configurable: true}
     // }
 
-#### 9. Object.defineProperty() ，Object.defineProperties()
+#### 2. Object.defineProperty() ，Object.defineProperties()
 
 **`Object.defineProperty()`** 方法允许通过属性描述对象，定义或修改一个属性，然后返回修改后的描述对象。
 
@@ -366,7 +381,7 @@
     obj.p2 // "abc"
     obj.p3 // "123abc"
 
-注意，一旦定义了取值函数get（或存值函数set），就不能将writable属性设为true，或者同时定义value属性，否则会报错。
+注意，一旦定义了取值函数 `get` 或存值函数 `set`，就不能同时定义 `writable` 属性或 `value` 属性，否则会报错。
 
 **元属性默认值**
 
@@ -382,7 +397,7 @@
     //   configurable: false
     // }
     
-#### 10. Object.prototype.propertyIsEnumerable()
+#### 3. Object.prototype.propertyIsEnumerable()
 
 实例对象的 `propertyIsEnumerable()` 方法返回一个布尔值，用来判断某个属性是否可遍历。
 
@@ -398,7 +413,7 @@
 
 有时需要冻结对象的读写状态，防止对象被改变。JavaScript 提供了三种冻结方法，最弱的一种是 `Object.preventExtensions()`，其次是 `Object.seal()`，最强的是 `Object.freeze()`。
 
-#### 11. Object.preventExtensions()
+#### 1. Object.preventExtensions()
 
 `Object.preventExtensions()` 方法可以使得一个对象无法再添加新的属性。
 
@@ -411,7 +426,7 @@
     obj.p = 1;
     obj.p      // undefined
 
-#### 12. Object.isExtensible()
+#### 2. Object.isExtensible()
 
 `Object.isExtensible()` 方法用于检查是否可以为一个对象添加属性。可以添加返回 `true`，不可以添加返回 `false`。
 
@@ -421,7 +436,7 @@
     Object.preventExtensions(obj);
     Object.isExtensible(obj) // false
 
-#### 13. Object.seal()
+#### 3. Object.seal()
 
 `Object.seal()` 方法使得一个对象既无法添加新属性，也无法删除旧属性。
 
@@ -460,7 +475,7 @@
 
 `Object.seal` 方法对 p 属性的 `value` 无效，是因为此时 p 属性的可写性由`writable` 决定。
 
-#### 14. Object.isSealed()
+#### 4. Object.isSealed()
 
 `Object.isSealed()` 方法用于检查一个对象是否使用了 `Object.seal` 方法。未使用返回`false`，使用了返回 `true`。
 
@@ -473,7 +488,7 @@
 
     Object.isExtensible(obj) // false
 
-#### 15. Object.freeze()
+#### 5. Object.freeze()
 
 `Object.freeze()` 方法可以使得一个对象无法添加新属性、无法删除旧属性、也无法改变属性的值，使得这个对象实际上变成了常量。
 
@@ -490,7 +505,7 @@
     delete obj.p     // false
     obj.p            // "hello"
 
-#### 16. Object.isFrozen()
+#### 6. Object.isFrozen()
 
 `Object.isFrozen()` 方法用于检查一个对象是否使用了Object.freeze方法。未使用返回`false`，使用了返回 `true`。此时 `Object.isExtensible()` 也返回 `false`。
 
@@ -533,9 +548,104 @@
 
     `obj.bar` 属性指向一个数组，`obj` 对象被冻结以后，这个指向无法改变，即无法指向其他值，但是所指向的数组是可以改变的。
 
+**完全冻结**
+
+    var constantize = (obj) => {
+      Object.freeze(obj);
+      Object.keys(obj).forEach((key, i) => {
+        if ( typeof obj[key] === 'object' ) {
+          constantize(obj[key]);
+        }
+      });
+    };
+    
+    var obj = {
+      foo: 1,
+      bar: ['a', 'b']
+    };
+    constantize(obj);
+    
+    obj.bar.push('c'); 
+    // TypeError: Cannot add property 2, object is not extensible
+
+### 对象的拷贝
+
+#### 1. Object.assign()
+
+`Object.assign()` 方法用于将所有自身的（非继承的）可枚举属性的值从一个或多个源对象复制到目标对象。返回目标对象。目标对象自身也会改变。
+
+    Object.assign(target, ...sources)
+
+- `target`: 目标对象。
+- `sources`: 源对象。
+
+如果目标对象中的属性具有相同的键，则属性将被源中的属性覆盖。后来的源的属性将类似地覆盖早先的属性。
+
+    var o1 = { a: 1, b: 1, c: 1 };
+    var o2 = { b: 2, c: 2 };
+    var o3 = { c: 3 };
+    
+    var obj = Object.assign({}, o1, o2, o3);
+    obj    // { a: 1, b: 2, c: 3 }
+
+`Object.assign()` 不会跳过那些值为 `null` 或 `undefined` 的源对象。
+
+    var o1 = { a: null, b: 1};
+    var o2 = { c: undefined };
+        
+    var obj = Object.assign({}, o1, o2);
+    obj   // {a: null, b: 1, c: undefined}
+
+`Object.assign()` 拷贝的是属性值。假如源对象的属性值是一个指向对象的引用，它也只拷贝那个引用值。
+
+    var obj1 = { a: 0 , b: { c: 0 } };
+    var obj2 = Object.assign({}, obj1);
+    obj2   // { a: 0, b: { c: 0 } };
+    
+    obj2.b.c = 3;
+    obj1   // { a: 1, b: { c: 3 } };
+    obj2   // { a: 2, b: { c: 3 } };
+
+因此针对深拷贝，需要使用其他方法。
+
+    var obj1 = { a: 0 , b: { c: 0}};
+    var obj2 = JSON.parse(JSON.stringify(obj1));
+    obj1.b.c = 4;
+    obj2    // { a: 0, b: { c: 0}}
+
+`Object.assign()` 如果遇到存取器定义的属性，会只拷贝值。
+
+    var obj = {
+      foo: 1,
+      get bar() { return 2; }
+    };
+    
+    var copy = Object.assign({}, obj); 
+    copy  // { foo: 1, bar: 2 }
+
+因此必须使用 `Object.getOwnPropertyDescriptors()` 方法配合 `Object.defineProperties()` 方法，就可以实现正确拷贝。但仅限于可拷贝 `getter` 和 `setter` ，对于属性的引用类型还是属于浅拷贝。
+    
+    var obj = {
+      foo: { a : 0 },
+      get bar() { return 2; }
+    };
+    var target = Object.defineProperties({},
+      Object.getOwnPropertyDescriptors(obj)
+    );
+    Object.getOwnPropertyDescriptor(target, 'bar')
+    // { get : ƒ bar(),
+       set : undefined,
+       enumerable : true, 
+       configurable : true }
+       
+    obj.foo.a = 6
+    target.foo.a   // 6
+
+如果属性不可写，会引发报错，如果在引发错误之前添加了任何属性，则可以更改target对象。
+
 ### 其它
 
-#### 17. Object.is()
+#### 1. Object.is()
 
 Object.is() 用来比较两个值是否严格相等，与严格比较运算符（===）的行为基本一致。返回布尔值，相等返回 true，不相等返回 false。
 
@@ -549,12 +659,23 @@ Object.is() 用来比较两个值是否严格相等，与严格比较运算符�
 
 详情见 [JavaScript 的相等比较](https://segmentfault.com/a/1190000016877867)。
 
+ES5 可以通过下面的代码，部署 `Object.is`。
 
-#### 18. Object.assign()
+    Object.defineProperty(Object, 'is', {
+      value: function(x, y) {
+        if (x === y) {
+          // 针对+0 不等于 -0的情况
+          return x !== 0 || 1 / x === 1 / y;
+        }
+        // 针对NaN的情况
+        return x !== x && y !== y;
+      },
+      configurable: true,
+      enumerable: false,
+      writable: true
+    });
 
-
-
-#### 19. Object.prototype.valueOf()
+#### 2. Object.prototype.valueOf()
 
 `valueOf` 方法的作用是返回一个对象的“值”，默认情况下返回对象本身。
 
@@ -570,7 +691,7 @@ Object.is() 用来比较两个值是否严格相等，与严格比较运算符�
     
     1 + obj // 3
 
-#### 20. Object.prototype.toString()
+#### 3. Object.prototype.toString()
 
 `toString` 方法的作用是返回一个对象的字符串形式，默认情况下返回类型字符串。
 
@@ -605,7 +726,7 @@ JavaScript 自动类型转换时也会调用这个方法。因此可以通过自
 
 `Object.prototype.toString.call(value)` 可用于判断数据类型，详情见 [判断数据类型的各种方法](https://segmentfault.com/a/1190000016888845#articleHeader5)。
 
-#### 21. Object.prototype.toLocaleString()
+#### 4. Object.prototype.toLocaleString()
 
 `Object.prototype.toLocaleString` 方法与 `toString` 的返回结果相同，也是返回一个值的字符串形式。
 
@@ -627,23 +748,7 @@ JavaScript 自动类型转换时也会调用这个方法。因此可以通过自
     date.toString()       // "Thu Nov 29 2018 16:50:00 GMT+0800 (中国标准时间)"
     date.toLocaleString() // "2018/11/29 下午4:50:00"
 
-## 对象的拷贝
 
-
-
-
-## 元属性
-JS 提供了一个内部数据结构，用来描述对象的属性，控制它的行为，比如该属性是否可写、可遍历等等。这个内部数据结构称为“属性描述对象”（attributes object）。每个属性都有自己对应的属性描述对象，保存该属性的一些元信息。
-
-属性描述对象的各个属性称为“元属性”，因为它们可以看作是控制属性的属性。
-
-### value
-
-### writable
-
-### enumerable
-
-### configurable
 
 参考链接：[JavaScript 教程 Object 对象](https://wangdoc.com/javascript/stdlib/object.html)
 
