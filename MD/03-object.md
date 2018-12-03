@@ -80,10 +80,10 @@
 
 本身的方法就是直接定义在 `Object` 对象的方法。
 ##### 1. 遍历对象属性
-- `Object.keys()`：遍历对象自身的（非继承的）可遍历属性，返回属性名。
-- `Object.getOwnPropertyNames()`：遍历对象自身的（非继承的）全部（可遍历+不可遍历）属性。
-- `Object.values()`：遍历对象自身的（非继承的）可遍历属性，返回属性值。
-- `Object.entries()`：遍历对象自身的（非继承的）可遍历属性，返回键值对。
+- `Object.keys()`：遍历对象自身的（非继承的）可枚举属性，返回属性名。
+- `Object.getOwnPropertyNames()`：遍历对象自身的（非继承的）全部（可枚举+不可枚举）属性。
+- `Object.values()`：遍历对象自身的（非继承的）可枚举属性，返回属性值。
+- `Object.entries()`：遍历对象自身的（非继承的）可枚举属性，返回键值对。
 
 ##### 2. 对象的属性描述对象相关方法
 - `Object.getOwnPropertyDescriptor()`：获取某个属性的描述对象。
@@ -119,7 +119,7 @@
 - `Object.prototype.toLocaleString()`：返回当前对象对应的本地字符串形式。
 - `Object.prototype.hasOwnProperty()`：判断某个属性是否为当前对象自身的属性，还是继承自原型对象的属性。
 - `Object.prototype.isPrototypeOf()`：判断当前对象是否为另一个对象的原型。
-- `Object.prototype.propertyIsEnumerable()`：判断对象自身的（非继承的）属性是否可遍历。
+- `Object.prototype.propertyIsEnumerable()`：判断对象自身的（非继承的）属性是否可枚举。
 
 ## 方法介绍
 
@@ -129,7 +129,7 @@
 
 `Object.keys` 方法和 `Object.getOwnPropertyNames` 方法都用来遍历对象的属性。
 
-**`Object.keys`** 方法的参数是一个对象，返回一个数组。该数组的成员都是该对象自身的（非继承的）所有属性名，且只返回可遍历的属性。
+**`Object.keys`** 方法的参数是一个对象，返回一个数组。该数组的成员都是该对象自身的（非继承的）所有属性名，且只返回可枚举的属性。
 
     var obj = Object.defineProperties({}, {
       p1: { value: 1, enumerable: true },
@@ -138,7 +138,7 @@
     
     Object.keys(obj)  // ["p1"]
     
-**`Object.getOwnPropertyNames`** 方法与 `Object.keys` 类似，也是接受一个对象作为参数，返回一个数组，该数组的成员是参数对象自身的（非继承的）全部属性的属性名，不管该属性是否可遍历。
+**`Object.getOwnPropertyNames`** 方法与 `Object.keys` 类似，也是接受一个对象作为参数，返回一个数组，该数组的成员是参数对象自身的（非继承的）全部属性的属性名，不管该属性是否可枚举。
 
     var a = ['Hello', 'World'];
     
@@ -158,14 +158,14 @@
 
 #### 2. Object.values()
 
-`Object.values()` 方法返回一个数组，成员是参数对象自身的（非继承的）所有可遍历属性的属性值。
+`Object.values()` 方法返回一个数组，成员是参数对象自身的（非继承的）所有可枚举属性的属性值。
 
     var obj = { p1: 123, p2: 456 };
     Object.values(obj)   // [123, 456]
 
 #### 3. Object.entries()
 
-`Object.entries()` 方法返回一个数组，成员是参数对象自身的（非继承的）所有可遍历属性的键值对数组。
+`Object.entries()` 方法返回一个数组，成员是参数对象自身的（非继承的）所有可枚举属性的键值对数组。
 
     var obj = { p1: 123, p2: 456 };
     Object.entries(obj)  // [["p1", "123"], ["p2", 456]]
@@ -399,7 +399,7 @@
     
 #### 3. Object.prototype.propertyIsEnumerable()
 
-实例对象的 `propertyIsEnumerable()` 方法返回一个布尔值，用来判断某个属性是否可遍历。
+实例对象的 `propertyIsEnumerable()` 方法返回一个布尔值，用来判断某个属性是否可枚举。
 
     var obj = {};
     obj.p = 123;
