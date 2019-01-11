@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IndexedDB</title>
+</head>
+<body>
+
+
+<script>
+  // 有则打开数据库，没有则新建数据库
+  var request = window.indexedDB.open('testDatabase',1);
+  console.log(request);
+
+  var db;
+  request.onsuccess = function (event) {
+    db = request.result;
+    console.log('数据库打开成功');
+    if (db.objectStoreNames.contains('personaaa')) {
+      add({ id: 2, name: '张三2', email: 'zhangsan2@example.com' });
+    }
+
+  };
+
+  //数据库更新版本
+  request.onupgradeneeded = function(event) {
+    db = event.target.result;
+    var objectStore;
+
+    // 添加表
+    if (!db.objectStoreNames.contains('personaaa')) {
+      objectStore = db.createObjectStore('personaaa', { keyPath: 'id' });
+    }
+    objectStore.createIndex('name', 'name', { unique: false });
+    objectStore.createIndex('email', 'email', { unique: true });
+  };
+
+  //  添加数据
+  function add(obj={id: 1, name: '张三', email: 'zhangsan@example.com' }) {
+    var request = db.transaction(['personaaa'], 'readwrite')
+      .objectStore('personaaa')
+      .add(obj);
+
+    request.onsuccess = function (event) {
+      console.log('数据写入成功');
+    };
+
+    request.onerror = function (event) {
+      console.log('数据写入失败');
+    }
+  }
+
+
+
+
+</script>
+
+</body>
+</html>
