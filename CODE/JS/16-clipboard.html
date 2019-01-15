@@ -2,24 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <title>剪贴板</title>
 </head>
 <body>
-<p>
-  以下三个事件属于剪贴板操作的相关事件。
+<!--<p>-->
+  <!--以下三个事件属于剪贴板操作的相关事件。-->
 
-  cut：将选中的内容从文档中移除，加入剪贴板时触发。
-  copy：进行复制动作时触发。
-  paste：剪贴板内容粘贴到文档后触发。
+  <!--cut：将选中的内容从文档中移除，加入剪贴板时触发。-->
+  <!--copy：进行复制动作时触发。-->
+  <!--paste：剪贴板内容粘贴到文档后触发。-->
 
-  document.execCommand()方法，允许运行命令来操作可编辑区域的内容，注意，是可编辑区域。
-</p>
+  <!--document.execCommand()方法，允许运行命令来操作可编辑区域的内容，注意，是可编辑区域。-->
+<!--</p>-->
 <p class="copy">复制成功了</p>
 <button>点击复制</button>
 <script>
 
-
-
+  // 1.  正常复制时设置复制的内容
   // function copyText(e){
   //   console.log(e);
   //   e.clipboardData.setData('text/plain', 'clipboardaaa');
@@ -27,6 +27,10 @@
   //   e.preventDefault();
   // }
   // document.addEventListener('copy', copyText,false);
+
+
+  // 2. 点击按钮实现复制功能，通过execCommand()方法复制可编辑区域，在点击时动态生成 input 框，将input 框的value 设为要复制的值
+  //  execCommand()也可触发 document 的 copy 事件。（有 IE 兼容问题）
   let btn = document.querySelector('button');
   let copy = document.querySelector('.copy');
   btn.addEventListener('click',function (){
