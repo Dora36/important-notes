@@ -35,8 +35,9 @@
   let copy = document.querySelector('.copy');
   btn.addEventListener('click',function (){
     const input = document.createElement('input');
-    input.setAttribute('readonly', 'readonly');
+    input.setAttribute('readonly', 'readonly');     // 在手机端input框会调起键盘，readonly可以让键盘不显示，但是在手机端还是会闪一下
     input.setAttribute('value', copy.innerHTML);
+    input.style.opacity=0;
     document.body.appendChild(input);
     // input.select();  // input.select() 在ios下有兼容性的问题
     input.focus();
