@@ -568,11 +568,11 @@
     obj.bar.push('c'); 
     // TypeError: Cannot add property 2, object is not extensible
 
-### 对象的拷贝
+### 对象的合并及拷贝
 
 #### 1. Object.assign()
 
-`Object.assign()` 方法用于将所有自身的（非继承的）可枚举属性的值从一个或多个源对象复制到目标对象。返回目标对象。目标对象自身也会改变。
+`Object.assign()` 方法用于对象的合并，将所有自身的（非继承的）可枚举属性的值从一个或多个源对象复制到目标对象。返回目标对象。目标对象自身也会改变。
 
     Object.assign(target, ...sources)
 
@@ -603,8 +603,8 @@
     obj2   // { a: 0, b: { c: 0 } };
     
     obj2.b.c = 3;
-    obj1   // { a: 1, b: { c: 3 } };
-    obj2   // { a: 2, b: { c: 3 } };
+    obj1   // { a: 0, b: { c: 3 } };
+    obj2   // { a: 0, b: { c: 3 } };
 
 因此针对深拷贝，需要使用其他方法。
 
