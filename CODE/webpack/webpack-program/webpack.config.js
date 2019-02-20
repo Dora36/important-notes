@@ -19,6 +19,25 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath:'/'
+  },
+  devServer:{
+    // 3. 有服务端但不用代理处理，在服务端中启动 webpack，端口用服务端端口
+
+
+    // 2. 模拟数据
+    before(app) {
+      app.get('/user',(req,res)=>{
+        res.json({name:'dora 模拟数据'})
+      })
+    }
+    // 1. 通过代理重写请求的路径
+    // proxy: {
+    //   '/api':{
+    //     target:'http://localhost:3000',
+    //     pathRewrite:{'/api':''}
+    //   }
+    // }
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -31,6 +50,19 @@ module.exports = {
   ],
   module: {
     rules: [
+      {
+        test:/\.html$/,
+        use:'html-withimg-loader'
+      },
+      {
+        test:/\.(png|jpg|gif)$/,
+        use:{
+          loader: 'url-loader',
+          options: {
+            limit : 1
+          }
+        }
+      },
       {
         test:/\.js$/,
         use: {

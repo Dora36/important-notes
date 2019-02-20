@@ -286,16 +286,217 @@ css引入
       ]
     }
 
+#### 引入第三方模块（如 jquery）的方式
+
+- `expose-loader` 暴露 `$` 变量到 `window` 上
+- `webpack.providePlugin` 给每个模块提供一个变量 `$` 
+- 通过 `html` 文件的 `script` 引入并让 `webpack` 不打包代码的方式。
+
+#### 打包图片
+
+##### 图片引入方式
+
+- 在 js 中创建图片来引入
+
+  需要 `file-loader` 处理图片，默认会在内部生成一张图片到 `build` 目录下，并把生成的图片的名字返回回来。在js 中需要使用 `import` 或 `require` 引入图片。
+  
+- 在 css 中用 `background('url')` 来引入
+
+  css 中可以直接使用路径引入图片，因为 `css-loader` 或默认将路径转换为 `require` 模式
+
+- 在 html 中用 img 标签来引入
+
+   需要使用 html-withimg-loader 编译 html 中的 img 标签引入图片的问题
+
+js 使用
 
 
+安装
+
+    npm install file-loader -D
+
+webpack.config.js 中配置
+
+    module: {
+      rules: [{
+          test:/\.(png|jpg|gif)$/,
+          use:'file-loader'
+        }]
+    }
+
+js 文件中使用
+
+    import logo from 'path/to/logo.png';
+    let image = new Image();
+    image.src ='./img/logo.jpg'; // 不能用路径直接引入，会认为是一个普通字符串，不会对图片进行打包。
+    image.src = logo;
+    document.body.appendChild(image);
+
+html 使用
+
+安装
+
+    npm install html-withimg-loader -D
+
+`webpack.config.js` 配置
+
+    module: {
+      rules: [{
+        test:/\.html$/,
+        user:'html-withimg-loader'
+      }]
+    }
+
+##### 图片变成 base64 
+
+base64 的好处是可以减少 http 请求。而文件会比原文件大 1/3。
+
+需要使用 `url-loader`，可以设置限制，当图片小于多少k的时候，用 `base64` 来转换，如果大于设置的限制，则用 `file-loader` 产出图片。
+
+安装
+
+    npm install url-loader -D
+
+`webpack.config.js` 配置
+
+    module: {
+      rules: [{
+          test:/\.(png|jpg|gif)$/,
+          use:{
+            loader: 'url-loader',
+            options: {
+              limit : 8192,
+              outputPath:'img/' //输出在某个文件夹下
+            }
+          }
+        }]
+    }
+
+### 打包多页应用配置
+
+见 webpack.page.config.js
+
+### source-map 源码映射
+
+- `source-map` 源码映射，会单独生成一个 `sourcemap` 文件，会标识报错信息的列和行。
+
+- `eval-source-map` 不会产生单独的文件，但会显示报错信息的行和列。
+
+- `cheap-module-source-map` 不会产生列，但是是一个单独的映射文件，可以保存起来用于调试。
+
+- `cheap-module-eval-source-map` 不会生成文件，集成在打包后的文件中，不会产生列。
 
 
+    module.exports = {
+      devtool:'source-map',
+      // devtool:'eval-source-map',
+    }
 
+### watch 实时打包文件
 
+    module.exports = {
+      watch:true,  // 监听文件，代码一有变化就进行实时打包
+      watchOptions: {  // 监控的选项
+        poll:1000,   // 每秒监听1000次
+        aggregateTimeout: 500,   // 防抖，停止输入代码后 500ms 打包一次
+        ignored:/node_modules/  // 忽略监控的文件
+      },
+    }
 
+### webpack 中的一些小插件
 
+#### cleanWebpackPlugin 
 
+需要安装第三方模块，在每次打包 dist 文件夹时，会删除之前的，生成新的 dist 目录。
 
+安装
+
+    npm install clean-webpack-plugin -D
+
+webpack.config.js 配置
+
+    let CleanWebpackPlugin = require('clean-webpack-plugin');
+    plugins:[
+      new CleanWebpackPlugin('./dist')
+    ]
+
+#### copyWebpackPlugin
+
+需要安装第三方模块，将指定文件夹打包进 dist 文件夹
+
+安装
+
+    npm install copy-webpack-plugin -D
+
+webpack.config.js 配置
+
+    let CopyWebpackPlugin = require('copy-webpack-plugin');
+    plugins:[
+      new CopyWebpackPlugin([
+        {from:'doc',to:'./dist'} // 将 doc 文件夹内容 拷贝到 dist 文件夹中
+      ])
+    ]
+
+#### BannerPlugin 
+
+内置的插件，将参数字符串插入到每一个打包出来的 js 文件中。
+
+    let webpack = require('webpack');
+    plugins:[
+      new webpack.BannerPlugin('make 2019 by dora')
+    ]
+
+### webpack 解决跨域问题
+
+#### 通过proxy 代理重写请求的路径
+
+    devServer:{
+      proxy: {
+        '/api':{
+          target:'http://domain.com',  // 目标路径
+          pathRewrite:{'/api':''}  // 路径替换，请求的url中没有api，项目中ajax 请求可加 api
+        }
+      }
+    },
+
+#### 前段模拟数据
+
+    devServer:{
+      before(app) {
+        app.get('/user',(req,res)=>{
+          res.json({name:'dora 模拟数据'})
+        })
+      }
+    },
+
+#### 有服务端但不用代理处理，在服务端中启动 webpack，端口用服务端端口
+
+创建 `server.js` 文件
+
+    // 自带 express 框架
+    let express = require('express');
+    let app = express();
+    let webpack = require('webpack');
+    
+    // 需要 express 中间件 webpack-dev-middleware，可以在服务端启动 webpack
+    let WebpackDevMiddleware = require('webpack-dev-middleware');
+    
+    let WebpackConfig = require('./webpack.config');
+    let compiler = webpack(WebpackConfig);
+    
+    app.use(WebpackDevMiddleware(compiler));
+    
+    app.get('/api/user',(req,res)=>{
+      res.json({name:'dora webpack'})
+    });
+    
+    app.listen(3000);
+
+运行
+
+    node server.js
+
+可直接启动 webpack 和服务端。
 
 
 
