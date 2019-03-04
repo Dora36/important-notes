@@ -21,33 +21,29 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     publicPath:'/'
   },
-  devServer:{
-    // 3. 有服务端但不用代理处理，在服务端中启动 webpack，端口用服务端端口
-
-
-    // 2. 模拟数据
-    before(app) {
-      app.get('/user',(req,res)=>{
-        res.json({name:'dora 模拟数据'})
-      })
-    }
-    // 1. 通过代理重写请求的路径
-    // proxy: {
-    //   '/api':{
-    //     target:'http://localhost:3000',
-    //     pathRewrite:{'/api':''}
-    //   }
-    // }
-  },
   plugins: [
+    new webpack.DefinePlugin({
+      DEV:JSON.stringify('production'),
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: 'index.html',
     }),
     new MiniCssExtractPlugin({
       filename: 'main.css'
-    })
+    }),
+    new webpack.IgnorePlugin(/\.\/locale/,/moment/)
   ],
+  resolve:{
+    modules:[path.resolve('node_modules'),path.resolve('other')],
+    extensions:['.js','.css','.vue','.json'],
+    mainFields:['style','main'],
+    mainFiles:[],
+    alias:{
+      bootstrap: 'bootstrap/dist/css/bootstrap.css'
+    },
+
+  },
   module: {
     rules: [
       {
@@ -65,6 +61,7 @@ module.exports = {
       },
       {
         test:/\.js$/,
+        include:path.resolve('src'),
         use: {
           loader:'babel-loader',
           options: { // 使用 babel-loader 需要把 ES6 转为ES5

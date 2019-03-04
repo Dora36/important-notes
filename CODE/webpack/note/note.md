@@ -498,8 +498,117 @@ webpack.config.js 配置
 
 可直接启动 webpack 和服务端。
 
+### resolve 属性的配置
 
+`resolve` 用于解析第三方模块，配置模块的路径，`commonJs` 默认查找模块会从当前目录下的 `node_modul` 开始查找，如果找不到会向上继续找。`resolve` 的 `modules` 可以指定查找的文件夹，缩小查找范围。
 
+`extensions` 设置扩展名，解析 `import` 引入的文件时，会给文件名加上设置的后缀依次解析，直到找到匹配的文件。
+
+`alias` 设置别名，`import` 语法不写后缀默认引的是 js 文件，如 `vue` 其实引的是 `vue.runtime`。`bootstrap` 其实引入的是 `css` 文件，但如果只写 `import bootstrap` 的话就会找不到，就需要写全路径，所以可以用 `alias` 进行配置。
+
+`mainFields` 设置查找具体的文件的顺序。也可解决 `bootstrap` 路径的问题。
+
+`mainFiles` 指定入口文件的名字，默认为 index.js。
+
+    module.exports = {
+      resolve:{
+        modules:[path.resolve('node_modules'),path.resolve('other')],
+        extensions:['.js','.css','.vue','.json'],
+        mainFields:['style','main'],
+         // mainFiles:[],
+        alias:{
+          bootstrap: 'bootstrap/dist/css/bootstrap.css',
+          vue$: 'vue/dist/vue.runtime.esm.js'
+        }
+      },
+    }
+
+### 用 webpack 自带插件定义全局变量
+
+如果这个值是一个字符串，它会被当作一个代码片段来使用。因此需要通过 `JSON.stringify` 转化，或者外层再包含一个引号。`"production"`
+
+    plugins: [
+      new webpack.DefinePlugin({
+        DEV:JSON.stringify('production'),
+        'SERVICE_URL': JSON.stringify("http://www.dorayu.com")
+      }),
+    ],
+
+### 环境变量的配置
+
+配置文件分开，然后通过 webpack-merge 合并不同的配置文件。
+- `webpack.base.config.js`
+- `webpack.dev.config.js`
+- `webpack.prod.config.js`
+
+安装
+
+     npm install webpack-merge -D
+
+使用，在 `webpack.dev.config.js` 和 `webpack.prod.config.js` 中引入，然后通过不同的配置文件进行打包就可得到不同的打包后的文件。
+
+    let Merge = require('webpack-merge');
+    let BaseWebpackConfig = require('./webpack.base.config.js');
+    
+    module.exports = Merge(BaseWebpackConfig,{
+      mode:'development',
+    })
+    
+    module.exports = Merge(BaseWebpackConfig,{
+      mode:'production',
+    })
+
+### webpack 优化项
+
+#### noParse
+
+`noParse` 的作用是不解析设置的模块中的依赖关系，可优化解析速度。
+
+    module:{
+        noParse:/jquery/,
+    }
+
+#### 模块配置的 exclude include
+
+`exclude` 不包含设置的文件夹下的文件。
+
+`include` 只包含设置的文件夹下的文件。
+
+    module: {
+      rules: [
+        {
+          test:/\.js$/,
+          exclude: /node_modules/,
+          include:[path.resolve('src')],
+          use: {
+            loader:'babel-loader',
+          }
+        }
+      ]
+    }
+
+#### 插件的 IgnorePlugin
+
+如 `moment.js` 时间插件，忽略插件中的全部语言包，减少打包的文件大小。
+
+安装
+
+    npm install moment
+
+配置
+
+    plugins: [
+      new webpack.IgnorePlugin(/\.\/locale/,/moment/)
+    ],
+
+使用
+
+    import moment from 'moment';
+    import 'moment/locale/zh-cn'; // 忽略后需要手动引入语言包
+    
+    moment.locale('zh-cn');
+
+### 动态链接库 dllPlugin
 
 
 
