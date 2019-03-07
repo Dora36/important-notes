@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<script>
+  let n = 69;
+
+  let x = Math.floor(Math.sqrt(n));
+  let r = Math.floor(x/2)===(x/2)?x:x-1;
+  console.log(r);
+
+
+  let delt = Math.ceil((n-r*r)/8);
+
+  let columnDelt,rowDelt;
+  switch (delt) {
+    case 0:
+      columnDelt = 0;
+      rowDelt = 0;
+      break;
+    case 1:
+      columnDelt = 1;
+      rowDelt=0;
+      break;
+    case 2:
+      columnDelt =1;
+      rowDelt=1;
+      break;
+    case 3:
+      columnDelt =2;
+      rowDelt=1;
+      break;
+    case 4:
+      columnDelt =2;
+      rowDelt=2;
+      break;
+    default:
+      console.log('出错啦');
+  }
+  console.log(delt);
+  console.log(columnDelt);
+  console.log(rowDelt);
+
+
+  let n1 = r*r;
+
+
+
+    for(let j = 0;j<r+rowDelt;j++){
+      console.log(j);
+      let num = n1+1;
+      for(let i = 0;i<r+columnDelt;i++) {
+        console.log(num);
+        num = num-1;
+    }
+  }
+</script>
+</body>
+</html>

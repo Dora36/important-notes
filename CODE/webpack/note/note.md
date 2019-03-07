@@ -1,4 +1,9 @@
 ## webpack安装
+
+先初始化，生成 `package.json`。
+
+    npm init
+
 - 安装本地的 webpack，不推荐全局安装 webpack。
 - webpack webpack-cli -D
 
@@ -266,7 +271,9 @@ css引入
 
 安装
 
-    npm install babel-loader @babel/core @babel/preset-env 
+    npm install babel-loader @babel/core @babel/preset-env
+
+打包 js 需要使用 `babel-loader` ，同时需要把 ES6 转为ES5。`@babel/preset-env` 的作用就是将 ES6 转为 ES5的。可解析 `import` 语法。
 
 配置
 
@@ -276,7 +283,7 @@ css引入
           test:/\.js$/,
           use: {
             loader:'babel-loader',
-            options: { // 使用 babel-loader 需要把 ES6 转为ES5
+            options: { // 
               presets:[
                 '@babel/preset-env'  // 将 ES6 转为 ES5
               ]
@@ -608,7 +615,132 @@ webpack.config.js 配置
     
     moment.locale('zh-cn');
 
-### 动态链接库 dllPlugin
+### 动态链接库 dllPlugin 示例：react，react-dom
+
+安装 
+
+- `react` 及 `react-dom`
+- `babel-loader`，`@babel/core`，`@babel/preset-env` 及 `@babel/preset-react`。编译 es6 及 `react` 语法。
+
+
+    npm install react react-dom
+    npm install babel-loader @babel/preset-env @babel/preset-react -D
+
+配置
+
+新建配置文件 `webpack.dll.config.js`，专门用于打包 `react` 或 `vue` 等第三方库。
+
+    let path = require('path');
+    let webpack = require('webpack');
+    
+    module.exports ={
+      mode:'development',
+      entry:{
+        react:['react','react-dom'],
+      },
+      output:{
+        filename:'_dll_[name].js',
+        path:path.resolve(__dirname,'dist'),
+        library:'_dll_[name]', // 变量名
+        // libraryTarget:'var' // 变量的声明方式 默认为var，其他如 commonjs  umd  this ...
+      },
+      plugins:[
+        new webpack.DllPlugin({
+          name:'_dll_[name]',  // name 的值等于 output 的 library 名
+          path: path.resolve(__dirname,'dist','manifest.json') //manifest 任务清单
+        })
+      ]
+    }
+
+然后在主配置文件中引入打包后的配置。并且配置 `babel-loader`。
+
+    plugins: [
+      new webpack.DllReferencePlugin({
+        manifest: path.resolve(__dirname,'dist','manifest.json')
+      })
+    ],
+
+运行 `webpack.dll.config.js` 配置文件，以生成打包后的 js 文件和 `manifest.json` 文件
+
+    npx webpack --config webpack.dll.config.js
+
+在 `html` 模板文件中引入打包后的 js 文件，`_dll_[name].js`，如 `_dll_react.js`。
+
+    <script src="./_dll_react.js"></script>
+
+这样，在之后 `npm run dev` 或 `build` 的时候就不会对 `react` 库进行打包，会大大的减少 `bundle.js` 的文件大小。
+
+
+### 使用 happypack 进行多线程打包
+
+分配线程时也会消耗一些时间。
+
+安装
+
+    npm install happypack
+
+配置
+
+    let Happypack = require('happypack');
+    module: {
+      rules: [
+        {
+          test:/\.js$/,
+          use: 'Happypack/loader?id=js'  // 多线程打包 js
+        },
+        {
+          test:/\.css$/,
+          use:'Happypack/loader?id=css'  // 多线程打包 css
+        }
+      ]
+    },
+    plugins: [
+      new Happypack({
+        id:'js',
+        use: [{   // 通过 babel-loader 多线程打包 js
+          loader:'babel-loader',
+          options: {
+            presets:[
+              '@babel/preset-env',
+              '@babel/preset-react'
+            ]
+          }
+        }]
+      }),
+      new Happypack({
+        id:'css',     // 通过 style-loader css-loader 多线程打包 css
+        use: ['style-loader','css-loader']
+      })
+    ],
+
+### webpack 的自带优化
+
+- `tree-shaking`，把没用到的代码自动删除。`import` 在生产环境下，会自动去除掉没用的代码，只有 `import` 语法可以自动 `tree-shaking`。es6 模块（`require`）会把结果放到 `default` 上。且 `require` 语法不支持 `tree-shaking`。
+
+- `Scope Hoisting` 作用于提升，在 webpack 中会自动省略一些可以简化的代码，比如一些变量等。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
