@@ -720,26 +720,126 @@ webpack.config.js 配置
 - `Scope Hoisting` 作用于提升，在 webpack 中会自动省略一些可以简化的代码，比如一些变量等。
 
 
+### 多页面打包时抽离公共代码
+
+以前的版本用的是 `commonChunkPlugins`，版本4变成了 `optimization` 优化项下的 `splitChunks` ——分割代码块。
+
+配置
+
+    module.exports = {
+      optimization:{
+        splitChunks:{ // 分割代码块
+          cacheGroups:{ // 缓存组
+            common:{ // 公共的模块
+              chunks:'initial',
+              minSize:0,
+              minChunks:2,
+            },
+            vendor: {  // 抽离第三方模块
+              priority:1, // 权重，优先抽离
+              test:/node_modules/,
+              chunks:'initial',
+              minSize:0,
+              minChunks:2,
+            }
+          }
+        }
+      },
+      entry: { // 多页面的多入口
+        index:'./src/index.js',
+        other:'./src/other.js'
+      },
+      output: { // 多页面的多出口
+        filename: '[name].js',
+        path: path.resolve(__dirname, 'dist'),
+      },
+    }
+
+### 懒加载 依靠 import 语法
+
+`vue` ，`react` 的路由懒加载，都是靠的 `import()` 语法。`import()` 语法是 `webpack` 可用的 `es6` 草案中的语法，实际是用 `jsonp` 实现动态加载文件。比如点击按钮时加载某个文件（`source.js`），在打包时就会多出一个 `1.js` 的文件，其中有 `source.js` 的代码，只有在点击按钮时，才会加载打包的 `1.js` 文件，实现懒加载。
+
+`source.js`
+
+    export default 'dora'
+
+`index.js`，`import()` 语法生成的是一个 `promise`。
+
+    let button = document.createElement('button');
+    button.innerHTML='Hello';
+    button.addEventListener('click',function () {
+      import('./source.js').then(data=>{
+        console.log(data.default);
+      })
+    });
+    document.body.appendChild(button);
+
+配置
+
+需要通过 `@babel/plugin-syntax-dynamic-import` 插件解析动态加载的 `import()` 语法。
+
+    module: {
+      rules: [{
+        test:/\.js$/,
+        include:path.resolve('src'),
+        use: {
+          loader:'babel-loader',
+          options: {
+            presets:[
+              '@babel/preset-env'
+            ],
+            plugins:[
+             '@babel/plugin-syntax-dynamic-import'
+            ]
+          }
+        }
+      }]
+    }
+
+### 热更新，只更新有变化的组件，不刷新整个页面
+
+配置
+
+    module.exports = {
+      devServer: {
+        hot:true,  // 启用热更新
+        port: 3000,
+        contentBase: './dist',
+        open: true
+      },
+      plugins: [
+        new webpack.NamedModulesPlugin(), // 打印更新的模块路径
+        new webpack.HotModuleReplacementPlugin()  //热更新插件
+      ],
+    }
+
+使用，在 js 文件中
+    
+    if(module.hot){
+      module.hot.accept('./source',()=>{
+        let str = require('./source');
+        console.log(str.default);
+      })
+    }
 
 
+### tapable
 
+`tapable` 库中有三种注册方法，`tap` 同步注册，`tapAsync(cb)` 异步注册带回掉函数，`tapPromise` 注册 `promise`。
 
+同等的调用方法也有三种，`call`  `callAsync` `promise`
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    const {
+    	SyncHook,
+    	SyncBailHook,
+    	SyncWaterfallHook,
+    	SyncLoopHook,
+    	AsyncParallelHook,
+    	AsyncParallelBailHook,
+    	AsyncSeriesHook,
+    	AsyncSeriesBailHook,
+    	AsyncSeriesWaterfallHook
+    } = require("tapable");
 
 
 
