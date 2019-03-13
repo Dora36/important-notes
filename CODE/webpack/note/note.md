@@ -283,7 +283,7 @@ css引入
           test:/\.js$/,
           use: {
             loader:'babel-loader',
-            options: { // 
+            options: {
               presets:[
                 '@babel/preset-env'  // 将 ES6 转为 ES5
               ]
@@ -840,6 +840,101 @@ webpack.config.js 配置
     	AsyncSeriesBailHook,
     	AsyncSeriesWaterfallHook
     } = require("tapable");
+
+### loader 
+
+配置 `loader` 的位置信息
+
+    resolveLoader:{
+      modules:['node_modules', path.resolve(__dirname,'loaders')],  // 指定查找的文件夹
+      alias:{ // 通过别名
+        loader1: path.resolve(__dirname,'loaders','loader1.js')
+      }
+    },
+    module:{
+      rules:[
+        {
+          test:/\.js$/,
+          use:'loader1'
+        }
+      ]
+    }
+
+配置多个 `loader`，注意执行顺序问题
+
+从右往左执行
+
+    module:{
+      rules:[
+        {
+          test:/\.js$/,
+          use:['loader3','loader2','loader1']
+        }
+      ]
+    }
+
+从下往上执行
+
+    module:{
+      rules:[
+        {
+          test:/\.js$/,
+          use:{ loader: 'loader3' }
+        },
+        {
+          test:/\.js$/,
+          use:{ loader: 'loader2' }
+        },
+        {
+          test:/\.js$/,
+          use:{ loader: 'loader1' }
+        },
+      ]
+    }
+
+自定义顺序，`pre` 在前面的，`post` 在后面的，`normal` 默认的
+
+
+    module:{
+      rules:[
+        {
+          test:/\.js$/,
+          use:{ loader: 'loader1' },
+          enforce:'pre'
+        },
+        {
+          test:/\.js$/,
+          use:{ loader: 'loader2' }
+        },
+        {
+          test:/\.js$/,
+          use:{ loader: 'loader3' },
+          enforce:'post'
+        },
+      ]
+    }
+
+顺序：pre + normal + inline(行内，嵌入代码里的loader) + post
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
