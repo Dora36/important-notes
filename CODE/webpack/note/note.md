@@ -305,11 +305,11 @@ css引入
 
 - 在 js 中创建图片来引入
 
-  需要 `file-loader` 处理图片，默认会在内部生成一张图片到 `build` 目录下，并把生成的图片的名字返回回来。在js 中需要使用 `import` 或 `require` 引入图片。
+  需要 `file-loader` 处理图片，默认会在内部生成一张图片到 `build` 目录下，并把生成的图片的名字返回回来(md5)。在js 中需要使用 `import` 或 `require` 引入图片。
   
 - 在 css 中用 `background('url')` 来引入
 
-  css 中可以直接使用路径引入图片，因为 `css-loader` 或默认将路径转换为 `require` 模式
+  css 中可以直接使用路径引入图片，因为 `css-loader` 会默认将路径转换为 `require` 模式
 
 - 在 html 中用 img 标签来引入
 
@@ -372,7 +372,7 @@ base64 的好处是可以减少 http 请求。而文件会比原文件大 1/3。
           use:{
             loader: 'url-loader',
             options: {
-              limit : 8192,
+              limit : 200*1024, // 200k
               outputPath:'img/' //输出在某个文件夹下
             }
           }
@@ -823,7 +823,7 @@ webpack.config.js 配置
     }
 
 
-### tapable
+### tapable 事件流
 
 `tapable` 库中有三种注册方法，`tap` 同步注册，`tapAsync(cb)` 异步注册带回掉函数，`tapPromise` 注册 `promise`。
 
