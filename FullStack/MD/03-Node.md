@@ -27,12 +27,29 @@
 - 非阻塞IO
 - 事件循环机制
 
-### 模块
+### 系统模块
 
 #### 1. http 模块
 
 - HTTP/HTTPS
 - HTTP/2
+
+
+    const http = require('http');
+    
+    // 有浏览器请求时执行的回调函数
+    let server = http.createServer((req,res)=>{
+      //  request 输入
+      console.log(req.url); // 获取请求的url，如 '/www/1.html'
+    
+      //  response 输出
+      res.write('abc');
+      res.end();
+    });
+    // 监听
+    server.listen(8080);
+
+这时候访问 `http://localhost:8080` 页面就会显示 `abc`。
 
 #### 2. 断言测试 - Assertion Testing
 
@@ -119,25 +136,148 @@
 
 #### 9. Events - 事件队列
 
+与函数最大的不同是可以解耦。
+
+    const Event = require('events').EventEmitter;
+    
+    let ev = new Event();
+    // 监听（接收事件）
+    ev.on('msg',function (a,b,c) {
+      console.log('收到了msg事件',a,b,c);
+    });
+    
+    // 派发（发送事件）
+    ev.emit('msg',12,5,88);
+
+#### 10. Query Strings - 解析查询字符串
+
+    const querystring = require('querystring');
+    
+    let obj = querystring.parse('a=3&b=4&c=5&d=6');
+    
+    console.log(obj); // { a: '3', b: '4', c: '5', d: '6' }
+
+#### 11. URL - 解析 URL
+
+    const url = require('url');
+    
+    let obj = url.parse('https://www.test.com:8080/s?a=3&b=4&c=5&d=6',true);
+    
+    console.log(obj);
+    
+    // Url {
+    //   protocol: 'https:',
+    //   slashes: true,
+    //   auth: null,
+    //   host: 'www.test.com:8080',
+    //   port: '8080',
+    //   hostname: 'www.test.com',
+    //   hash: null,
+    //   search: '?a=3&b=4&c=5&d=6',
+    //   query: { a: '3', b: '4', c: '5', d: '6' }, // 第二个参数为true时，也会直接解析query
+    //   pathname: '/s',
+    //   path: '/s?a=3&b=4&c=5&d=6',
+    //   href: 'https://www.test.com:8080/s?a=3&b=4&c=5&d=6'
+    // }
+
+#### 12. 网络
+- TCP - 稳定  Net
+- UDP - 快   UDP/Datagram
+
+#### 13. 域名相关 - DNS、Domain
+
+    const dns = require('dns');
+    
+    // dns解析
+    dns.resolve('baidu.com',(err,res)=>{
+      if(err) {
+        console.log(err);
+      }else {
+        console.log(res);
+      }
+    })
+
+#### 14. 流操作 - Stream
+
+连续数据都是流 - 视频流、网络流、文件流、语音流
+
+#### 15. TLS/SSL - 加密、安全
 
 
+#### 16. ZLIB - gz 压缩用
+
+### 数据交互
+
+#### web 服务器
+
+1. 返回文件
+2. 数据交互（GET,POST）
+3. 数据库操作
+
+#### node中往前端发送数据
+
+- setHeader()
+- writeHeader()
+- write()
+
+#### 获取文件
+
+    const http = require('http');
+    const fs = require('fs');
+    
+    let server = http.createServer((req,res)=>{
+    	fs.readFile(`www${req.url}`,(err,data)=>{
+    		if(err){
+    			res.writeHeader(404); // 这样在network中会报出404状态码.
+    			res.write('Not Found'); // write():输出内容
+    		}else {
+    			res.write(data);
+    		}
+    		res.end();
+    	});
+    });
+    
+    server.listen(8080);
+
+#### GET、POST
+
+1. GET：传输内容在 url 里面，大小较小，<32K。
 
 
+    const http = require('http');
+    const url = require('url';)
+    
+    let server = http.createServer((req,res)=>{
+    
+      let {pathname,query} = url.parse(req.url,true);
+    
+      res.end();
+    })
+    
+    server.listen(8080);
+
+2. POST：传输内容在body中，空间较大，<1G。一个大的数据包会切成很多小包传输。
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    const http = require('http');
+    const querystring = require('querystring');
+    
+    let server = http.createServer((req,res)=>{
+      let str = '';
+      //有一个段到达了
+      req.on('data',data=>{
+        str+=data;
+      });
+      
+      //传输结束了
+      req.on('end',()=>{
+        let post = querystring.parse(str);
+      });
+    
+      res.end();
+    })
+    
+    server.listen(8080);
 
 
 
