@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    #uli {
+      width: 400px;
+      height: 300px;
+      border: 1px solid #000;
+      overflow: auto;
+    }
+    #uli li.me {
+      color: green;
+    }
+    .err-box {
+      color: red;
+      display: none;
+    }
+  </style>
+
+</head>
+<body>
+<h1>Hello WebSocket</h1>
+
+<ul id="uli"></ul>
+<textarea id="txt1" cols="60" rows="4"></textarea>
+<div class="err-box">
+  无法连接到服务器
+</div>
+<p><input type="button" value="发送" id="btn1"></p>
+
+<script src="http://localhost:8080/socket.io/socket.io.js"></script>
+<script>
+  let sock = io.connect('ws://localhost:8080/');
+
+  window.onload = function () {
+    let oTxt = document.querySelector('#txt1');
+    let oBtn = document.querySelector('#btn1');
+    let oUi = document.querySelector('#uli');
+
+    sock.on('connect',function () {
+      console.log('已连接');
+      document.querySelector('.err-box').style.display = 'none';
+
+    });
+
+    sock.on('disconnect',function () {
+      console.log('已断开');
+      document.querySelector('.err-box').style.display = 'block';
+
+    });
+
+    oBtn.onclick = function () {
+      sock.emit('msg',oTxt.value);
+      let oLi = document.createElement('li');
+      oLi.innerHTML = oTxt.value;
+      oLi.className = 'me';
+      oUi.appendChild(oLi);
+
+      oTxt.value="";
+    };
+
+    sock.on('msg',str=>{
+      let oLi = document.createElement('li');
+      oLi.innerHTML = str;
+      oUi.appendChild(oLi);
+
+    });
+  }
+</script>
+</body>
+</html>
