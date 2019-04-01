@@ -206,13 +206,22 @@
 
 #### 16. ZLIB - gz 压缩用
 
+
 ### 数据交互
 
 #### web 服务器
 
-1. 返回文件
-2. 数据交互（GET,POST）
-3. 数据库操作
+**主要功能**
+
+- 解析数据（get post)，文件数据（file）解析
+- 响应静态资源(fs)
+- 数据库操作
+
+**web服务的性能**
+
+对cpu的负载不是最重要的
+
+重要的是 对内存的使用，对IO的管理，对网络的使用，这些才是性能的瓶颈。
 
 #### node中往前端发送数据
 
@@ -242,8 +251,7 @@
 #### GET、POST
 
 1. GET：传输内容在 url 里面，大小较小，<32K。
-
-
+    ```
     const http = require('http');
     const url = require('url';)
     
@@ -255,10 +263,9 @@
     })
     
     server.listen(8080);
-
+    ```
 2. POST：传输内容在body中，空间较大，<1G。一个大的数据包会切成很多小包传输。
-
-
+    ```
     const http = require('http');
     const querystring = require('querystring');
     
@@ -278,7 +285,113 @@
     })
     
     server.listen(8080);
+    ```
+
+### 缓存
+
+是浏览器与服务器自行控制的。
+
+#### 缓存策略
+
+1. cache-control
+2. expries
+
+#### node缓存实现过程
+
+**原理**
+
+1. 第一次请求：S -> C："Last-Modified: 文件最后一次的修改时间"
+2. 第二次请求：C -> S："If-Modified-Since: 浏览器中缓存的文件的修改时间"
+3. 第二次请求：S -> C：200 || 304
+
+**步骤**
+
+1. 获取文件的修改时间
+    ```
+		const fs = require('fs');
+		fs.stat(`文件路径`, (err,stat)=>{
+			if(err){
+				console.log('获取文件失败');
+			}else {
+				console.log(stat.mtime.toGMTString());
+			}
+		})
+    ```
+2. 设置响应头信息 `Last-Modified`，只有服务器发送了该 `header`，浏览器才会获取到文件时间。
+    ```
+		res.setHeader('Last-Modified', stat.mtime.toGMTString());
+    ```
+3. 获取请求头中的 `If-Modified-Since` 信息，并与服务器的 `Last-Modified` 进行对比。
+
+    ```
+		if(req.headers['if-modified-since']){
+			let oDate = new Date(req.headers['if-modified-since']);
+			let clientTime = Math.floor(oDate.getTime()/1000);
+			let serverTime = Math.floor(stat.mtime.getTime()/1000);
+			
+			if(serverTime>clientTime) {
+				sendFileToClient(); // 发送文件
+			}else {
+				res.writeHeader(304);
+				res.write('Not Modified');
+				res.end();
+			}
+		}else {
+			sendFileToClient(); // 发送文件
+		}
+    ```
 
 
+### 多进程
+
+- 多线程：性能高、复杂
+- 多进程：性能略低、简单
+
+nodejs 默认单进程、单线程，但可通过模块操作变成多进程。
+
+主进程：负责派生子进程
+子进程：工作进程
+
+**特点**
+
+1. 普通程序不能"创建"进程，只有系统进程才能创建进程；
+2. 进程是分裂出来的，并且只有主进程能分裂；
+3. 分裂出来的两个进程执行的都是同一套代码；
+4. 父子进程之间可以共享"句柄"-端口。
+
+**工作模式**
+
+进程调度是需要开销的，所以为了省时省力，达到最高效率，多进程的工作模式都是前一个进程满了才会开启下一个进程，而不是平均分配。
+
+#### node多进程
+
+**所用模块**
+
+- cluster 
+- process
+
+**node操作**
+
+    const http = require('http');
+    const cluster = require('cluster');
+    const os = require('os');
+    const process = require('process');
+    
+    //cluster.isMaster为 true时则为主进程，只有主进程可分裂子进程
+    if(cluster.isMaster) {
+    
+    	//一般情况下，子进程数和cpu的数量相等时比较合理
+    	for (let i = 0; i < os.cpus().length; i++) {
+    		cluster.fork(); // 主进程分裂出子进程
+    	}
+    	
+    }else {
+    	let server = http.createServer((req,res)=>{
+    		console.log(process.pid); // 可获取运行代码的进程的信息
+    		res.write('dora');
+    		res.end();
+    	});
+    	server.listen(8080);
+    }
 
 
