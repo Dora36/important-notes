@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>formdata</title>
+</head>
+<body>
+<h1>Hello FormData!</h1>
+<div>
+  <p>
+    <label>
+      <input type="text" id="user"> 用户名
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="password" id="pass" value=""> 密码
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="file" id="f1" multiple>
+    </label>
+  </p>
+  <p>
+    <input type="button" value="提交" id="btn1">
+  </p>
+</div>
+
+<script>
+
+  let oUser = document.querySelector('#user');
+  let oPass = document.querySelector('#pass');
+  let oF = document.querySelector('#f1');
+  let btn = document.querySelector('#btn1');
+
+
+
+
+  btn.onclick = function(){
+    let data = new FormData();
+    data.set('user',oUser.value);
+    data.set('pass',oPass.value);
+
+    // 提交文件数据
+    Array.from(oF.files).forEach(file=>{
+      data.append('f1',file);
+    });
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST',`http://localhost:8080/api`,true);
+    xhr.send(data);
+  };
+
+
+</script>
+</body>
+</html>
