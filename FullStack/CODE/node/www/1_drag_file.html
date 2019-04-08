@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>拖拽文件上传</title>
+  <style>
+    .box {width:400px; height:150px; border:1px solid black; background:#CCC; position: absolute; margin-left: -200px; margin-top: -75px; left:50%; top:50%; text-align:center; line-height:150px;}
+  </style>
+</head>
+<body>
+  <div class="box">
+    文件上传区域
+  </div>
+
+  <script>
+    window.onload=function () {
+      let oBox = document.querySelector('.box');
+      oBox.ondragenter = function () {
+        oBox.innerHTML = '松手上传';
+      };
+
+      oBox.ondragleave = function () {
+        oBox.innerHTML = '请拖到这里';
+      };
+
+      oBox.ondragover = function () {
+
+        //ondragover不阻止默认事件，ondrop不会触发
+        return false;
+      };
+
+      oBox.ondrop = function (ev) {
+        console.log(ev.dataTransfer.files);
+
+        // 用 formData 方式上传
+        let data=new FormData();
+
+        Array.from(ev.dataTransfer.files).forEach(file=>{
+          data.append('f1', file);
+        });
+
+        let xhr=new XMLHttpRequest();
+
+        //POST
+        xhr.open('POST', `http://localhost:8080/api`, true);
+        xhr.send(data);
+
+        xhr.onreadystatechange=function (){
+          if(xhr.readyState==4){
+            if(xhr.status>=200 && xhr.status<300 || xhr.status==304){
+              alert('上传成功');
+            }else{
+              alert('上传失败');
+            }
+          }
+        };
+
+        // 阻止直接打开文件的默认事件
+        return false;
+      }
+    }
+  </script>
+</body>
+</html>
