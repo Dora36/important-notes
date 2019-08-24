@@ -88,7 +88,7 @@ ctrl+shift+p
 
   万能：grunt、gulp         老了
   编译：babel、browserify   单一
-  同步：browser-sync        单一
+  同步：browser-sync        单一  多端同步
 
   WebPack主力
 
