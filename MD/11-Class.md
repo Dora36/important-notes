@@ -116,7 +116,7 @@ Object.keys(Person.prototype)                  // ["aaa"]
 Object.getOwnPropertyNames(Person.prototype)   // ["constructor", "aaa"]
 ```
 
-**Class 类的属性名，可以采用表达式。**
+**Class 类的属性名，可以采用表达式**
 
 ```javascript
 let methodName = 'getName';
