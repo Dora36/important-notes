@@ -129,7 +129,7 @@ Person('dora', 18).name          // dora
 
 ```javascript
 function f(){}
-typeof f.prototype   // "object"
+typeof f.prototype    // "object"
 ```
 
 对于普通函数来说，原型没有什么用。但对于构造函数来说，通过 `new` 生成实例的时候，该属性会自动成为实例对象的原型对象。
