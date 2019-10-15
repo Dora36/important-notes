@@ -1,18 +1,18 @@
 ## Material Design 简介
 
-**一个WEB前端开发者眼中的 `Material Design`。**
+**一个WEB前端开发者眼中的 Material Design。**
 
 ### 是什么
 
-- UI 设计语言：跟苹果的设计语言一样，`Material Design` 是谷歌推出的全新的 UI 设计语言。作为谷歌的官方设计语言，几乎谷歌旗下全线产品在 UI 设计上都大量运用了 `Material Design 2`。
+- UI 设计语言：跟苹果的设计语言一样，Material Design 是谷歌推出的全新的 UI 设计语言。作为谷歌的官方设计语言，几乎谷歌旗下全线产品在 UI 设计上都大量运用了 Material Design 2。
 
-- 全网可用：`Material Design` 不仅仅是安卓产品的设计规范和风格，甚至它鼓励设计师和开发者把这种风格用在苹果设备和 windows 设备上。比如网页设计，甚至电脑客户端的 UI 都能运用上 `Material Design`。
+- 全网可用：Material Design 不仅仅是安卓产品的设计规范和风格，甚至它鼓励设计师和开发者把这种风格用在苹果设备和 windows 设备上。比如网页设计，甚至电脑客户端的 UI 都能运用上 Material Design。
 
-- 本质：Google 发布的 `Material Design` 语言更像是一套界面设计标准。
+- 本质：Google 发布的 Material Design 语言更像是一套界面设计标准。
 
 ### 为什么
 
-安卓是一个基于 `Linux` 的开源代操作系统，自从谷歌收购了安卓，有了谷歌母公司的资源，安卓的发展就更加有保障，可以说目前除了苹果的 iOS 操作系统之外，其余的几乎全部都是安卓系统。
+安卓是一个基于 Linux 的开源代操作系统，自从谷歌收购了安卓，有了谷歌母公司的资源，安卓的发展就更加有保障，可以说目前除了苹果的 iOS 操作系统之外，其余的几乎全部都是安卓系统。
 
 比如 OPPO、VIVO、魅族、小米、华为、三星，还有一加、锤子、联想等手机品牌。这些手机全部都是使用了 Android 底层构架。就连我们周围的一些智能设备、银行的手写签名系统、ATM机等都大量采用了安卓操作系统。
 
@@ -20,11 +20,11 @@
 
 这些都给安卓的 UI 设计带来了非常复杂的适配性，更不用说同一个项目，苹果端，安卓端甚至桌面端的多端适配。为了用户体验，这些可能都需要不同的设计图来调整一些细节；而对于小公司或个人开发者来说，可能就不得不放弃一部分的用户体验。
 
-所以说，一个适配多端的 UI 设计准则的出现是必然的，这时就出现了 `Material Design`。
+所以说，一个适配多端的 UI 设计准则的出现是必然的，这时就出现了 Material Design。
 
 ### 干什么
 
-`Material Design` 出现的目标就是：
+Material Design 出现的目标就是：
 
 - 创建一种优秀的设计原则和科学技术融合的可能性
 
@@ -32,7 +32,7 @@
 
 - 可以在规范的基础上突出设计者自己的品牌性
 
-所以，`Material Design` 实质上就是一套谷歌认为比较优秀的设计规范。并且呼吁大家都能按照此规范来设计自己的多端产品。
+所以，Material Design 实质上就是一套谷歌认为比较优秀的设计规范。并且呼吁大家都能按照此规范来设计自己的多端产品。
 
 那么来说说关于设计规范。
 
@@ -40,7 +40,7 @@
 
 因此我们的设计完全可以去借鉴当下使用广泛的应用，比如腾讯系、阿里系的产品，他们广泛的使用所培养的用户操作习惯是根深蒂固，很难被替代的。借鉴他们的某些操作设计可简单的达到我们的目的，也未尝不可。
 
-从这个角度来说，`Material Design` 只是给广大设计师和开发者们提供了一个选择，而选择的基准还是万年不变的产品需求和用户体验。
+从这个角度来说，Material Design 只是给广大设计师和开发者们提供了一个选择，而选择的基准还是万年不变的产品需求和用户体验。
 
 ### 怎么样
 
@@ -50,73 +50,90 @@
 
 2. 为安卓提供专属的设计稿。这种方式其实也是根据 iPhone 设计稿针对安卓的特点进行微调（比如尺寸、字体等），然后切出相应的图即可。比如网易云音乐。
 
-3. 按照安卓最新的 `Material Design` 规范来进行单独的安卓版界面设计。比如知乎、印象笔记。
+3. 按照安卓最新的 Material Design 规范来进行单独的安卓版界面设计。比如知乎、印象笔记。
 
-`Material Design` 还是深受安卓工程师推崇的，并且在国外已经有了非常广泛的应用。然而，在国内由于用户使用习惯、产品功能大而全、对安卓产品不够重视等原因导致 `Material Design` 在国内的普及还需要相当长的一段时间，毕竟庞大的用户习惯的改变不是一朝一夕的事。甚至阿里的国外版app `aliexpress` 用了 `Material Design` 风格。
+Material Design 还是深受安卓工程师推崇的，并且在国外已经有了非常广泛的应用。然而，在国内由于用户使用习惯、产品功能大而全、对安卓产品不够重视等原因导致 Material Design 在国内的普及还需要相当长的一段时间，毕竟庞大的用户习惯的改变不是一朝一夕的事。甚至阿里的国外版app aliexpress 用了 Material Design 风格。
 
 [国内 Material Design 的使用阻碍](https://www.zhihu.com/question/37376355)。
 
 
-## Material Design 部分特色设计
+## Material Design 在 web 端的使用
 
-### 1. Z轴的投影
+[Material Design官方](https://www.material.io/develop/)提供了三种平台（IOS、Android、WEB）以及 Flutter 的使用文档。在此主要说明 web 端的使用。
 
-不同投影表明了不同元素的高度。示例所有图中的海拔值都是针对 Android 平台的。
+### 使用 CDN 初识 Material Design
 
-<img src="img/1201.jpg" alt="不同高度的图片阴影展示">
+首先引入 css 和 js 文件：
 
-⬆️在正面和侧面来观看，1dp和8dp海拔高度产生出阴影大小的不同。
+```html
+<head>
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+</head>
+```
 
-<img src="img/1202.png" alt="组件案例图">
+并且推荐使用  Material Icons 。
 
-⬆️这是一个包含了卡片和浮动操作按钮的 Z 轴海拔的剖面图。
+```html
+<head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+```
 
-<img src="img/1203.png" alt="组件案例图">
+这样就完成了资源的引入，接下来可直接在 html 中使用组件。
 
-⬆️这是一个包含了打开的抽屉导航的 Z 轴海拔的剖面图。
+#### Button 组件
 
-因此，在 `Material Design` 设计中，组件都默认拥有 z 轴海拔高度，也就是会有固定的投影来显式组件的高度。
+使用详情可参考 [官方开发文档](https://material.io/develop/web/components/buttons/)
 
-<img src="img/1204.png" alt="组件案例图">
+1. 基础使用
 
-⬆️ 该图比较了组件的静止海拔和动态海拔补偿。可在开发中或设计中参考此海拔高度来开发，通过整体布局来避免出现一些不该出现的遮挡。
+```html
+<button class="mdc-button">Button</button>
+```
 
-### 2. 悬浮球 FAB （Floating Action Button）
+2. 用户也可直接给 `a` 标签添加 `mdc-button` class 名，可达成一样的效果。
 
-悬浮球可能是 `Material Design` 中最明显的标志了。一个圆圆的小球固定在屏幕的某个位置，特别显眼，代表着应用中的主要操作。
+```html
+<a class="mdc-button" href="">跳转</a>
+```
 
-**用法**：一个屏幕上建议只使用一个浮动操作按钮，它代表最常用的操作。
+3. 可通过添加 `mdc-button--unelevated` class名实现实心的按钮。
 
-**尺寸**：
-- 默认：56x56dp
-- 小型：40x40dp
+```html
+<button class="mdc-button mdc-button--unelevated">取消</button>
+```
 
-**使用准则**
+4. 给 button 标签添加海拔高度，可通过添加class名 `mdc-button--raised`。
 
-- 当屏幕宽度小于 460dp时，浮动操作按钮的尺寸应该从默认尺寸（56dp）变成小型尺寸（40dp）。
+```html
+<button class="mdc-button mdc-button--raised">确认</button>
+```
 
-<img src="img/1208.jpg" alt="浮动按钮的大小展示">
+5. 添加 `mdc-button--outlined` class 名，可给按钮加边框。
 
-- 在手机端，浮动操作按钮应该被放置在距离屏幕边框至少 16dp 的地方；在平板和桌面端应该距离屏幕边框至少 24dp。
-- 不是每个屏幕都需要浮动操作按钮。浮动操作按钮代表了应用中的主要操作。
+```html
+<button class="mdc-button mdc-button--outlined">购买</button>
+```
 
-<img src="img/1205.png" width="360px" alt="浮动按钮的展示">
+6. 也可给按钮加图标
 
-- 另外浮动操作按钮应当用做积极的操作，如创建、收藏、分享、导航和探索等实用性功能的。
+```html
+<button class="mdc-button mdc-button--outlined">
+  <i class="material-icons mdc-button__icon" aria-hidden="true">favorite</i>
+  <span class="mdc-button__label">Button</span>
+</button>
+```
 
-<img src="img/1206.png" alt="浮动按钮用途展示">
+7. 按钮的禁用状态，直接给 button 添加 disabled 属性即可。
 
-**可交互的FAB**
+```html
+<button class="mdc-button" disabled>
+  <span class="mdc-button__label">Button</span>
+</button>
+```
 
-FAB 可以是一个跳转走的功能，也可以展开一个子菜单。
 
-<img src="img/1207.png"  width="360px" alt="大屏幕浮动按钮展示">
 
-详情可见[中文文档（设计规范）](https://md.maxoxo.design)
 
-### 部分 Materail Design 学习资料
 
-- [学习资料整理](https://segmentfault.com/a/1190000008608758)
-- [9个目前流行的Material Design前端框架](https://www.uisdc.com/material-design-frameworks-top-9)
-
-*下一节分享内容为部分组件在 web 端的使用及一些 `Material Design` 风格的开源库。详情可见 [Material Design 官方文档](https://www.material.io/develop/web/docs/getting-started/)。
