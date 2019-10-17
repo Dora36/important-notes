@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>MD Button</title>
+
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+
+  <link
+    href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+    rel="stylesheet" />
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+  <style>
+    .aaa {
+      font-size: 20px;
+    }
+
+    .mdc-fab-container-color {
+      background-color: blueviolet;
+    }
+
+    .mdc-button-container-fill-color {
+      background-color: palegreen;
+    }
+  </style>
+</head>
+
+<body>
+
+  <button class="mdc-button">Button</button>
+
+  <a class="mdc-button" href="">跳转</a>
+
+  <button class="mdc-button mdc-button--unelevated mdc-button-container-fill-color">取消</button>
+
+  <button class="mdc-button mdc-button--raised">确认</button>
+
+  <button class="mdc-button mdc-button--outlined">购买</button>
+
+
+  <button class="mdc-button mdc-button--outlined">
+    <i class="material-icons mdc-button__icon" aria-hidden="true">zoom_in</i>
+    <span class="mdc-button__label">Button</span>
+  </button>
+
+  <button class="mdc-button" disabled>
+    <span class="mdc-button__label">Button</span>
+  </button>
+
+  <button class="mdc-button mdc-button--outlined mdc-button--dense">购买</button>
+
+
+  <div class="mdc-form-field">
+    <div class="mdc-radio">
+      <input class="mdc-radio__native-control" type="radio" id="radio-1" name="radios" checked>
+      <div class="mdc-radio__background">
+        <div class="mdc-radio__outer-circle"></div>
+        <div class="mdc-radio__inner-circle"></div>
+      </div>
+    </div>
+    <label for="radio-1">Radio 1</label>
+  </div>
+
+
+
+
+  <button class="mdc-fab mdc-fab--mini mdc-fab-container-color" aria-label="Favorite">
+    <!-- <span class="mdc-fab__icon material-icons">favorite</span> -->
+    <span class="aaa"> +</span>
+  </button>
+
+  <button class="mdc-fab mdc-fab--extended">
+    <span class="material-icons mdc-fab__icon">add</span>
+    <span class="mdc-fab__label">Create</span>
+  </button>
+
+
+
+
+</body>
+<script>
+  // mdc.ripple.MDCRipple.attachTo(document.querySelector(".foo-button"));
+  // mdc.ripple.MDCRipple.attachTo(document.querySelector(".mdc-fab"));
+</script>
+
+</html>
