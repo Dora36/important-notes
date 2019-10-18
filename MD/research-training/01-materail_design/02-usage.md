@@ -31,50 +31,50 @@
 
 1. 基础使用
 
-```html
-<button class="mdc-button">Button</button>
-```
+    ```html
+    <button class="mdc-button">Button</button>
+    ```
 
 2. 用户也可直接给 `a` 标签添加 `mdc-button` class 名，可达成一样的效果。
 
-```html
-<a class="mdc-button" href="">跳转</a>
-```
+    ```html
+    <a class="mdc-button" href="">跳转</a>
+    ```
 
 3. 可通过添加 `mdc-button--unelevated` class名实现实心的按钮。
 
-```html
-<button class="mdc-button mdc-button--unelevated">取消</button>
-```
+    ```html
+    <button class="mdc-button mdc-button--unelevated">取消</button>
+    ```
 
 4. 给 button 标签添加海拔高度，可通过添加class名 `mdc-button--raised`。
 
-```html
-<button class="mdc-button mdc-button--raised">确认</button>
-```
+    ```html
+    <button class="mdc-button mdc-button--raised">确认</button>
+    ```
 
 5. 添加 `mdc-button--outlined` class 名，可给按钮加边框。
 
-```html
-<button class="mdc-button mdc-button--outlined">购买</button>
-```
+    ```html
+    <button class="mdc-button mdc-button--outlined">购买</button>
+    ```
 
 6. 也可给按钮加图标
 
-```html
-<button class="mdc-button mdc-button--outlined">
-  <i class="material-icons mdc-button__icon" aria-hidden="true">favorite</i>
-  <span class="mdc-button__label">Button</span>
-</button>
-```
+    ```html
+    <button class="mdc-button mdc-button--outlined">
+      <i class="material-icons mdc-button__icon" aria-hidden="true">favorite</i>
+      <span class="mdc-button__label">Button</span>
+    </button>
+    ```
 
 7. 按钮的禁用状态，直接给 button 添加 disabled 属性即可。
 
-```html
-<button class="mdc-button" disabled>
-  <span class="mdc-button__label">Button</span>
-</button>
-```
+    ```html
+    <button class="mdc-button" disabled>
+      <span class="mdc-button__label">Button</span>
+    </button>
+    ```
 
 ## 一些常用的 Material Design 风格的前端库
 
