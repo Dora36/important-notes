@@ -1,0 +1,116 @@
+@charset "UTF-8";
+nav {
+  width: 600px;
+  color: #800080;
+}
+nav ul, nav li {
+  list-style: none;
+  display: flex;
+}
+nav li {
+  margin: 5px 20px;
+  cursor: pointer;
+}
+
+h2 {
+  color: #800080;
+}
+
+p {
+  color: purple;
+}
+
+button {
+  outline: none;
+}
+
+.sure {
+  background-color: #800080;
+  color: #fff;
+}
+
+.cancel {
+  background-color: #fff;
+  border: 1px solid #800080;
+  color: #800080;
+}
+
+a {
+  color: pink;
+}
+
+.content article h1 {
+  color: #333;
+}
+.content article p {
+  margin-bottom: 1.4em;
+}
+.content aside {
+  background-color: #EEE;
+}
+
+article a {
+  color: blue;
+}
+article a:hover {
+  color: red;
+}
+
+.container h1, .container h2, .container h3 {
+  color: #800080;
+}
+
+.div {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 20px;
+}
+
+nav {
+  border: 1px solid #ccc;
+  border-left: 0px;
+  border-right: 0px;
+}
+
+/*
+链接颜色
+*/
+.description {
+  width: 600px;
+  height: 100px;
+}
+.description p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.mixin-test {
+  color: blue;
+}
+.mixin-test:hover {
+  color: red;
+}
+.mixin-test:visited {
+  color: green;
+}
+
+.button {
+  width: 56px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  background-color: #800080;
+  color: #fff;
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/*# sourceMappingURL=bundle.css.map */

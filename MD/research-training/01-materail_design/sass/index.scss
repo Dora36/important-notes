@@ -1,0 +1,125 @@
+$primary-color: #800080;
+$border: 1px solid $primary-color;
+$link-color: pink;
+
+nav {
+  $width: 600px;
+  width: $width;
+  color: $primary-color;
+  ul,li {
+    list-style: none;
+    display: flex;
+  }
+  li {
+    margin: 5px 20px;
+    cursor: pointer;
+
+  }
+}
+
+
+h2 {
+  color: $primary-color;
+}
+p{
+  // width: $width;
+  color: purple;
+}
+button {
+  outline: none;
+
+}
+.sure {
+  background-color: $primary-color;
+  color: #fff;
+}
+.cancel {
+  background-color: #fff;
+  border: $border;
+  color: $primary-color;
+}
+a {
+  color: $link_color;
+}
+.content {
+  article {
+    h1 { color: #333 }
+    p { margin-bottom: 1.4em }
+  }
+  aside { background-color: #EEE }
+}
+article a {
+  color: blue;
+  &:hover { color: red }
+}
+.container {
+  h1, h2, h3 {color: $primary-color;}
+}
+
+.div {
+  margin: {
+    top:10px;
+    bottom:20px;
+  };
+  padding: {
+    top:5px;
+    bottom:5px;
+    left:10px;
+    right:20px;
+  };
+}
+nav {
+  border: 1px solid #ccc {
+  left: 0px;
+  right: 0px;
+  }
+}
+
+@mixin ellipsis{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin ellipsis-line($line){
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $line;
+}
+// 链接颜色
+/*
+链接颜色
+*/
+@mixin link-colors($normal, $hover, $visited) {
+  color: $normal;
+  &:hover { color: $hover; }
+  &:visited { color: $visited; }
+}
+.description {
+  width: 600px;
+  height: 100px;
+  p {
+    @include ellipsis-line(2);
+  }
+}
+.mixin-test{
+  @include link-colors(
+      $normal: blue,
+      $visited: green,
+      $hover: red
+  );
+}
+.button {
+  width: 56px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  background-color: $primary-color;
+  color: #fff;
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
