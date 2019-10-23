@@ -1,6 +1,11 @@
-$primary-color: #800080;
-$border: 1px solid $primary-color;
-$link-color: pink;
+// @import url("../my.css");
+@import "../my";
+@import "mixin";
+
+$link-color: yellow;
+
+@import "variable";
+
 
 nav {
   $width: 600px;
@@ -23,7 +28,7 @@ h2 {
 }
 p{
   // width: $width;
-  color: purple;
+  color: $primary-color;
 }
 button {
   outline: none;
@@ -75,20 +80,8 @@ nav {
   }
 }
 
-@mixin ellipsis{
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
-@mixin ellipsis-line($line){
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: $line;
-}
-// 链接颜色
+// 链接颜色aa
 /*
 链接颜色
 */
@@ -101,7 +94,7 @@ nav {
   width: 600px;
   height: 100px;
   p {
-    @include ellipsis-line(2);
+    @include ellipsis-line(1);
   }
 }
 .mixin-test{
@@ -118,8 +111,10 @@ nav {
   text-align: center;
   background-color: $primary-color;
   color: #fff;
-  border-radius: 5px;
   padding: 6px 10px;
   font-size: 14px;
   cursor: pointer;
+  @include rounded-corners;
 }
+
+.blue-theme {@import "blue-theme";}

@@ -1,4 +1,8 @@
 @charset "UTF-8";
+body {
+  background-color: bisque;
+}
+
 nav {
   width: 600px;
   color: #800080;
@@ -17,7 +21,7 @@ h2 {
 }
 
 p {
-  color: purple;
+  color: #800080;
 }
 
 button {
@@ -36,7 +40,7 @@ button {
 }
 
 a {
-  color: pink;
+  color: yellow;
 }
 
 .content article h1 {
@@ -87,7 +91,7 @@ nav {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
 }
 
 .mixin-test {
@@ -107,10 +111,17 @@ nav {
   text-align: center;
   background-color: #800080;
   color: #fff;
-  border-radius: 5px;
   padding: 6px 10px;
   font-size: 14px;
   cursor: pointer;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
 }
 
-/*# sourceMappingURL=bundle.css.map */
+.blue-theme aside {
+  background: blue;
+  color: white;
+}
+
+/*# sourceMappingURL=index.css.map */
