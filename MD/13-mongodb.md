@@ -77,3 +77,25 @@ port=27017
 ```
 mongod -f /usr/local/etc/mongod.conf
 ```
+
+#### 数据库导入数据
+
+```
+mongorestore -h <hostname><:port> -d dbname <path>
+```
+
+- hostname：127.0.0.1
+
+- port：27017
+
+- dbname：数据库名
+
+- path：数据库文件的绝对路径 ～/Downloads/**
+
+```
+mongorestore -h 127.0.0.1:27017 -d eportal ~/Downloads/neweportal
+```
+
+
+
+
