@@ -83,6 +83,10 @@ authors
 
 `Documents` 是 `model` 的实例。 可通过 `model` 创建 `documents` 并保存到数据库。
 
+有 `save()` 和 `create()` 两种方法。
+
+**save()**
+
 ```javascript
 let dora = new Author({ name: 'dora' });
 
@@ -90,18 +94,20 @@ dora.save(function (err) {
   if (err) return handleError(err);
   // saved!
 })
+```
 
-// or
+**create()**
 
-Author.create({ name: 'dora' }, function (err, dora) {
+```javascript
+Author.create({ name: 'dora' }, function (err, data) {
   if (err) return handleError(err);
-  // saved!
+  // data 返回数据库中存储的该条数据
 })
 ```
 
 #### 查询 documents
 
-
+查询文档可以用 `model` 的 `find`, `findById`, `findOne`, 和 `where` 这些静态方法。
 
 
 
