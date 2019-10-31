@@ -270,16 +270,9 @@ true
 WriteResult({ "nInserted" : 1 })
 ```
 
-其中 author 是集合名，如果该集合不在该数据库中， MongoDB 会自动创建该集合并插入文档。
+其中 `author` 是集合名，如果该集合不在该数据库中， MongoDB 会自动创建该集合并插入文档。
 
-**2. 查看已插入文档**
-
-```
-> db.author.find()
-{ "_id" : ObjectId("5db79a78bc11b847f5d0b1d2"), "name" : "dora", "age" : 18 }
-```
-
-**3. 定义变量插入数据**
+定义变量插入数据
 
 定义变量 `item`，将 `item` 插入集合中。
 
@@ -293,14 +286,116 @@ WriteResult({ "nInserted" : 1 })
 { "_id" : ObjectId("5db79bd7bc11b847f5d0b1d3"), "name" : "wang", "age" : 18 }
 ```
 
+- `db.COLLECTION_NAME.insertOne()`：向指定集合中插入一条文档数据
+- `db.COLLECTION_NAME.insertMany()`：向指定集合中插入多条文档数据
+
+插入文档也可以使用 `db.author.save(document)` 命令。如果不指定 `_id` 字段 `save()` 方法类似于 `insert()` 方法。如果指定 `_id` 字段，则会更新该 `_id` 的数据。
+
+**2. 更新文档**
+
+**`update()`**
+
+`update()` 方法用于更新已存在的文档。语法格式如下：
+
+```
+db.COLLECTION_NAME.update(    
+	<query>, 
+	<update>, 
+	{       
+		upsert: <boolean>,   
+		multi: <boolean>,  
+		writeConcern: <document>
+	}
+)
+```
+
+参数说明：
+
+- `query`: `update` 的查询条件，类似 `sql update` 查询内 `where` 后面的。
+- `update`: `update` 的对象和一些更新的操作符（如 `$`,`$inc` ...）等，也可以理解为 `sql - update` 查询内 `set` 后面的
+- `upsert`: 可选，这个参数的意思是，如果不存在 `update` 的记录，是否插入数据,`true` 为插入，默认是 `false`，不插入。
+- `multi`: 可选，mongodb 默认是 `false`,只更新找到的第一条记录，如果这个参数为`true`,就把按条件查出来多条记录全部更新。
+- `writeConcern`:可选，抛出异常的级别。
+
+```
+>db.dora.update({name:'e'},{$set:{name:'www'}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+```
+
+以上语句只会修改第一条发现的文档，如果要修改多条相同的文档，则需要设置 `multi` 参数为 `true`。
+
+```
+>db.dora.update({name:'e'},{$set:{name:'www'}},{multi:true})
+```
+
+**save()**
+
+`save()` 方法通过传入的文档来替换已有文档。语法格式如下：
+
+```
+db.COLLECTION_NAME.save(
+   <document>,
+   {
+     writeConcern: <document>
+   }
+)
+```
+
+参数说明：
+
+- `document`: 文档数据。其中 `_id` 为要替换的文档 `_id`，其余为直接替换的文档内容。
+- `writeConcern`:可选，抛出异常的级别。
+
+比如替换 `_id` 为 5db7a40174d9e4069b0487be 的文档数据：
+
+```
+>db.dora.save({
+    "_id" : ObjectId("5db7a40174d9e4069b0487be"),
+    "name" : "dorawang",
+    "age":18
+})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+```
+
+**3. 删除文档**
+
+- `db.COLLECTION_NAME.deleteMany()`
+- `db.COLLECTION_NAME.deleteOne()`
+
+删除集合下全部文档
+
+```
+db.COLLECTION_NAME.deleteMany({})
+```
+
+删除多条数据
+
+```
+db.COLLECTION_NAME.deleteMany({ <field1>: <value1>, ... })
+
+>db.dora.deleteMany({name:'aaa'})
+// 删除 name 等于 aaa 的全部文档
+```
+
+删除单条数据
+
+```
+// 删除 name 等于 r 的一个文档：
+> db.dora.deleteOne({name:'r'})
+{ "acknowledged" : true, "deletedCount" : 1 }
+```
+
 **4. 用 find() 查询文档**
 
 `db.COLLECTION_NAME.find(query, projection)`
+`db.COLLECTION_NAME.findOne(query, projection)`
 
-- query ：可选，使用查询操作符指定查询条件
-- projection ：可选，使用投影操作符指定返回的键。查询时返回文档中所有键值， 只需省略该参数即可（默认省略）。
+参数说明：
 
-pretty() 方法以数据格式化方式显式数据，使得数据更加易读 `db.COLLECTION_NAME.find().pretty()`
+- `query`：可选，使用查询操作符指定查询条件
+- `projection`：可选，使用投影操作符指定返回的键。查询时返回文档中所有键值， 只需省略该参数即可（默认省略）。
+
+`pretty()` 方法以数据格式化方式显式数据，使得数据更加易读 `db.COLLECTION_NAME.find().pretty()`
 
 ```
 > db.author.find()
