@@ -88,10 +88,34 @@ mongod -f /usr/local/etc/mongod.conf
 mongo
 ```
 
-### 6. 数据库导入数据
+### 6. 数据库导出数据
 
 ```
-mongorestore -h <hostname><:port> -d dbname <path>
+mongodump -h <hostname><:port> -d <dbname> -o <path>
+```
+
+- `-h`：MongDB 所在服务器地址，例如：127.0.0.1:27017
+
+- `-d`：需要备份的数据库实例，例如：test
+
+- `-o`：备份的数据存放位置目录，`～/Downloads/mongodb`，该目录需要提前创建好。
+
+- `-c`：`--collection`，需要备份的集合名。
+
+```
+mongodump -d <dbname> -c <collection> -o <path>
+```
+
+```
+mongodump
+```
+
+`mongodump` 会备份全部内容。会连接到 ip 为 127.0.0.1 端口号为 27017 的 MongoDB 服务上，并备份所有数据到 `bin/dump/` 目录中。
+
+### 7. 数据库导入数据
+
+```
+mongorestore -h <hostname><:port> -d <dbname> <path>
 ```
 
 其中参数含义：
