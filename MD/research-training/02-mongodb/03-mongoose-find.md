@@ -6,7 +6,7 @@
 
 ### 参数解析
 
-#### filter
+#### 参数一：filter
 
 查询条件使用 JSON 文档的格式，JSON 文档的语法跟 [`MongoDB shell`](https://docs.mongodb.com/manual/reference/method/db.collection.find/) 中一致。
 
@@ -16,6 +16,7 @@
 
 ```js
 Model.find()
+Model.find({})
 ```
 
 *2. 精确查找*
@@ -45,11 +46,42 @@ Model.find({ age: { $in: [16, 18]} })
 
 返回 `age` 字段等于 `16` 或者 `18` 的所有 document。
 
+**逻辑相关操作符**
+
+符号 | 描述
+:- | :-
+$and | **满足**数组中指定的**所有**条件
+$nor | **不满足**数组中指定的**所有**条件
+$or | 满足数组中指定的条件的**其中一个**
+$not | 反转查询，返回**不满足**指定条件的文档
+
+```js
+// 相关语法
+{$and:[ {expression1},{expression2}, ... ,{expressionN} ]}
+{$nor:[ {expression1},{expression2}, ... ,{expressionN} ]}
+{$or:[ {expression1},{expression2}, ... ,{expressionN} ]}
+{field: { $not: { <operator-expression> }}}
+```
+
+逻辑操作符中的比较包括字段不存在。
+
+```js
+Model.find( { age: { $not: { $lte: 16 }}})
+// 返回 age 字段大于 16 或者 age 字段 不存在 的文档
+```
+
+**字段相关操作符**
+
+符号 | 描述
+:- | :-
+$exists | 匹配**存在**指定字段的文档 `{ field: { $exists: <boolean> } }`
+[$type](https://docs.mongodb.com/manual/reference/operator/query/type/#available-types) | 返回字段属于指定**类型**的文档 `{field: { $type: <BSON type> }}`
+
 *4. 嵌套对象字段的查找*
 
 数据如下
 
-```json
+```js
 {
   name: { first: "dora", last: "wang" }
 }
@@ -78,7 +110,7 @@ $size | 匹配数组字段的 length 与指定的大小一样的 document
 
 数据如下
 
-```json
+```js
 { year: [ 2018, 2019 ] }
 { year: [ 2017, 2019, 2020 ] }
 { year: [ 2016, 2020 ] }
@@ -147,7 +179,7 @@ Model.find({ 'year.1': { $gt: 2019 } })
 
 数据如下
 
-```json
+```js
 {author: [{name: "dora", age: 18 },{name: "wang", age: 16 }]}
 ```
 
@@ -172,7 +204,7 @@ Model.find({ "author": {$elemMatch: {name: 'dora', age:{ $lt: 18 }}})
 // []
 ```
 
-#### projection
+#### 参数二：projection
 
 指定要包含或排除哪些 `document` 字段(也称为查询“投影”)，必须同时指定包含或同时指定排除，不能混合指定，`_id` 除外。
 
@@ -185,7 +217,7 @@ Model.find({},'age');
 Model.find({},'-name');
 ```
 
-对象形式指定时，1 是包含，0 是排除。
+对象形式指定时，`1` 是包含，`0` 是排除。
 
 ```js
 Model.find({}, { age: 1 });
@@ -199,10 +231,34 @@ Model.find().select('name age');
 Model.find().select({ name: 0 });
 ```
 
-#### options
+#### 参数三：options
 
-#### callback
+```js
+// 三种方式实现
+Model.find(filter,null,options)
+Model.find(filter).setOptions(options)
+Model.find(filter).<option>(xxx)
+```
 
-- [mongodb 在 mongo shell 中的 find](https://docs.mongodb.com/manual/reference/method/db.collection.find/)
-- [mongodb 在 node.js 中的 find](https://mongodb.github.io/node-mongodb-native/3.3/api/Collection.html#find)
-- [mongoose 的 find](https://mongoosejs.com/docs/api/model.html#model_Model.find)
+`options` 选项见官方文档 [`Query.prototype.setOptions()`](https://mongoosejs.com/docs/api.html#query_Query-setOptions)。
+
+- `sort`：按照[排序规则](https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#bson-types-comparison-order)根据所给的字段进行排序，值可以是 `asc`, `desc`, `ascending`, `descending`, `1`, 和 `-1`。
+- `limit`：指定返回结果的最大数量
+- `skip`：指定要跳过的文档数量
+
+```js
+// sort 两种方式指定排序
+Model.find().sort('age -name'); // 字符串有 - 代表 descending 降序
+Model.find().sort({age:'asc', name:-1});
+```
+
+`sort` 和 `limit` 同时使用时，调用的顺序并不重要，返回的数据都是先排序后限制数量。
+
+```js
+// 效果一样
+Model.find().limit(2).sort('age');
+Model.find().sort('age').limit(2);
+```
+
+#### 参数四：callback
+
