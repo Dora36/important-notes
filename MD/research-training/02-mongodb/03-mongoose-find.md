@@ -245,6 +245,7 @@ Model.find(filter).<option>(xxx)
 - `sort`：按照[排序规则](https://docs.mongodb.com/manual/reference/bson-type-comparison-order/#bson-types-comparison-order)根据所给的字段进行排序，值可以是 `asc`, `desc`, `ascending`, `descending`, `1`, 和 `-1`。
 - `limit`：指定返回结果的最大数量
 - `skip`：指定要跳过的文档数量
+- [`lean`](https://mongoosejs.com/docs/tutorials/lean.html)：返回普通的 js 对象，而不是 `Mongoose Documents`。
 
 ```js
 // sort 两种方式指定排序
