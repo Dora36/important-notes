@@ -10,20 +10,20 @@
 
 `{ field1: value1, field2: { operator: value2 } ... }`
 
-*1. 查找全部*
+#### 1. 查找全部
 
 ```js
 Model.find()
 Model.find({})
 ```
 
-*2. 精确查找*
+#### 2. 精确查找
 
 ```js
 Model.find({author:'dora'})
 ```
 
-*3. 使用[操作符](https://docs.mongodb.com/manual/reference/operator/query/#query-selectors)*
+#### 3. 使用[操作符](https://docs.mongodb.com/manual/reference/operator/query/#query-selectors)
 
 **对比相关操作符**
 
@@ -61,7 +61,7 @@ $not | 反转查询，返回**不满足**指定条件的文档
 {field: { $not: { <operator-expression> }}}
 ```
 
-逻辑操作符中的比较包括字段不存在。
+逻辑操作符中的比较包括字段不存在的情况。
 
 ```js
 Model.find( { age: { $not: { $lte: 16 }}})
@@ -75,7 +75,7 @@ Model.find( { age: { $not: { $lte: 16 }}})
 $exists | 匹配**存在**指定字段的文档 `{ field: { $exists: <boolean> } }`
 [$type](https://docs.mongodb.com/manual/reference/operator/query/type/#available-types) | 返回字段属于指定**类型**的文档 `{field: { $type: <BSON type> }}`
 
-*4. 嵌套对象字段的查找*
+#### 4. 嵌套对象字段的查找
 
 数据如下
 
@@ -98,7 +98,7 @@ Model.find({ name: { last: "wang", first: "dora" } })
 Model.find({ 'name.last': 'wang' })
 ```
 
-*5. 数组字段的查找*
+#### 5. 数组字段的查找
 
 符号 | 描述
 :- | :-
@@ -173,7 +173,7 @@ Model.find({ 'year.1': { $gt: 2019 } })
 
 数组 `year` 的第二个值大于`2019`。
 
-*6. 数组对象的查找*
+#### 6. 数组对象的查找
 
 数据如下
 
@@ -261,13 +261,13 @@ Model.find().sort('age').limit(2);
 
 ### 参数四：callback
 
-**传入**
+#### 传入
 
 Mongoose 中所有传入 `callback` 的查询，其格式都是 `callback(error, result)` 这种形式。如果出错，则 `error` 是出错信息，`result` 是 `null`；如果查询成功，则 `error` 是 `null`， `result` 是查询结果，查询结果的结构形式是根据查询方法的不同而有不同形式的。
 
 `find()` 方法的查询结果是数组，即使没查询到内容，也会返回 `[]` 空数组。
 
-**不传**
+#### 不传
 
 不传入 `callback` 时，查询方法返回的是一个 `Query` 实例，实例继承了 [`Query` 原型](https://mongoosejs.com/docs/api/query.html) 上的所有方法，因此返回的实例可以链式调用其它方法，从而组成查询链。
 
@@ -279,7 +279,7 @@ query.select('name age -_id');
 
 查询方法不传入回调函数时，获取查询数据的方式有两种：
 
-*1. exec()*
+**1. exec()**
 
 使用 `query` 实例的 `exec()` 方法执行查询，即在链式语法的最后统一通过传入 `callback` 获取查询数据。
 
@@ -307,7 +307,7 @@ let query = Model.
   });
 ```
 
-*2. then()*
+**2. then()**
 
 使用 `query` 实例的 `then()` 方法将查询链当作 `promise` 来处理。
 
