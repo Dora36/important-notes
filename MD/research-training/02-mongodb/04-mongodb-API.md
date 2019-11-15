@@ -33,41 +33,6 @@ M.findByIdAndUpdate(id, update)                     // returns Query
 M.findByIdAndUpdate()                               // returns Query
 ```
 
-## [findOne](http://www.mongoosejs.net/docs/api.html#findone_findOne)
-
-
-```javascript
-M.findOne(conditions, projection, options, callback)  // executes
-M.findOne(conditions, callback)                       // executes
-M.findOne(callback)                                   // executes
-M.findOne()                                           // returns Query
-```
-
-**return**
-
-- 没 find 到数据返回 `null`
-- 如果是 `_id` 查找，`_id` 不是 `ObjectID` 形式，会报错
-- 成功返回查到的数据（ `{}` 形式)
-- 没有查询条件，返回任意一条数据（ `{}` 形式)
-
-## [findById](http://www.mongoosejs.net/docs/api.html#findbyid_findById)
-
-相当于 `findOne({ _id: id })`
-
-```javascript
-M.findById(id, projection, options, callback)          // executes
-M.findById(id, callback)                               // executes
-M.findById(callback)                                   // executes
-M.findById()                                           // returns Query
-```
-
-**return**
-
-- 没 find 到数据返回 `null`
-- 如果是 `_id` 查找，`_id` 不是 `ObjectID` 形式，会报错
-- 成功返回查到的数据（ `{}` 形式)
-- 没有查询条件，返回任意一条数据
-
 ## [create](http://www.mongoosejs.net/docs/api.html#create_create)
 
 - 没有定义在 `schema` 中的字段，在创建的时候不会被添加进数据库
