@@ -346,6 +346,8 @@ console.log(res);
 
 ## [findById()](https://mongoosejs.com/docs/api/model.html#model_Model.findById)
 
+mongoose 的方法，mongodb 中没有。
+
 `Model.findById(id[, projection][, options][, callback])`
 
 ### id
