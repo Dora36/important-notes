@@ -40,12 +40,12 @@ $unset | 删除指定字段，数组中的值删后改为 `null`。
 符号 | 描述
 :- | :-
 $ | 充当占位符，用来表示匹配查询条件的数组字段中的第一个元素 `{operator:{ "arrayField.$" : value }}`
-$[] | 充当占位符，用来表示匹配查询条件的数组字段中的所有元素 `{operator:{ "arrayField.$[]" : value }}`
+$[ ] | 充当占位符，用来表示匹配查询条件的数组字段中的所有元素 `{operator:{ "arrayField.$[]" : value }}`
 $[identifier] | 充当占位符，表示与查询条件匹配的文档的 `arrayFilters` 条件匹配的所有元素。
 $addToSet | 向数组字段中添加之前不存在的元素 `{ $addToSet: {arrayField: value, ... }}`，`value` 是数组时可与 `$each` 组合使用。
 $push | 向数组字段的末尾添加元素 `{ $push: { arrayField: value, ... } }`，`value` 是数组时可与 `$each` 等修饰符组合使用。
-$pop | 移除数组字段中的第一个或最后一个元素 `{ $pop: {arrayField: -1(first) | 1(last), ... } }`
-$pull | 移除数组字段中与查询条件匹配的所有元素 `{ $pull: {arrayField: value|condition, ... } }`
+$pop | 移除数组字段中的第一个或最后一个元素 `{ $pop: {arrayField: -1(first) / 1(last), ... } }`
+$pull | 移除数组字段中与查询条件匹配的所有元素 `{ $pull: {arrayField: value / condition, ... } }`
 $pullAll | 从数组中删除所有匹配的值 `{ $pullAll: { arrayField: [value1, value2 ... ], ... } }`
 
 **修饰符**
@@ -75,6 +75,7 @@ $sort | 修饰 `$push` 操作符来重新排序数组字段中的元素。
 - `maxTimeMS`：为查询设置时间限制。
 - `upsert`：布尔值，如果对象不存在，则创建它。默认值为 `false`。
 - `omitUndefined`：布尔值，如果为 `true`，则在更新之前删除值为 `undefined` 的属性。
+- `runValidators`：如果为 `true`，则在此命令上运行更新验证器。更新验证器根据 `schema` 验证更新数据。
 
 ### 参数四：callback
 
@@ -82,7 +83,6 @@ $sort | 修饰 `$push` 操作符来重新排序数组字段中的元素。
 - 更新成功返回更新前的该条数据（ `{}` 形式)
 - `options` 的 `{new:true}`，更新成功返回更新后的该条数据（ `{}` 形式)
 - 没有查询条件，即 `filter` 为空，则更新第一条数据
-
 
 ## [findByIdAndUpdate()](https://mongoosejs.com/docs/api/model.html#model_Model.findByIdAndUpdate)
 
@@ -98,13 +98,52 @@ $sort | 修饰 `$push` 操作符来重新排序数组字段中的元素。
 - `id` 为 `undefined` 或 `null`，`result` 返回 `null`。
 - 没符合查询条件的数据，`result` 返回 `null`。
 
+## [update()](https://mongoosejs.com/docs/api/model.html#model_Model.update)
+
+`Model.update(filter, update[, options][, callback])`
+
+### options
+
+- `multi`：默认 `false`，只更新第一条数据；为 `true` 时，符合查询条件的多条文档都会更新。
+- `overwrite`：默认为 `false`，即 `update` 参数如果没有操作符或操作符不是 `update` 操作符，将会默认添加 `$set`；如果为 `true`，则不添加 `$set`，视为覆盖原有文档。
+
+### callback
+
+`callback(err, rawResponse)`
+
+- `err`：错误信息
+- `rawResponse`：Mongo 返回的原生的 `response`
+
+```js
+let result = await Model.update({name: 'dora'}, {$set: {age: 18}})
+// { n: 1, nModified: 1, ok: 1 }
+```
+
+- `n`：**要**更新的文档数量。 
+- `nModified`：更新的文档数量，如果 `update` 的数据和之前没有变化，则 `nModified` 为 `0`。
+
+## [updateMany()](https://mongoosejs.com/docs/api/model.html#model_Model.updateMany)
+
+`Model.updateMany(filter, update[, options][, callback])`
+
+更新符合查询条件的所有文档，相当于 `Model.update(filter, update, { multi: true }[, callback])`
 
 
+## [updateOne()](https://mongoosejs.com/docs/api/model.html#model_Model.updateOne)
 
+`Model.updateOne(filter, update[, options][, callback])`
 
+与 `update()` 相同，只是它不支持 `multi` 和 `overwrite` 选项参数，`update` 参数必须使用 `update` 操作符。
 
+只更新第一条符合条件的文档的属性，如果要覆盖文档的全部内容，请使用 `replaceOne()`。
 
+## [replaceOne()](https://mongoosejs.com/docs/api/model.html#model_Model.replaceOne)
 
+`Model.replaceOne(filter, update[, options][, callback])`
 
+配置与 `update()` 相同，只是会用 `update` 参数中的数据覆盖符合条件的第一条文档，而不是更新属性，不支持任何 `update` 操作符。
 
-
+```js
+let result = await Model.replaceOne({name: 'dora'}, {name:'dora.wang', age: 18})
+// { n: 1, nModified: 1, ok: 1 }
+```
