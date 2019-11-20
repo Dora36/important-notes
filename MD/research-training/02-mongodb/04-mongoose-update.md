@@ -6,7 +6,7 @@
 
 ### 参数一：filter
 
-- [查询语句和 `find()` 一样](https://segmentfault.com/a/1190000021010300)
+- [查询语句和 find() 一样](https://segmentfault.com/a/1190000021010300)
 
 - `filter` 为 `{}`，更新第一条数据
 
@@ -76,12 +76,13 @@ $sort | 修饰 `$push` 操作符来重新排序数组字段中的元素。
 - `upsert`：布尔值，如果对象不存在，则创建它。默认值为 `false`。
 - `omitUndefined`：布尔值，如果为 `true`，则在更新之前删除值为 `undefined` 的属性。
 - `runValidators`：如果为 `true`，则在此命令上运行更新验证器。更新验证器根据 `schema` 验证更新数据。
+- `rawResult`：如果为 `true`，则返回来自 MongoDB 的原生结果。
 
 ### 参数四：callback
 
 - 没找到数据返回 `null`
-- 更新成功返回更新前的该条数据（ `{}` 形式)
-- `options` 的 `{new:true}`，更新成功返回更新后的该条数据（ `{}` 形式)
+- 更新成功返回更新前的该条数据（ `{}` 形式）
+- `options` 的 `{new:true}`，更新成功返回更新后的该条数据（ `{}` 形式）
 - 没有查询条件，即 `filter` 为空，则更新第一条数据
 
 ## [findByIdAndUpdate()](https://mongoosejs.com/docs/api/model.html#model_Model.findByIdAndUpdate)
@@ -139,11 +140,48 @@ let result = await Model.update({name: 'dora'}, {$set: {age: 18}})
 
 ## [replaceOne()](https://mongoosejs.com/docs/api/model.html#model_Model.replaceOne)
 
-`Model.replaceOne(filter, update[, options][, callback])`
+`Model.replaceOne(filter, replace[, options][, callback])`
 
-配置与 `update()` 相同，只是会用 `update` 参数中的数据覆盖符合条件的第一条文档，而不是更新属性，不支持任何 `update` 操作符。
+配置与 `update()` 相同，只是会用 `replace` 参数中的数据覆盖符合条件的第一条文档，而不是更新属性，不支持任何 `update` 操作符。
 
 ```js
 let result = await Model.replaceOne({name: 'dora'}, {name:'dora.wang', age: 18})
 // { n: 1, nModified: 1, ok: 1 }
+```
+
+## [findOneAndReplace()](https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndReplace)
+
+`Model.findOneAndReplace(filter, replace[, options][, callback])`
+
+### replace
+
+替换文档，不可以包含 `_id` 字段，不可以使用任何 `update` 操作符。
+
+### options
+
+- `new`
+- `lean`
+- `omitUndefined`
+- `sort`
+- `maxTimeMS`
+- `select / projection`
+- `rawResult`
+
+### callback
+
+- 没找到数据返回 `null`
+- 替换成功返回替换前的该条数据（ `{}` 形式）
+- `options` 的 `{new:true}`，替换成功返回替换后的该条数据（ `{}` 形式）
+- 没有查询条件，即 `filter` 为空，则替换第一条数据
+
+## 使用 save() 更新文档
+
+这种方法更新文档比较自由，可自行进行字段验证。
+
+```js
+Model.findById(id, function (err, doc) {
+  if (err) return 'err'+err;
+  doc.name = 'dora.wang';
+  doc.save(callback);
+});
 ```
