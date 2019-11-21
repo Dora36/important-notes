@@ -4,13 +4,17 @@
 
 `Model.findOneAndDelete(filter[, options][, callback])`
 
-### options
+### 参数一：filter
+
+[查询语句和 find() 一样](https://segmentfault.com/a/1190000021010300)
+
+### 参数二：options
 
 - `sort`：如果查询条件找到多个文档，则设置排序顺序以选择要删除哪个文档。
 - `select/projection`：指定返回的字段。
 - `rawResult`：如果为 `true`，则返回来自 MongoDB 的原生结果。
 
-### callback
+### 参数三：callback
 
 - 没有符合 `filter` 的数据时，返回 `null`。
 - `filter` 为空或 `{}` 时，删除第一条数据。
