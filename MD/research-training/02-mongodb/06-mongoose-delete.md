@@ -76,4 +76,30 @@ let result = await Model.deleteOne({name: 'dora'})
 - `n`：**要**删除的文档数量。 
 - `deletedCount`：删除的文档数量。
 
+## [findOneAndRemove()](https://mongoosejs.com/docs/api/model.html#model_Model.findOneAndRemove)
+
+`Model.findOneAndRemove(filter[, options][, callback])`
+
+用法与 `findOneAndDelete()` 一样，一个小小的区别是 `findOneAndRemove()` 会调用 MongoDB 原生的 `findAndModify()` 命令，而不是 `findOneAndDelete()` 命令。
+
+建议使用 `findOneAndDelete()` 方法。
+
+## [findByIdAndRemove()](https://mongoosejs.com/docs/api/model.html#model_Model.findByIdAndRemove)
+
+`Model.findByIdAndRemove(id[, options][, callback])`
+
+### id
+
+`Model.findByIdAndRemove(id)` 相当于 `Model.findOneAndRemove({ _id: id })`。
+
+## [remove()](https://mongoosejs.com/docs/api/model.html#model_Model.remove)
+
+`Model.remove(filter[, options][, callback])`
+
+从集合中删除所有匹配 `filter` 条件的文档。要删除第一个匹配条件的文档，可将 `single` 选项设置为 `true`。
+
+`callback` 返回 `rawResponse` 原生的结果。`{ n: 1, ok: 1, deletedCount: 1 }`
+
+
+
 
