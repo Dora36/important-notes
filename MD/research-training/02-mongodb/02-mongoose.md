@@ -68,6 +68,11 @@ let schema2 = new Schema({
 
 ```javascript
 const Author = mongoose.model('Author', authorSchema);
+
+let dora = new Author({ name: 'dora' });  // mongoose.Document
+
+dora instanceof Author                    // true
+dora instanceof mongoose.Document         // true
 ```
 
 第一个参数是跟 `model` 对应的 `collection` 集合的名字的 **单数** 形式。 Mongoose 会自动找到名称是 `model` 名字 **复数** 形式的 `collection`。
@@ -79,7 +84,7 @@ const Author = mongoose.model('Author', authorSchema);
 authors
 ```
 
-#### 实例化 model 构造 documents
+#### 实例化 model 创建 documents
 
 `Documents` 是 `model` 的实例。 可通过 `model` 创建 `documents` 并保存到数据库。
 
