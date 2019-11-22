@@ -234,7 +234,7 @@ window.constructor === Window    //true
 
 ```js
 function Foo() {}
-var f = new Foo();
+let f = new Foo();
 f.constructor.name     // "Foo"
 ```
 
@@ -261,7 +261,7 @@ new Date().constructor === Date    //true
 [].constructor === Array           //true
 
 function F(){};
-var f = new F();
+let f = new F();
 f.constructor === F               // true
 f.constructor === Object          // false
 ```
