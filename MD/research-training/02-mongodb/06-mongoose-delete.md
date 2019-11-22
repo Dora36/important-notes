@@ -102,8 +102,9 @@ let result = await Model.deleteOne({name: 'dora'})
 
 从集合中删除所有匹配 `filter` 条件的文档。要删除第一个匹配条件的文档，可将 `single` 选项设置为 `true`。
 
-`callback` 返回 `rawResponse` 原生的结果。`{ n: 1, ok: 1, deletedCount: 1 }`
+`callback` 返回 `rawResponse` 原生的结果。
 
-
-
-
+```js
+let result = await Model.remove({name: 'dora'})
+// { n: 1, ok: 1, deletedCount: 1 }
+```
