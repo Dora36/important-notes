@@ -331,6 +331,32 @@ function isNaN(value) {
 isNaN(NaN);      // true
 ```
 
+**isNaN()**
+
+如果 `isNaN()` 函数的参数不是 `Number` 类型， `isNaN` 函数会先将这个参数转换为数值，然后才会对转换后的结果是否是 `NaN` 进行判断。
+
+等同于 `isNaN(Number(x))`
+
+```js
+isNaN(NaN);         // true
+isNaN(undefined);   // true
+isNaN(null);        // false
+isNaN("");          // false
+```
+
+**Number.isNaN**
+
+`Number.isNaN()` 方法确定传递的值是否为 `NaN` 和其类型是 `Number`。它是原始的全局 `isNaN()` 的更强大的版本。
+
+和全局函数 `isNaN()` 相比，该方法不会强制将参数转换成数字，只有在参数是真正的数字类型，且值为 `NaN` 的时候才会返回 `true`。
+
+```js
+isNaN(NaN);         // true
+isNaN(undefined);   // false
+isNaN(null);        // false
+isNaN("");          // false
+```
+
 ### 判断数组的方法 Array.isArray()
 
 除了上文提到的三种方法（`toString()`、`instanceof`、`constructor`）可判断外，还有一个 `Array` 构造函数自带的方法 `isArray()`
