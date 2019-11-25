@@ -120,7 +120,9 @@ undefined == null      // true
 [1] == true    // true   等同于 Number([1]) == Number(true)
 [2] == true    // false  等同于 Number([2]) == Number(true)
 ```
-    
+
+类型转换参考[数据类型的强制转换和隐式转换](https://segmentfault.com/a/1190000021106485)
+
 ## Object.is(value1, value2)
 
 相等运算符（`==`）和严格相等运算符（`===`）都有缺点，前者会自动转换数据类型，后者的 `NaN` 不等于自身，以及 `+0` 等于 `-0`。因此 ES6 的新方法 `Object.is()` 可以用来解决这个问题。

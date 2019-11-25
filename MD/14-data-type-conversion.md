@@ -109,12 +109,13 @@ String(null)        // "null"
 #### 参数是引用类型时
 
 - 参数是对象时，返回一个类型字符串。
-- 参数是数组时，则将数组转为 `,` 逗号连接的字符串。
+- 参数是数组时，则将数组转为 `,` 逗号连接的字符串；`[]` 空数组转换为 `''` 空字符串。
 - 参数是其它引用类型时（正则，`Date`,`function`等），返回对应的字符串形式。
 
 ```js
 String({})              // "[object Object]"
 String([1, 2, 3])       // "1,2,3"
+String([])              // ""
 String(/dora/)          // "/dora/"
 String(new Date())      // "Fri Nov 22 2019 14:14:29 GMT+0800 (中国标准时间)"
 String(function a(){})  // "function a(){}"
@@ -240,22 +241,59 @@ Object(arr)=== arr;         // true  返回原数组
 
 ### 不同类型的数据互相运算
 
+**`+` 法运算**
 
-### 对非布尔值类型的数据求布尔值
+加法运算，当一个值为字符串，另一个值为非字符串时，则通过调用 `String()` 将非字符串转为字符串。
 
+```js
+'6' + 1             // '61'
+'6' + true          // "6true"
+'6' + false         // "6false"
+'6' + {}            // "6[object Object]"
+'6' + []            // "6"
+'6' + function (){} // "6function (){}"
+'6' + undefined     // "6undefined"
+'6' + null          // "6null"
+```
 
+**其它运算符**
 
-https://wangdoc.com/javascript/features/conversion.html
+除了加法运算符（`+`）有可能把运算子转为字符串，其他运算符都会通过调用 `Number()` 把运算子自动转成数值。
 
-[isNaN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/isNaN)
+```js
+'5' - '2'       // 3
+'5' * '2'       // 10
+true - 1        // 0
+false - 1       // -1
+'1' - 1         // 0
+'5' * []        // 0
+false / '5'     // 0
+'abc' - 1       // NaN
+null + 1        // 1
+undefined + 1   // NaN
+```
 
+**一元运算符也会把运算子转成数值**
 
-[Number.isNaN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN)
+```js
++'abc'    // NaN
+-'abc'    // NaN
++true     // 1
+-false    // -0  对数值求负
+```
 
+### 非布尔值类型的数据转换为布尔值
 
+JavaScript 遇到预期为布尔值的地方（比如 `if` 语句的条件部分），就会将非布尔值的参数自动转换为布尔值。系统内部会自动调用 `Boolean()` 函数。
 
+因此除了 `undefined` 、`null`、`0`（包含 `-0` 和 `+0`）、`NaN`、`''`（空字符串）五个值为 `false` 外，其他都是自动转为 `true`。
 
+三元运算符和取反操作也会将一个值转为布尔值。它们内部调用的也是 `Boolean()` 函数。
 
+```js
+// 三元运算符  Boolean({})
+({}) ? true : false  //  true
 
-
-
+// 两次取反就是将一个值转为布尔值的简便写法。等同于 Boolean([])
+!![]                 // true
+```
