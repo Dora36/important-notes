@@ -102,7 +102,8 @@ let author = await Author.findOne({ name: 'dora' }).populate('story').populate('
 
 ```js
 // 查询 friends 的 friends
-Author.findOne({ name: 'dora' }).populate({
+Author.findOne({ name: 'dora' }).
+populate({
   path: 'friends',
   populate: { path: 'friends' }
 });
