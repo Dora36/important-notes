@@ -90,7 +90,7 @@ let author = await Author.findOne({ name: 'dora' }).populate('story').populate('
 
 - `model`：用于 `populate` 的关联 `model`。如果没有指定，`populate` 将根据 `schema` 中定义的 `ref` 字段中的名称查找 `model`。可指定跨数据库的 `model`。
 
-- `match`：`populate` 查询的条件。
+- `match`：`populate` 连表查询的条件，符合条件的会用文档替换 `_id`，不符合条件的会用 `null` 替换 `_id`。
 
 - `options`：`populate` 查询的选项。
 
