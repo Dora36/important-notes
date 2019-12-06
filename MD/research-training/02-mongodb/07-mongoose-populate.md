@@ -188,3 +188,53 @@ comments[1].on.title;   // "笑场中的经典语录..."
 ```
 
 当然在 `commentSchema` 中也可以定义单独的 `blogPost` 和 `product` 字段，分别存储 `_id` 和对应的 `ref` 选项。 但是，这样是不利于业务扩展的，比如在后续的业务中增加了歌曲或电影的用户评论，则需要在 `schema` 中添加更多相关字段。而且每个字段都需要一个 `populate()` 查询。而使用 `refPath` 意味着，无论 `commentSchema` 可以指向多少个 `Model`，联合查询的时候只需要一个 `populate()` 即可。
+
+## 虚拟值填充
+
+上述示例都是以 `_id` 为基础进行 `populate`，然而，有时候使用 `_id` 会变得麻烦很多，此时就需要通过其它字段进行填充。因此使用 mongoose 的虚拟值填充，就可以实现通过其它字段类型填充，从而可以定义文档之间更复杂的关系。
+
+`Virtuals` 是 `document` 的属性，不会被保存到 MongoDB。
+
+```js
+const userSchema = new Schema({
+  "name": String,
+  "age": Number,
+  "product": String
+});
+
+const productSchema = new Schema({
+  "type": String
+});
+
+productSchema.virtual('users', {
+  ref: 'User',
+  localField: 'type',
+  foreignField: 'product',
+  // 如果 justOne 是 true，将返回单个 {} 形式的文档，而不是数组，默认 false。
+  justOne: false 
+});
+
+const User = mongoose.model('User', userSchema);
+const Product = mongoose.model('Product', productSchema);
+```
+
+```js
+// User 数据如下：
+{ 'name': 'dora', 'age': 18, 'product': 'book' }
+{ 'name': 'd.w', 'age': 16, 'product': 'book' }
+
+// product 数据如下：
+{ 'type': 'book' }
+{ 'type': 'music' }
+
+let products = await Product.find().populate('users');
+// products.users  是一个属于 User 集合的实例的数组 
+```
+
+虚拟值默认不会被 `toJSON()` 输出。如果填充的虚拟值需要在 `res.json()` 中显示出来，则需要在 `toJSON` 中设置 `virtuals: true` 选项。
+
+```js
+const productSchema = new Schema({
+  "type": String
+}, { toJSON: { virtuals: true } } );
+```
