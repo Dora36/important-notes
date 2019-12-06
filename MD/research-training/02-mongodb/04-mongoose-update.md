@@ -176,12 +176,25 @@ let result = await Model.replaceOne({name: 'dora'}, {name:'dora.wang', age: 18})
 
 ## 使用 save() 更新文档
 
-这种方法更新文档比较自由，可自行进行字段验证。
+通常，使用 `save()` 函数是 Mongoose 更新文档的正确方法。 因为使用 `save()`，可以获得完整的验证和中间件。
+
+`update()`, `updateMany()`, `findOneAndUpdate()` 等方法不会在更新数据库数据时执行钩子和验证。
 
 ```js
-Model.findById(id, function (err, doc) {
-  if (err) return 'err'+err;
-  doc.name = 'dora.wang';
-  doc.save(callback);
+AuthorModel.findById(id, function (err, author) {
+  if (err) return handleError(err);
+  author.name = 'dora.wang';
+  author.save(callback);
+});
+```
+
+也可以用 `.set()` 修改 `document`。mongoose 在底层时通过 `.set()` 实现的。即 `author.name = 'dora.wang'` 用 `author.set({ name: 'dora.wang' })` 实现。
+
+```js
+AuthorModel.findById(id, function (err, author) {
+  if (err) return handleError(err);
+
+  author.set({ name: 'dora.wang' })
+  author.save(callback);
 });
 ```
