@@ -19,7 +19,7 @@ $ gridsome develop
 #### 安装
 
 ```shell
-$ cnpm install @gridsome/source-filesystem @gridsome/transformer-remark
+$ cnpm install @gridsome/source-filesystem @gridsome/transformer-remark -S
 ```
 
 #### 在 gridsome.config.js 中配置插件
