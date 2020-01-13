@@ -67,7 +67,7 @@ module.exports = {
 }
 ```
 
-## stage-3 阶段的可选链 `?.` 示例
+## Stage-4 阶段的[可选链 `?.`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/%E5%8F%AF%E9%80%89%E9%93%BE) 示例
 
 添加 src/index.js 文件：
 
