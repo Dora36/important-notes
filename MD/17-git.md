@@ -213,9 +213,21 @@ HEAD is now at 0857d7f stage-4
 ### 1. 列出分支，带 `*` 号的是当前分支
 
 ```shell
-$ git branch
+$ git branch   # 本地分支
 * master
 ```
+
+`git branch -a` 可列出本地和远程的分支。
+
+```shell
+$ git branch -a
+* master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/gh-pages
+  remotes/origin/master
+```
+
+上面的是本地分支，下方的有 `remotes/origin` 开头的就是远程分支。
 
 ### 2. 创建新分支 `git branch <分支名>` 
 
@@ -277,9 +289,9 @@ $ git checkout master
 $ git rebase bugFix     # 将 master 分支更新到移动过来的 bugFix 记录上
 ```
 
-### 6. 删除分支 `git branch -d <分支名>` 
+### 6. 删除分支 
 
-合并完后就可以删除分支：
+合并完后就可以删除分支 `git branch -d <分支名>`：
 
 ```shell
 $ git branch -d bugFix
@@ -289,6 +301,12 @@ $ git branch -d bugFix
 
 ```shell
 git branch -D feature
+```
+
+删除远程分支 `git push origin --delete <分支名>`：
+
+```shell
+$ git push origin --delete gh-pages
 ```
 
 ### 7. 最新版本的 Git 提供了新的 `git switch` 命令来切换分支
