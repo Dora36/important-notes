@@ -1,4 +1,4 @@
-# GitHub 使用
+# Git 使用大全
 
 ## Git 的基础配置
 
@@ -141,7 +141,7 @@ $ git add README.md
 $ git add .        # 全部有更改的文件
 ```
 
-`git add` 后可写文件名，可写文件夹，可写点 `git add -A .` 表示添加全部有更改的文件，`-A` 表示包括被删除的文件。
+`git add` 后可写文件名，可写文件夹，可写点 `git add .` 表示全部更改。
 
 #### 3. 用 `git checkout -- <file>` 丢弃工作区的修改
 
@@ -177,9 +177,9 @@ $ git commit -am '修改文件'  # git add + git commit
 
 将暂存区的更改提交到本地仓库，只有本机可见。`-m` 后面输入的是本次提交的说明，方便记录每次提交的改动，因此最好是有意义的说明。
 
-## `commit` 后的版本回退
+#### 7. `commit` 后的版本回退
 
-### 1. 先查看提交日志 
+**1. 先查看提交日志**
 
 `git log` 命令可以显示从最近到最远的提交日志，如果觉得输出信息太多，可加上 `--pretty=oneline` 参数。
 
@@ -193,7 +193,7 @@ $ git log --pretty=oneline
 
 前面的一大串是提交记录的哈希值，也就是 `commit id`，可通过 `commit id` 的前四五位字符确定回退的版本。也可通过 `HEAD` 代表，`HEAD` 表示当前版本，也就是最新的提交 `0857d...`，上一个版本就是 `HEAD^`，上上一个版本就是 `HEAD^^`，往上 100 个版本可写成`HEAD~100`。
 
-### 2. 通过 `git reset` 命令回退
+**2. 通过 `git reset` 命令回退**
 
 ```shell
 $ git reset --hard HEAD^
@@ -395,7 +395,7 @@ $ git push origin dev
 $ git revert HEAD
 ```
 
-## `git stash` 储藏功能
+## `git stash` 存储功能
 
 ### 存储
 
