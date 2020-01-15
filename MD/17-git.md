@@ -99,10 +99,20 @@ $ git pull   # git pull = git fetch + git merge
 $ git pull origin <分支名>   # 拉取远程某分支代码
 ```
 
-如果是团队合作开发，在每次修改本地文件之前，需 `pull` 一下最新代码，尽量减少冲突。
+如果是团队合作开发，在每次修改本地文件之前，需 `pull` 一下最新代码，尽量减少冲突。如果 pull 的时候，提示有冲突，可使用以下方法解决：
+
+- 先将本地更改 stash 存储起来，然后 pull，再解决冲突，然后在 add，commit，push。
+
+- add commit 后 pull 下来解决冲突，完了后 再 commit 然后 push。
+
+如果使用第二种方法解决冲突，会造成提交树分叉较多，不利于查看提交记录，因此可以使用 rebase 的方式 pull 代码。
 
 ```shell
 $ git pull --rebase  # = git fetch + git rebase
+# 解决冲突
+$ git add
+$ git rebase --continue
+$ git push
 ```
 
 ### 本地文件有改变 
