@@ -101,11 +101,11 @@ $ git pull origin <分支名>   # 拉取远程某分支代码
 
 如果是团队合作开发，在每次修改本地文件之前，需 `pull` 一下最新代码，尽量减少冲突。如果 pull 的时候，提示有冲突，可使用以下方法解决：
 
-- 先将本地更改 stash 存储起来，然后 pull，再解决冲突，然后在 add，commit，push。
+- 先将本地更改 `stash` 存储起来，然后 `pull`，解决冲突，之后再 `add`，`commit`，`pull`，`push`。
 
-- add commit 后 pull 下来解决冲突，完了后 再 commit 然后 push。
+- `add`，`commit` 后 `pull` 下来解决冲突，完了后再 `add`，`commit`，`pull`，`push`。
 
-如果使用第二种方法解决冲突，会造成提交树分叉较多，不利于查看提交记录，因此可以使用 rebase 的方式 pull 代码。
+如果使用第二种方法解决冲突，会造成提交树分叉较多，不利于查看提交记录，因此可以使用 `rebase` 的方式 pull 代码。
 
 ```shell
 $ git pull --rebase  # = git fetch + git rebase
@@ -397,12 +397,18 @@ $ git revert HEAD
 
 ## `git stash` 储藏功能
 
+### 存储
+
 `git stash` 会将当前工作区还没有提交到版本库的更改存储起来，但不会存储新建的文件，因为新建的文件还没有被 Git 管理。工作区会回到上次 `commit` 的状态，并且包含新建的文件。
 
 ```shell
 $ git stash
 Saved working directory and index state WIP on master: d21d76c git
+
+$ git stash save "save message"    # git stash save 可以添加说明文字
 ```
+
+### 查看
 
 `git stash list` 可以查看储存的列表。
 
@@ -411,19 +417,31 @@ $ git stash list
 stash@{0}: WIP on master: d21d76c git
 ```
 
+### 恢复储存
+
 恢复储存的内容有两种方法：
 
 - 一是用 `git stash apply` 恢复，但是恢复后，stash 内容并不删除，你需要用 `git stash drop` 来删除。
-- 另一种方式是用 `git stash pop`，恢复的同时把stash内容也删了。
+- 另一种方式是用 `git stash pop`，恢复的同时把 stash 内容也删了。
 
 ```shell
-$ git stash pop
+$ git stash pop   # 默认第一个存储
 ```
 
 你可以多次 stash，恢复的时候，先用 `git stash list` 查看，然后恢复指定的 stash，用命令：
 
 ```shell
 $ git stash apply stash@{0}
+# or
+$ git stash pop stash@{$num}
+```
+
+### 删除存储
+
+```shell
+$ git stash drop                  # 删除第一条存储
+$ git stash drop stash@{$num}     # 删除指定存储项
+$ git stash clear                 # 清空存储列表
 ```
 
 ## 其它功能
