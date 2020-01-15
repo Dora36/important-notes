@@ -450,7 +450,7 @@ body {
 @import url(../my.css);
 ```
 
-<img src="img/1201.jpg" width="750px" alt="网络请求示例图">
+<img src="img/0301.jpg" width="750px" alt="网络请求示例图">
 
 因此，由于 sass 的语法完全兼容 css，所以完全可以把原始的 css 文件改名为 `.scss` 后缀，然后直接导入就可以减少多余的网络请求了。
 
