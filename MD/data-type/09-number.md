@@ -257,3 +257,7 @@ Number.isSafeInteger(Number.MAX_SAFE_INTEGER + 1) // false
 ```js
 Number.isSafeInteger(3.0000000000000002)  // true
 ```
+
+参考链接：
+ [*Number 对象*](https://wangdoc.com/javascript/stdlib/number.html)
+ [*数值的扩展*](http://es6.ruanyifeng.com/#docs/number)
