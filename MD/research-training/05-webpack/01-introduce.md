@@ -1,8 +1,6 @@
-## webpack 入门介绍
+# webpack 入门介绍
 
-webpack 是一个 JavaScript 应用程序的静态模块打包器。当 webpack 处理应用程序时，它会递归地构建一个依赖关系图，其中包含应用程序需要的每个模块，然后将所有这些模块打包成一个或多个 bundle。
-
-### 入门
+## 入门
 
 **安装**
 
@@ -29,7 +27,7 @@ $ npm install webpack webpack-cli -D
 npm run build
 ```
 
-### 配置
+**配置**
 
 `webpack.config.js`
 
@@ -45,7 +43,7 @@ module.exports = {
 };
 ```
 
-### 引入模块
+## 引入模块
 
 webpack 会通过代码中的 `import` 、 `export` 等引入模块的语句将所有相互依赖的模块打包成一个或多个文件。而 webpack 自身只理解 js 文件，可项目中需要引入的模块种类却非常复杂，比如 css 文件，图片，字体，json 文件等。
 
@@ -76,9 +74,9 @@ module.exports = {
 };
 ```
 
-此时，所有以 `import` 引入的 `.css` 结尾的文件，都将被提供给 `style-loader` 和 `css-loader` 预处理。
+此时，所有以 `import` 引入的 `.css` 结尾的文件，都将被提供给 `style-loader` 和 `css-loader` 预处理。当该模块运行时，含有 CSS 字符串的 `<style>` 标签，将被插入到 html 文件的 `<head>` 中。
 
-接下来就引入 css 模块。
+接下来就在 js 中引入 css 模块。
 
 ```js
 // src/index.js
@@ -114,7 +112,7 @@ btn.classList.add('my-btn');
 npm run build
 ```
 
-### 生成 html
+## 生成 html
 
 要想在 html 中自动插入编译完的 js 文件，就需要安装插件。插件是 webpack 的支柱功能，目的在于解决 loader 无法实现的其他事。
 
@@ -183,3 +181,40 @@ module.exports = {
 ```shell
 npm run build
 ```
+
+## 清理 `/dist` 文件夹
+
+webpack 每次编译的时候，会重新生成文件，然后将这些文件放置在 `/dist` 文件夹中，但不会重新生成 `/dist` 目录，而 webpack 是无法追踪到 `/dist` 中哪些文件是实际在项目中用到的。因此，如果 `/dist` 文件夹中有其它文件，或有每次编译完的历史文件，就会很杂乱。
+
+通常，在每次构建前清理 `/dist` 文件夹，是比较推荐的做法，因为只会生成用到的文件。
+
+而清理 `/dist` 文件夹就要用到 `clean-webpack-plugin` 管理插件。
+
+**安装**
+
+```shell
+npm install clean-webpack-plugin -D
+```
+
+**配置**
+
+```js
+// webpack.config.js
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+module.exports = {
+  plugins: [
+    new CleanWebpackPlugin(),
+  ]
+};
+```
+
+**运行 webpack**
+
+```shell
+npm run build
+```
+
+
+
+
