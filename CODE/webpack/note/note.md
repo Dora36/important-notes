@@ -612,6 +612,37 @@ module: {
 
 见 webpack.page.config.js
 
+```js
+let path = require('path');
+let HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  mode:'development',
+  // 多入口
+  entry: {
+    home: './src/index.js',
+    other: './src/other.js'
+  },
+  output: {
+    // [name] 相当于变量，即入口文件的名字(entry 字段中的键名)
+    filename:'[name].js',
+    path: path.resolve(__dirname,'dist')
+  },
+  plugins:[
+    new HtmlWebpackPlugin({
+      template:'./index.html',
+      filename:'home.html',
+      chunks:['home']  // 通过 index.html 模板生成 home.html 并只引入 home.js，没有 chunks 会将生成的 js 文件全部引入 html 中。
+    }),
+    new HtmlWebpackPlugin({
+      template:'./index.html',
+      filename:'other.html',
+      chunks:['other'] // 通过 index.html 模板生成 other.html 并只引入 other.js
+    })
+  ]
+}
+```
+
 ### source-map 源码映射
 
 - `source-map` 源码映射，会单独生成一个 `sourcemap` 文件，会标识报错信息的列和行。
@@ -622,22 +653,27 @@ module: {
 
 - `cheap-module-eval-source-map` 不会生成文件，集成在打包后的文件中，不会产生列。
 
-
-    module.exports = {
-      devtool:'source-map',
-      // devtool:'eval-source-map',
-    }
+```js
+module.exports = {
+  devtool:'source-map',
+  // devtool:'eval-source-map',
+}
+```
 
 ### watch 实时打包文件
 
-    module.exports = {
-      watch:true,  // 监听文件，代码一有变化就进行实时打包
-      watchOptions: {  // 监控的选项
-        poll:1000,   // 每秒监听1000次
-        aggregateTimeout: 500,   // 防抖，停止输入代码后 500ms 打包一次
-        ignored:/node_modules/  // 忽略监控的文件
-      },
-    }
+webpack-dev-server 不能实时看到打包文件，只是打包到内存中。
+
+```js
+module.exports = {
+  watch:true,  // 监听文件，代码一有变化就进行实时打包
+  watchOptions: {  // 监控的选项
+    poll:1000,   // 每秒监听1000次
+    aggregateTimeout: 500,   // 防抖，停止输入代码后 500ms 打包一次
+    ignored:/node_modules/  // 忽略监控的文件
+  },
+}
+```
 
 ### webpack 中的一些小插件
 
@@ -647,40 +683,54 @@ module: {
 
 安装
 
-    npm install clean-webpack-plugin -D
+```shell
+npm install clean-webpack-plugin -D
+```
 
 webpack.config.js 配置
 
-    let CleanWebpackPlugin = require('clean-webpack-plugin');
-    plugins:[
-      new CleanWebpackPlugin('./dist')
-    ]
+```js
+let CleanWebpackPlugin = require('clean-webpack-plugin');
+plugins:[
+  new CleanWebpackPlugin('./dist')
+]
+```
 
 #### copyWebpackPlugin
+
+拷贝插件
 
 需要安装第三方模块，将指定文件夹打包进 dist 文件夹
 
 安装
 
-    npm install copy-webpack-plugin -D
+```shell
+npm install copy-webpack-plugin -D
+```
 
 webpack.config.js 配置
 
-    let CopyWebpackPlugin = require('copy-webpack-plugin');
-    plugins:[
-      new CopyWebpackPlugin([
-        {from:'doc',to:'./dist'} // 将 doc 文件夹内容 拷贝到 dist 文件夹中
-      ])
-    ]
+```js
+let CopyWebpackPlugin = require('copy-webpack-plugin');
+plugins:[
+  new CopyWebpackPlugin([
+    {from:'doc',to:'./'} // 将 doc 目录下文件 拷贝到 dist 目录下
+  ])
+]
+```
 
 #### BannerPlugin 
 
-内置的插件，将参数字符串插入到每一个打包出来的 js 文件中。
+版权声明插件
 
-    let webpack = require('webpack');
-    plugins:[
-      new webpack.BannerPlugin('make 2019 by dora')
-    ]
+webpack 内置的插件，将参数字符串插入到每一个打包出来的 js 文件的头部。
+
+```js
+let webpack = require('webpack');
+plugins:[
+  new webpack.BannerPlugin('make 2019 by dora')
+]
+```
 
 ### webpack 解决跨域问题
 
