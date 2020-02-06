@@ -19,6 +19,8 @@
     
     npx webpack --config webpack.other.config.js // 运行自定义的配置文件
 
+npx webpack  == node_modules/.bin/webpack.cmd
+
 ## 手动配置 webpack
 
 webpack 可以进行 0 配置，直接运行。也可自定义配置文件。
@@ -73,6 +75,8 @@ webpack 是 node 写出来的，因此需要用 node 的写法
       },
     };
 
+不生成文件，在内存中打包
+
 #### 插件 HtmlWebpackPlugin
 
 `HtmlWebpackPlugin` 简化了 HTML 文件的创建，让插件自己生成一个HTML文件，以便为 webpack 包提供服务。这对于在文件名中包含每次会随着编译而发生变化哈希的 webpack bundle 尤其有用。
@@ -108,6 +112,7 @@ webpack 默认只支持 js 模块，其它模块需要通过对应的 `loader` �
 - loader 的特点希望单一，因此可以很多个 loader 一起使用。
 - loader 的语法：只用一个可以用字符串，多个loader 需要数组形式
 - loader 的顺序 默认从右向左执行，从下往上执行
+- 相同的文件可写多条规则，从下往上执行
 - loader 还可以写成对象方式 可传参
 
 css引入
@@ -135,7 +140,7 @@ css引入
           use: [
             { // 可通过对象传入 option 配置
               loader: 'style-loader',
-              options:{ insertAt:'top' }
+              options:{ insertAt:'top' } // style 标签插入到页面中其他的 style 标签上面
             },
             'css-loader'
           }]
@@ -293,11 +298,182 @@ css引入
       ]
     }
 
+@babel/plugin-transform-runtime 插件用来复用 babel 注入的一些帮助代码，该帮助代码用来实现 js 的一些内置新 api。
+
+安装
+
+```shell
+npm install @babel/plugin-transform-runtime -D
+npm install @babel/runtime -S
+```
+
+在 babel-loader 中的 options 中配置
+
+```js
+module: {
+  rules: [
+    {
+      test:/\.js$/,
+      use: {
+        loader:'babel-loader',
+        options: {
+          presets:[
+            '@babel/preset-env'  // 将 ES6 转为 ES5
+          ],
+          plugins: [
+            '@babel/plugin-transform-runtime'
+          ]
+        },
+        include: path.resolve(__dirname, 'src'),  // 匹配 js 文件时需要包含的文件夹
+        exclude: /node_modules/  // 匹配js 文件时需要排除掉的文件夹
+      }
+    }
+  ]
+}
+```
+
+@babel/polyfill  用来处理 数组、对象等新扩展的方法。
+
+用法
+
+在模块内直接引用
+
+```js
+// some.js
+require('@babel/polyfill');
+'aaa'.includes('a');
+```
+
+#### eslint 校验
+
+安装
+
+```shell
+npm install eslint eslint-loader -D
+```
+
+配置
+
+```js
+module: {
+  rules: [
+    {
+      test:/\.js$/,
+      use: {
+        loader:'eslint-loader',
+        options: {
+          enforce: 'pre'  // 前置 loader，即在最前面执行，因为有相同文件的规则时，loader 是从下到上执行，有了 pre，就可以最先执行。
+         }
+      }
+    },
+    {
+      test:/\.js$/,
+      use: 'babel-loader'
+    }
+  ]
+}
+```
+
+.eslintrc.json
+
 #### 引入第三方模块（如 jquery）的方式
 
 - `expose-loader` 暴露 `$` 变量到 `window` 上
 - `webpack.providePlugin` 给每个模块提供一个变量 `$` 
 - 通过 `html` 文件的 `script` 引入并让 `webpack` 不打包代码的方式。
+
+loader 可分为：
+
+- pre：前置 loader
+- normal：普通 loader
+- post：后置 loader
+- 内联 loader：直接在代码中使用
+
+安装 jquery
+
+```shell
+npm install jquery -S
+```
+
+第一种 `expose-loader`
+
+expose-loader 暴露全局变量的 loader，属于内联的 loader。
+
+使用一：
+
+```js
+// some.js
+import $ from 'jquery';
+console.log(window.$) // undefined
+
+import $ from 'expose-loader?$!jquery'; // 把 jquery 作为 $ 变量暴露给全局
+console.log(window.$) // jquery
+```
+
+使用二：
+
+```js
+module: {
+  rules: [
+    {
+      test: require.resolve('jquery'),
+      use: 'expose-loader?$'
+    }
+  ]
+}
+```
+
+```js
+// some.js
+import $ from 'jquery';
+console.log(window.$)  // jquery
+```
+
+第二种 `webpack.providePlugin`
+
+在模块中使用 jquery 的时候不用 import，直接通过插件在每个模块中注入 $ 对象。
+
+```js
+let webpack = require('webpack');
+module.exports = {
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: 'jquery'  // 在每个模块中都注入 $
+    })
+  ]
+}
+```
+
+```js
+// some.js
+console.log($) // jquery
+console.log(window.$) // undefined
+```
+
+第三种 html 模版中引入 jquery 的 cdn
+
+```html
+<script src="cdn jquery"></script>
+```
+
+```js
+// some.js
+console.log($)  // jquery
+console.log(window.$)  // jquery
+```
+
+如果在模块中 import 了 jquery，此时因为已经引入了 jquery 的 cdn，所以就不再需要 webpack 来打包 import 的 jquery 了。
+
+```js
+// webpack.config.js
+module.exports = {
+  externals: {
+    jquery: '$'
+  }
+}
+```
+
+此时，打包出来的文件就会小很多。
 
 #### 打包图片
 
@@ -307,77 +483,130 @@ css引入
 
   需要 `file-loader` 处理图片，默认会在内部生成一张图片到 `build` 目录下，并把生成的图片的名字返回回来(md5)。在js 中需要使用 `import` 或 `require` 引入图片。
   
-- 在 css 中用 `background('url')` 来引入
+- 在 css 中用 `background: url('')` 来引入
 
   css 中可以直接使用路径引入图片，因为 `css-loader` 会默认将路径转换为 `require` 模式
 
-- 在 html 中用 img 标签来引入
+- 在 html 中用 `<img>` 标签来引入
 
-   需要使用 html-withimg-loader 编译 html 中的 img 标签引入图片的问题
+   需要使用 `html-withimg-loader` 编译 html 中的 `<img>` 标签引入图片的问题
 
 js 使用
 
-
 安装
 
-    npm install file-loader -D
+```shell
+npm install file-loader -D
+```
 
 webpack.config.js 中配置
 
-    module: {
-      rules: [{
-          test:/\.(png|jpg|gif)$/,
-          use:'file-loader'
-        }]
-    }
+```js
+module: {
+  rules: [{
+    test:/\.(png|jpg|gif)$/,
+    use:'file-loader'
+  }]
+}
+```
 
 js 文件中使用
 
-    import logo from 'path/to/logo.png';
-    let image = new Image();
-    image.src ='./img/logo.jpg'; // 不能用路径直接引入，会认为是一个普通字符串，不会对图片进行打包。
-    image.src = logo;
-    document.body.appendChild(image);
+```js
+// some.js
+import logo from 'path/to/logo.png';
+let image = new Image();
+image.src = './img/logo.jpg'; // 不能用路径直接引入，会认为是一个普通字符串，不会对图片进行打包。
+image.src = logo;  // 通过 import 引入可行
+document.body.appendChild(image);
+```
 
 html 使用
 
 安装
 
-    npm install html-withimg-loader -D
+```shell
+npm install html-withimg-loader -D
+```
 
 `webpack.config.js` 配置
 
-    module: {
-      rules: [{
-        test:/\.html$/,
-        user:'html-withimg-loader'
-      }]
-    }
+```js
+module: {
+  rules: [{
+    test:/\.html$/,
+    use:'html-withimg-loader'
+  }]
+}
+```
 
 ##### 图片变成 base64 
 
-base64 的好处是可以减少 http 请求。而文件会比原文件大 1/3。
+base64 的好处是可以减少 http 请求。但文件会比原文件大 1/3。
 
-需要使用 `url-loader`，可以设置限制，当图片小于多少k的时候，用 `base64` 来转换，如果大于设置的限制，则用 `file-loader` 产出图片。
+需要使用 `url-loader`，可以设置限制，当图片小于多少k的时候，转换为 `base64`，如果大于设置的限制，则用 `file-loader` 产生图片。
 
 安装
 
-    npm install url-loader -D
+```shell
+npm install url-loader -D
+```
 
 `webpack.config.js` 配置
 
-    module: {
-      rules: [{
-          test:/\.(png|jpg|gif)$/,
-          use:{
-            loader: 'url-loader',
-            options: {
-              limit : 200*1024, // 200k
-              outputPath:'img/' //输出在某个文件夹下
-            }
-          }
-        }]
+```js
+module: {
+  rules: [{
+    test:/\.(png|jpg|gif)$/,
+    use:{
+      loader: 'url-loader',
+      options: {
+        limit : 200*1024, // 200k
+        outputPath:'img/' //输出在某个文件夹下
+      }
     }
+  }]
+}
+```
+
+#### 打包文件分类
+
+打包的时候样式在 css 目录下，图片在 img 目录下，如果相互引用的时候用相对路径就会出错，很麻烦。
+
+此时就需要添加公共路径，将引用路径变为绝对路径。
+
+```js
+// webpack.config.js
+module.exports = {
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'build'),
+    publicPath: 'http://www.some.com/'
+  }
+}
+```
+
+output 中的 publicPath 会给所有的引用路径加上域名。
+
+css 的输出路径中的 publicPath 只会给 css 的引用加上域名。
+
+img 的输出路径中的 publicPath 只给 img 的引用加上域名。
+
+```js
+module: {
+  rules: [{
+    test:/\.(png|jpg|gif)$/,
+    use:{
+      loader: 'url-loader',
+      options: {
+        limit : 200*1024,
+        outputPath: 'img/',
+        publicPath: 'http://www.img.com/'
+      }
+    }
+  }]
+}
+```
 
 ### 打包多页应用配置
 

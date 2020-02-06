@@ -138,6 +138,10 @@ module.exports = {
 
 - `template`：以该路径的 html 文件为模版生成 html 文件输出到 `output` 的目录里。
 
+- `minify`：压缩生成的 html 文件。
+
+- `hash`：html 中引入的 `bundle.js` 添加 hash
+
 **添加模版 html**
 
 每次 `build` 时 `HtmlWebpackPlugin` 都会重新生成 html，就会导致 html 中无法添加自定义的内容，因此，需要添加一个模版文件，让 webpack 每次都基于模版文件生成 html。
