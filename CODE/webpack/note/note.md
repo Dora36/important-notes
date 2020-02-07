@@ -825,48 +825,73 @@ module.exports = {
 
 ### 用 webpack 自带插件定义全局变量
 
-如果这个值是一个字符串，它会被当作一个代码片段来使用。因此需要通过 `JSON.stringify` 转化，或者外层再包含一个引号。`"production"`
+如果这个值是一个字符串，它会被当作一个代码片段来使用。因此需要通过 `JSON.stringify` 转化，或者外层再包含一个引号。`"'production'"`
 
-    plugins: [
-      new webpack.DefinePlugin({
-        DEV:JSON.stringify('production'),
-        'SERVICE_URL': JSON.stringify("http://www.dorayu.com")
-      }),
-    ],
+```js
+plugins: [
+  new webpack.DefinePlugin({
+    DEV:JSON.stringify('production'),
+    'SERVICE_URL': JSON.stringify("http://www.dorayu.com"),
+    FLAG: 'true',
+  }),
+],
+```
+
+```js
+// some.js
+console.log(typeof FLAG)  // boolean
+```
 
 ### 环境变量的配置
 
 配置文件分开，然后通过 webpack-merge 合并不同的配置文件。
+
 - `webpack.base.config.js`
 - `webpack.dev.config.js`
 - `webpack.prod.config.js`
 
 安装
 
-     npm install webpack-merge -D
+```shell
+npm install webpack-merge -D
+```
 
 使用，在 `webpack.dev.config.js` 和 `webpack.prod.config.js` 中引入，然后通过不同的配置文件进行打包就可得到不同的打包后的文件。
 
-    let Merge = require('webpack-merge');
-    let BaseWebpackConfig = require('./webpack.base.config.js');
-    
-    module.exports = Merge(BaseWebpackConfig,{
-      mode:'development',
-    })
-    
-    module.exports = Merge(BaseWebpackConfig,{
-      mode:'production',
-    })
+```js
+// webpack.dev.config.js
+let {smart} = require('webpack-merge');
+let BaseWebpackConfig = require('./webpack.base.config.js');
+
+module.exports = smart(BaseWebpackConfig,{
+  mode:'development',
+})
+```
+
+```js
+// webpack.prod.config.js
+let {smart} = require('webpack-merge');
+let BaseWebpackConfig = require('./webpack.base.config.js');
+
+module.exports = smart(BaseWebpackConfig,{
+  mode:'production',
+  optimization: {
+    minimizer: []
+  },
+})
+```
 
 ### webpack 优化项
 
 #### noParse
 
-`noParse` 的作用是不解析设置的模块中的依赖关系，可优化解析速度。
+`noParse` 的作用是不解析设置的模块中的依赖关系，可优化解析速度。比如 jquery 中没有依赖其他的模块，则在编译的过程中，遇到 `import $ from jquery`时，就不需要解析 jquery 文件。
 
-    module:{
-        noParse:/jquery/,
-    }
+```js
+module:{
+  noParse: /jquery/,
+}
+```
 
 #### 模块配置的 exclude include
 
@@ -874,18 +899,20 @@ module.exports = {
 
 `include` 只包含设置的文件夹下的文件。
 
-    module: {
-      rules: [
-        {
-          test:/\.js$/,
-          exclude: /node_modules/,
-          include:[path.resolve('src')],
-          use: {
-            loader:'babel-loader',
-          }
-        }
-      ]
+```js
+module: {
+  rules: [
+    {
+      test:/\.js$/,
+      exclude: /node_modules/,
+      include:[path.resolve('src')],
+      use: {
+        loader:'babel-loader',
+      }
     }
+  ]
+}
+```
 
 #### 插件的 IgnorePlugin
 
@@ -893,20 +920,26 @@ module.exports = {
 
 安装
 
-    npm install moment
+```shell
+npm install moment
+```
 
 配置
 
-    plugins: [
-      new webpack.IgnorePlugin(/\.\/locale/,/moment/)
-    ],
+```js
+plugins: [
+  new webpack.IgnorePlugin(/\.\/locale/,/moment/)
+],
+```
 
 使用
 
-    import moment from 'moment';
-    import 'moment/locale/zh-cn'; // 忽略后需要手动引入语言包
-    
-    moment.locale('zh-cn');
+```js
+import moment from 'moment';
+import 'moment/locale/zh-cn'; // 忽略后需要手动引入语言包
+
+moment.locale('zh-cn');  // 设置语言
+```
 
 ### 动态链接库 dllPlugin 示例：react，react-dom
 
@@ -915,54 +948,99 @@ module.exports = {
 - `react` 及 `react-dom`
 - `babel-loader`，`@babel/core`，`@babel/preset-env` 及 `@babel/preset-react`。编译 es6 及 `react` 语法。
 
+```shell
+npm install react react-dom
+npm install babel-loader @babel/preset-env @babel/preset-react -D
+```
 
-    npm install react react-dom
-    npm install babel-loader @babel/preset-env @babel/preset-react -D
+使用
+
+```js
+// some.js
+import React from 'react';
+import {render} from 'react-dom';
+
+render(<h1>jsx</h1>, window.root);
+```
+
+```html
+<!-- template.html -->
+<div id="root"></div>
+```
+
+```js
+// webpack.config.js 中 配置 babel-loader
+rules: [
+  {
+    test: /\.js$/,
+    use: {
+      loader: 'babel-loader',
+      options: {
+        presets: [
+          '@babel/preset-env',
+          '@babel/preset-react'
+        ]
+      }
+    }
+  }
+]
+```
+
+但是，如此打包出来的文件比较大，会让实时打包速度比较慢，因此可以将 react 第三方库抽离出来，单独打包，在html 中引入打包好的文件，就不需要每次编译的时候都重新打包 react 等第三方库。
 
 配置
 
 新建配置文件 `webpack.dll.config.js`，专门用于打包 `react` 或 `vue` 等第三方库。
 
-    let path = require('path');
-    let webpack = require('webpack');
-    
-    module.exports ={
-      mode:'development',
-      entry:{
-        react:['react','react-dom'],
-      },
-      output:{
-        filename:'_dll_[name].js',
-        path:path.resolve(__dirname,'dist'),
-        library:'_dll_[name]', // 变量名
-        // libraryTarget:'var' // 变量的声明方式 默认为var，其他如 commonjs  umd  this ...
-      },
-      plugins:[
-        new webpack.DllPlugin({
-          name:'_dll_[name]',  // name 的值等于 output 的 library 名
-          path: path.resolve(__dirname,'dist','manifest.json') //manifest 任务清单
-        })
-      ]
-    }
+```js
+// webpack.dll.config.js
+let path = require('path');
+let webpack = require('webpack');
 
-然后在主配置文件中引入打包后的配置。并且配置 `babel-loader`。
-
-    plugins: [
-      new webpack.DllReferencePlugin({
-        manifest: path.resolve(__dirname,'dist','manifest.json')
-      })
-    ],
+module.exports ={
+  mode:'development',
+  entry:{
+    react:['react','react-dom'],
+  },
+  output:{
+    filename:'_dll_[name].js',
+    path:path.resolve(__dirname,'dist'),
+    library:'_dll_[name]', // 变量名
+    // libraryTarget:'var' // 变量的声明方式 默认为var，其他如 commonjs  umd  this ...
+  },
+  plugins:[
+    new webpack.DllPlugin({
+      name:'_dll_[name]',  // name 的值等于 output 的 library 名
+      path: path.resolve(__dirname,'dist','manifest.json') //manifest 任务清单
+    })
+  ]
+}
+```
 
 运行 `webpack.dll.config.js` 配置文件，以生成打包后的 js 文件和 `manifest.json` 文件
 
-    npx webpack --config webpack.dll.config.js
+```shell
+npx webpack --config webpack.dll.config.js
+```
 
 在 `html` 模板文件中引入打包后的 js 文件，`_dll_[name].js`，如 `_dll_react.js`。
 
-    <script src="./_dll_react.js"></script>
+```html
+<script src="/_dll_react.js"></script>
+```
+
+然后需要在主配置文件中引入打包后的配置。该配置的作用是在编译的过程中遇到 `import` `react` 或 `react-dom` 时，不会解析编译，而是通过 manifest.json 查找到变量对应的模块位置。如果找不到，则会打包 react 或 react-dom
+
+```js
+// webpack.config.js
+plugins: [
+  new webpack.DllReferencePlugin({
+    manifest: path.resolve(__dirname,'dist','manifest.json')
+  })
+],
+```
 
 这样，在之后 `npm run dev` 或 `build` 的时候就不会对 `react` 库进行打包，会大大的减少 `bundle.js` 的文件大小。
-
 
 ### 使用 happypack 进行多线程打包
 
@@ -970,151 +1048,176 @@ module.exports = {
 
 安装
 
-    npm install happypack
+```shell
+npm install happypack -D
+```
 
 配置
 
-    let Happypack = require('happypack');
-    module: {
-      rules: [
-        {
-          test:/\.js$/,
-          use: 'Happypack/loader?id=js'  // 多线程打包 js
-        },
-        {
-          test:/\.css$/,
-          use:'Happypack/loader?id=css'  // 多线程打包 css
-        }
-      ]
+```js
+let Happypack = require('happypack');
+module: {
+  rules: [
+    {
+      test:/\.js$/,
+      use: 'Happypack/loader?id=js'  // 多线程打包 js
     },
-    plugins: [
-      new Happypack({
-        id:'js',
-        use: [{   // 通过 babel-loader 多线程打包 js
-          loader:'babel-loader',
-          options: {
-            presets:[
-              '@babel/preset-env',
-              '@babel/preset-react'
-            ]
-          }
-        }]
-      }),
-      new Happypack({
-        id:'css',     // 通过 style-loader css-loader 多线程打包 css
-        use: ['style-loader','css-loader']
-      })
-    ],
+    {
+      test:/\.css$/,
+      use:'Happypack/loader?id=css'  // 多线程打包 css
+    }
+  ]
+},
+plugins: [
+  new Happypack({
+    id:'js',
+    use: [{   // 通过 babel-loader 多线程打包 js
+      loader:'babel-loader',
+      options: {
+        presets:[
+          '@babel/preset-env',
+          '@babel/preset-react'
+        ]
+      }
+    }]
+  }),
+  new Happypack({
+    id:'css',     // 通过 style-loader css-loader 多线程打包 css
+    use: ['style-loader','css-loader']
+  })
+],
+```
 
 ### webpack 的自带优化
 
 - `tree-shaking`，把没用到的代码自动删除。`import` 在生产环境下，会自动去除掉没用的代码，只有 `import` 语法可以自动 `tree-shaking`。es6 模块（`require`）会把结果放到 `default` 上。且 `require` 语法不支持 `tree-shaking`。
 
-- `Scope Hoisting` 作用于提升，在 webpack 中会自动省略一些可以简化的代码，比如一些变量等。
+- `Scope Hoisting` 作用域提升，在 webpack 中会自动省略一些可以简化的代码，比如一些变量等。
 
 
 ### 多页面打包时抽离公共代码
 
 以前的版本用的是 `commonChunkPlugins`，版本4变成了 `optimization` 优化项下的 `splitChunks` ——分割代码块。
 
+单入口不需要抽离，只有多页面应用才需要抽离公共模块。
+
 配置
 
-    module.exports = {
-      optimization:{
-        splitChunks:{ // 分割代码块
-          cacheGroups:{ // 缓存组
-            common:{ // 公共的模块
-              chunks:'initial',
-              minSize:0,
-              minChunks:2,
-            },
-            vendor: {  // 抽离第三方模块
-              priority:1, // 权重，优先抽离
-              test:/node_modules/,
-              chunks:'initial',
-              minSize:0,
-              minChunks:2,
-            }
-          }
+```js
+module.exports = {
+  optimization:{
+    splitChunks:{ // 分割代码块
+      cacheGroups:{ // 缓存组
+        common:{ // 公共的模块
+          chunks:'initial',
+          minSize:0,
+          minChunks:2,
+        },
+        vendor: {  // 抽离第三方模块
+          priority:1, // 权重，优先抽离
+          test:/node_modules/, // 引用了node_modules中的模块
+          chunks:'initial',
+          minSize:0,
+          minChunks:2,
         }
-      },
-      entry: { // 多页面的多入口
-        index:'./src/index.js',
-        other:'./src/other.js'
-      },
-      output: { // 多页面的多出口
-        filename: '[name].js',
-        path: path.resolve(__dirname, 'dist'),
-      },
+      }
     }
+  },
+  entry: { // 多页面的多入口
+    index:'./src/index.js',
+    other:'./src/other.js'
+  },
+  output: { // 多页面的多出口
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+}
+```
 
-### 懒加载 依靠 import 语法
+### 懒加载 依靠 import() 语法
 
 `vue` ，`react` 的路由懒加载，都是靠的 `import()` 语法。`import()` 语法是 `webpack` 可用的 `es6` 草案中的语法，实际是用 `jsonp` 实现动态加载文件。比如点击按钮时加载某个文件（`source.js`），在打包时就会多出一个 `1.js` 的文件，其中有 `source.js` 的代码，只有在点击按钮时，才会加载打包的 `1.js` 文件，实现懒加载。
 
-`source.js`
-
-    export default 'dora'
+```js
+// source.js
+export default 'dora'
+```
 
 `index.js`，`import()` 语法生成的是一个 `promise`。
 
-    let button = document.createElement('button');
-    button.innerHTML='Hello';
-    button.addEventListener('click',function () {
-      import('./source.js').then(data=>{
-        console.log(data.default);
-      })
-    });
-    document.body.appendChild(button);
+```js
+// index.js
+let button = document.createElement('button');
+button.innerHTML='Hello';
+button.addEventListener('click',function () {
+  import('./source.js').then(data=>{
+    console.log(data.default);
+  })
+});
+document.body.appendChild(button);
+```
+
+`import()` 动态加载的语法需要通过 `@babel/plugin-syntax-dynamic-import` 插件解析。
+
+安装
+
+```shell
+npm install @babel/plugin-syntax-dynamic-import -D
+```
 
 配置
 
-需要通过 `@babel/plugin-syntax-dynamic-import` 插件解析动态加载的 `import()` 语法。
-
-    module: {
-      rules: [{
-        test:/\.js$/,
-        include:path.resolve('src'),
-        use: {
-          loader:'babel-loader',
-          options: {
-            presets:[
-              '@babel/preset-env'
-            ],
-            plugins:[
-             '@babel/plugin-syntax-dynamic-import'
-            ]
-          }
-        }
-      }]
+```js
+module: {
+  rules: [{
+    test:/\.js$/,
+    include:path.resolve('src'),
+    use: {
+      loader:'babel-loader',
+      options: {
+        presets:[
+          '@babel/preset-env'
+        ],
+        plugins:[
+          '@babel/plugin-syntax-dynamic-import'
+        ]
+      }
     }
+  }]
+}
+```
 
 ### 热更新，只更新有变化的组件，不刷新整个页面
 
 配置
 
-    module.exports = {
-      devServer: {
-        hot:true,  // 启用热更新
-        port: 3000,
-        contentBase: './dist',
-        open: true
-      },
-      plugins: [
-        new webpack.NamedModulesPlugin(), // 打印更新的模块路径
-        new webpack.HotModuleReplacementPlugin()  //热更新插件
-      ],
-    }
+```js
+module.exports = {
+  devServer: {
+    hot:true,  // 启用热更新
+    port: 3000,
+    contentBase: './dist',
+    open: true
+  },
+  plugins: [
+    new webpack.NamedModulesPlugin(), // 打印更新的模块路径
+    new webpack.HotModuleReplacementPlugin()  //热更新插件
+  ],
+}
+```
 
 使用，在 js 文件中
     
-    if(module.hot){
-      module.hot.accept('./source',()=>{
-        let str = require('./source');
-        console.log(str.default);
-      })
-    }
+```js
+if(module.hot){
+  module.hot.accept('./source',()=>{
+    let str = require('./source');
+    console.log(str.default);
+  })
+}
+```
 
+import 只能写在页面顶端
 
 ### tapable 事件流
 
