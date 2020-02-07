@@ -734,53 +734,65 @@ plugins:[
 
 ### webpack 解决跨域问题
 
-#### 通过proxy 代理重写请求的路径
+#### 第一种 通过proxy 代理重写请求的路径
 
-    devServer:{
-      proxy: {
-        '/api':{
-          target:'http://domain.com',  // 目标路径
-          pathRewrite:{'/api':''}  // 路径替换，请求的url中没有api，项目中ajax 请求可加 api
-        }
-      }
-    },
+前后端不同域名，不同端口
 
-#### 前段模拟数据
+```js
+devServer:{
+  proxy: {
+    '/api':{
+      target:'http://domain.com',  // 目标路径
+      pathRewrite:{'/api':''}  // 路径替换，请求的url中没有api，项目中ajax 请求可加 api
+    }
+  }
+},
+```
 
-    devServer:{
-      before(app) {
-        app.get('/user',(req,res)=>{
-          res.json({name:'dora 模拟数据'})
-        })
-      }
-    },
+#### 第二种 前段模拟数据
 
-#### 有服务端但不用代理处理，在服务端中启动 webpack，端口用服务端端口
+```js
+devServer:{
+  before(app) {
+    app.get('/user',(req,res)=>{
+      res.json({name:'dora 模拟数据'})
+    })
+  }
+},
+```
+
+#### 第三种 有服务端但不用代理处理，在服务端中启动 webpack，端口用服务端端口
+
+前后端启动一样的端口
 
 创建 `server.js` 文件
 
-    // 自带 express 框架
-    let express = require('express');
-    let app = express();
-    let webpack = require('webpack');
-    
-    // 需要 express 中间件 webpack-dev-middleware，可以在服务端启动 webpack
-    let WebpackDevMiddleware = require('webpack-dev-middleware');
-    
-    let WebpackConfig = require('./webpack.config');
-    let compiler = webpack(WebpackConfig);
-    
-    app.use(WebpackDevMiddleware(compiler));
-    
-    app.get('/api/user',(req,res)=>{
-      res.json({name:'dora webpack'})
-    });
-    
-    app.listen(3000);
+```js
+// 自带 express 框架
+let express = require('express');
+let app = express();
+let webpack = require('webpack');
+
+// 需要 express 中间件 webpack-dev-middleware，可以在服务端启动 webpack
+let WebpackDevMiddleware = require('webpack-dev-middleware');
+
+let WebpackConfig = require('./webpack.config');
+let compiler = webpack(WebpackConfig);
+
+app.use(WebpackDevMiddleware(compiler));
+
+app.get('/api/user',(req,res)=>{
+  res.json({name:'dora webpack'})
+});
+
+app.listen(3000);
+```
 
 运行
 
-    node server.js
+```shell
+node server.js
+```
 
 可直接启动 webpack 和服务端。
 
@@ -796,18 +808,20 @@ plugins:[
 
 `mainFiles` 指定入口文件的名字，默认为 index.js。
 
-    module.exports = {
-      resolve:{
-        modules:[path.resolve('node_modules'),path.resolve('other')],
-        extensions:['.js','.css','.vue','.json'],
-        mainFields:['style','main'],
-         // mainFiles:[],
-        alias:{
-          bootstrap: 'bootstrap/dist/css/bootstrap.css',
-          vue$: 'vue/dist/vue.runtime.esm.js'
-        }
-      },
+```js
+module.exports = {
+  resolve:{
+    modules:[path.resolve('node_modules'),path.resolve('other')],
+    extensions:['.js','.css','.vue','.json'],
+    mainFields:['style','main'],
+      // mainFiles:[],
+    alias:{
+      bootstrap: 'bootstrap/dist/css/bootstrap.css',
+      vue$: 'vue/dist/vue.runtime.esm.js'
     }
+  },
+}
+```
 
 ### 用 webpack 自带插件定义全局变量
 
