@@ -105,7 +105,11 @@ fetch('/graphql', {
 
 
 
+*参考链接*
 
+- [GraphQL.js 入门](https://graphql.cn/graphql-js/)
+
+- [GraphQL - 中文网](https://graphql.cn/)
 
 
 
