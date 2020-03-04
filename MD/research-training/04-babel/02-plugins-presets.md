@@ -177,6 +177,39 @@ presets: [
 ]
 ```
 
+## `@babel/plugin-transform-runtime` 插件
+
+此插件用来复用 babel 注入的一些帮助代码，该帮助代码用来实现 js 的一些内置新 api。
+
+**安装**
+
+```shell
+npm install @babel/plugin-transform-runtime -D
+npm install @babel/runtime -S
+```
+
+**配置**
+
+```json
+{
+  "plugins": [
+    "@babel/plugin-transform-runtime"
+  ]
+}
+```
+
+## `@babel/polyfill`
+
+用来处理数组、对象等扩展的新方法。
+
+其用法是在模块内直接引用：
+
+```js
+// some.js
+require('@babel/polyfill');
+'aaa'.includes('a');
+```
+
 
 
 [1]: https://github.com/browserslist/browserslist

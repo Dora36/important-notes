@@ -118,3 +118,36 @@ npm run build
 ```
 
 此时通过 `node dist/bundle.js` 执行该文件，会打印出 `4`。
+
+## `babel-loader` 在 webpack 中的配置
+
+```shell
+npm install babel-loader @babel/core @babel/preset-env @babel/plugin-transform-runtime -D
+npm install @babel/runtime -S
+```
+
+```js
+// webpack.config.js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test:/\.js$/,
+        use: {
+          loader:'babel-loader',
+          options: {
+            presets:[
+              '@babel/preset-env'
+            ],
+            plugins: [
+              '@babel/plugin-transform-runtime'
+            ]
+          },
+          include: path.resolve(__dirname, 'src'),  // 匹配 js 文件时需要包含的文件夹
+          exclude: /node_modules/                   // 匹配js 文件时需要排除掉的文件夹
+        }
+      }
+    ]
+  }
+};
+```

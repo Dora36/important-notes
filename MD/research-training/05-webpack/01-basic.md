@@ -95,6 +95,10 @@ module.exports = {
 };
 ```
 
+`path` 是 `node` 内置的核心模块 其中 `resolve` 方法可以将相对路径解析为绝对路径。
+
+`path.resolve('dist')` 即在当前目录下解析出一个 `dist` 目录的绝对路径，`__dirname` 也表示在当前目录下解析。
+
 ### 多出口输出
 
 当通过多个入口起点、代码拆分或各种插件创建多个 bundle 时，则应该使用占位符来确保每个文件具有唯一的名称。
@@ -123,6 +127,39 @@ module.exports = {
 
 - `[chunkhash]`：基于每个 chunk 内容的 hash。
 
+示例：
+
+```js
+let path = require('path');
+let HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  mode:'development',
+  // 多入口
+  entry: {
+    home: './src/index.js',
+    other: './src/other.js'
+  },
+  output: {
+    // [name] 相当于变量，即入口文件的名字(entry 字段中的键名)
+    filename:'[name].js',
+    path: path.resolve(__dirname,'dist')
+  },
+  plugins:[
+    new HtmlWebpackPlugin({
+      template:'./index.html',
+      filename:'home.html',
+      chunks:['home']  // 通过 index.html 模板生成 home.html 并只引入 home.js，没有 chunks 会将生成的 js 文件全部引入 html 中。
+    }),
+    new HtmlWebpackPlugin({
+      template:'./index.html',
+      filename:'other.html',
+      chunks:['other'] // 通过 index.html 模板生成 other.html 并只引入 other.js
+    })
+  ]
+}
+```
+
 ### `publicPath`
 
 对于按需加载或加载外部资源（如图片、文件等）来说，`output.publicPath` 是很重要的选项。如果指定了一个错误的值，则在加载这些资源时会收到 404 错误。
@@ -146,6 +183,12 @@ Node 8.2+ 版本提供的 `npx` 命令，可以运行在初始安装的 webpack 
 
 ```shell
 npx webpack
+```
+
+会运行默认的配置文件 `webpack.config.js`。
+
+```shell
+npx webpack --config webpack.other.config.js   # 运行自定义的配置文件
 ```
 
 **npm scripts**
@@ -172,7 +215,7 @@ npm run build
 
 ### mode 模式
 
-通过选择 `development` 或 `production` 之中的一个，来设置 `mode` 参数，设置以后就可以启用相应模式下的 webpack 内置的优化。
+`mode` 参数默认两种 `production`（会压缩） 和 `development`，设置以后就可以启用相应模式下的 webpack 内置的优化。
 
 ```js
 // webpack.config.js
