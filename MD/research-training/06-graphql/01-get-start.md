@@ -81,7 +81,7 @@ console.log('Running a GraphQL API server at http://localhost:4000/graphql');
 
 <img src="./img/graphql.jpg" width="100%">
 
-## 客户端请求获取数据
+### 客户端请求获取数据
 
 在有了 `express-graphql` 的情况下，可以向 GraphQL 服务器上的入口端点发送一个 HTTP POST 请求，其中将 GraphQL 的 query 查询作为 JSON 形式的 `query` 字段的属性值，就能调用 GraphQL 服务器。
 
@@ -100,6 +100,59 @@ fetch('/graphql', {
 // data returned: Object { hello: "Hello world!" }
 ```
 
+## GraphQLSchema 构建 Schema
+
+使用 `GraphQLSchema` 构造函数创建 Schema 时，不需要使用 `type` 关键字定义 `Query` 和 `Mutation` 类型，而是需要像创建对象一样用 `GraphQLObjectType` 构造函数创建类型。
+
+```js
+const {GraphQLObjectType, GraphQLSchema, GraphQLString} = require('graphql');
+
+// 定义 User 类型
+const userType = new GraphQLObjectType({
+  name: 'User',
+  fields: {
+    name: {
+      type: GraphQLString,
+      args: {
+        name: { 
+          type: GraphQLString,
+          defaultValue: 'Dora'
+        }
+      },
+      resolve: (parentValue, args, request)=> {  // 
+        console.log(parentValue)  // { name: '', age: '15' }
+        return args.name
+      }
+    },
+    age: {
+      type: GraphQLString,
+    }
+  }
+});
+
+// 定义 Query 类型
+const queryType = new GraphQLObjectType({
+  name: 'Query',
+  fields: {
+    author: {
+      type: userType,
+      resolve: ()=> {
+        return {
+          name: '',
+          age: '15'
+        };
+      }
+    },
+  }
+});
+
+const schema = new GraphQLSchema({query: queryType});
+```
+
+注意，解析器函数提供 source（父类型 return 的值）对象作为第一个参数。但是，如果未提供解析器函数，则将在 source 中查找与该字段名称相同的方法来作为默认的解析器。如果找到，则使用 (args, context, info) 调用该方法。
+
+也就是说，resolve 解析器的函数第一个参数永远都是父类型 return 的值，第二个参数才是前端传的变量；而字段函数的第一个参数就是前端传过来的变量。
+
 
 
 
@@ -107,11 +160,6 @@ fetch('/graphql', {
 
 *参考链接*
 
-- [GraphQL.js 入门](https://graphql.cn/graphql-js/)
+- [GraphQL.js 教程](https://graphql.cn/graphql-js/)
 
 - [GraphQL - 中文网](https://graphql.cn/)
-
-
-
-
-
