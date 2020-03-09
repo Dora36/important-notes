@@ -244,7 +244,7 @@ module.exports = {
 }
 ```
 
-## 环境变量的配置
+## 合并不同配置文件
 
 配置文件分开，然后通过 webpack-merge 合并不同的配置文件。
 
@@ -293,9 +293,9 @@ module.exports = smart(BaseWebpackConfig,{
 
 ## webpack 的自带优化
 
-- `tree-shaking`，把没用到的代码自动删除。`import` 在生产环境下，会自动去除掉没用的代码，只有 `import` 语法可以自动 `tree-shaking`。es6 模块（`require`）会把结果放到 `default` 上。且 `require` 语法不支持 `tree-shaking`。
+- `tree-shaking`，把没用到的代码自动删除。`import` 在生产环境下，会自动去删除未用到的 `export` 导出，只有 `import` 语法可以自动 `tree-shaking`。es6 模块（`require`）会把结果放到 `default` 上。且 `require` 语法不支持 `tree-shaking`。
 
-- `Scope Hoisting` 作用域提升，在 webpack 中会自动省略一些可以简化的代码，比如一些变量等。
+- `Scope Hoisting` 作用域提升，在 webpack 中会自动省略一些可以简化的代码，比如一些变量赋值等。
 
 ## 多页面打包时抽离公共代码
 
@@ -411,3 +411,12 @@ const {
 } = require("tapable");
 ```
 
+## tree shaking
+
+**使用条件：**
+
+- 使用 ES2015 模块语法（即 `import` 和 `export`）。
+- 在项目 `package.json` 文件中，添加一个 `sideEffects` 入口。
+- 引入一个能够删除未用到的 export 导出代码的压缩工具（例如 `UglifyJSPlugin`）。
+
+而 webpack 的 `production` mode 自带 `UglifyJSPlugin` 压缩插件，所以在生产模式下，可自动启用 tree shaking。

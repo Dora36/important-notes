@@ -211,20 +211,30 @@ npx webpack --config webpack.other.config.js   # 运行自定义的配置文件
 npm run build
 ```
 
-## 其它 config 属性
+## 环境变量的配置 NODE_ENV
+
+webpack 4 中可通过 配置文件中的 `mode` 属性设置模块中使用的环境变量，在版本 4 之前需要使用 `DefinePlugin` 插件定义全局变量的方式来定义全局的环境变量。
 
 ### mode 模式
 
 `mode` 参数默认两种 `production`（会压缩） 和 `development`，设置以后就可以启用相应模式下的 webpack 内置的优化。
 
+不配置 mode 属性，则会默认设置为 `production`。配置了 mode 属性后，在所有的模块文件中，`process.env.NODE_ENV` 为 mode 设置的值；但是在 `webpack.config.js` 配置文件中，`process.env.NODE_ENV` 是 `undefined`。
+
 ```js
 // webpack.config.js
+console.log(process.env.NODE_ENV)  // undefined
 module.exports = {
   mode: 'development'
 };
 ```
 
-也可从从 CLI 参数中传递。
+```js
+// src/index.js
+console.log(process.env.NODE_ENV)  // development
+```
+
+也可从从 CLI 参数中传递 mode 属性的值。
 
 ```shell
 webpack --mode=production
@@ -236,6 +246,36 @@ webpack --mode=production
 |:-:|:--|
 development|会将 process.env.NODE_ENV 的值设为 development。启用 NamedChunksPlugin 和 NamedModulesPlugin。|
 production|会将 process.env.NODE_ENV 的值设为 production。启用 FlagDependencyUsagePlugin, FlagIncludedChunksPlugin, ModuleConcatenationPlugin, NoEmitOnErrorsPlugin, OccurrenceOrderPlugin, SideEffectsFlagPlugin 和 UglifyJsPlugin.|
+
+### 配置文件中的环境变量
+
+在 `webpack.config.js` 中的环境变量可从命令行中传入。
+
+```json
+"scripts": {
+  "build": "NODE_ENV=development webpack --mode=production"
+}
+```
+
+`NODE_ENV=development` 在 windows 环境下会报错，需要改为 `set NODE_ENV=production`。
+
+此时，就可以在 `webpack.config.js` 配置文件中使用 `process.env.NODE_ENV` 了。
+
+```shell
+npm run build
+```
+
+```js
+// webpack.config.js
+console.log(process.env.NODE_ENV)  // development
+```
+
+```js
+// src/index.js
+console.log(process.env.NODE_ENV)  // production
+```
+
+## 其它 config 属性
 
 ### target 构建目标
 
