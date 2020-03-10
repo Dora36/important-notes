@@ -383,11 +383,23 @@ module.exports = {
 
 可以编译和转换 Vue 组件。
 
+**特性**
+
+- 允许为 Vue 组件的每个部分使用其它的 webpack loader，例如在 `<style>` 的部分使用 Sass 和在 `<template>` 的部分使用 Pug；
+- 允许在一个 `.vue` 文件中使用自定义块，并对其运用自定义的 loader 链；
+- 当 Vue Loader 编译单文件组件中的 `<template>` 块时，它也会将所有遇到的资源 URL 转换为 webpack 模块请求。此外，如果为 `<style>` 块配置了 `css-loader`，则 CSS 中的资源 URL 也会被转换为模块请求。
+- 为每个组件模拟出 scoped CSS；
+- 在开发过程中使用热重载来保持状态。
+
 **安装**
 
 ```shell
 npm install vue vue-loader vue-template-compiler vue-style-loader -D
 ```
+
+`vue-template-compiler` 需要独立安装的原因是可以单独指定其版本。
+
+每个 vue 包的新版本发布时，一个相应版本的 `vue-template-compiler` 也会随之发布。编译器的版本必须和基本的 vue 包保持同步，这样 `vue-loader` 就会生成兼容运行时的代码。这意味着每次升级项目中的 vue 包时，也应该匹配升级 `vue-template-compiler`。
 
 **配置**
 
