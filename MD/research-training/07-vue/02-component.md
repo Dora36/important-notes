@@ -217,9 +217,146 @@ export default {
 
 ### 命名
 
-事件名不会被用作一个 js 变量名或属性名，所以就没有理由使用 camelCase 或 PascalCase 了。因此，推荐始终使用 kebab-case 命名事件名。
+事件名不会被用作一个 js 变量名或属性名，所以就没有理由使用 camelCase 或 PascalCase 了。因此，推荐始终使用 kebab-case 给事件命名。
 
 
+## slot 插槽
 
+如果一个组件模版没有包含 `<slot>` 元素，则该组件起始标签和结束标签之间的任何内容都会被抛弃。
 
+父级模板里的所有内容都是在父级作用域中编译的；子模板里的所有内容都是在子作用域中编译的，即使是插槽，也不能在父级模版里使用子级作用域。
 
+### 插槽默认值
+
+```html
+<!-- SubmitButton.vue -->
+<button type="submit">
+  <slot>提交</slot>
+</button>
+```
+
+组件的 `<slot>` 标签内的内容会被作为默认值。即父组件使用组件标签时，若没有为插槽提供任何内容，会用 `<slot>` 标签内的默认值渲染；如果父组件提供了插槽内容，则用父组件提供的内容渲染。
+
+```html
+<submit-button></submit-button>
+<submit-button>确定</submit-button>
+```
+
+### 具名插槽
+
+`<slot>` 标签的 `name` 属性，可为该插槽命名，而不带 `name` 属性的 `<slot>` 会带有隐含的名字 `default`。
+
+```html
+<!-- BaseLayout.vue -->
+<div class="container">
+  <header>
+    <slot name="header"></slot>
+  </header>
+  <main>
+    <slot></slot>
+  </main>
+  <footer>
+    <slot name="footer"></slot>
+  </footer>
+</div>
+```
+
+在向具名插槽提供内容的时候，可以在 `<template>` 元素上使用 `v-slot` 指令，并以 `v-slot` 的参数形式提供其名称：
+
+```html
+<base-layout>
+  <template v-slot:header>
+    <h1>header</h1>
+  </template>
+
+  <p>main content</p>
+
+  <template v-slot:footer>
+    <p>footer</p>
+  </template>
+</base-layout>
+```
+
+任何没有被包裹在带有 `v-slot` 的 `<template>` 中的内容都会被视为默认插槽的内容。如果为了布局明确，也可以在一个 `<template>` 中包裹默认插槽的内容：
+
+```html
+<template v-slot:default>
+  <p>main content</p>
+</template>
+```
+
+### 插槽 prop 向父组件传参
+
+绑定在 `<slot>` 标签上的属性被称为插槽 prop，同时在父级作用域中，可以使用 `v-slot` 的值来获取插槽 prop 传递过来的属性值，`v-slot` 的值是一个包含所有插槽 prop 的对象。
+
+```html
+<!-- CurrentUser.vue -->
+<span>
+  <slot v-bind:user="user">
+    {{ user.lastName }}
+  </slot>
+</span>
+```
+
+```html
+<!-- Home.vue -->
+<current-user>
+  <template v-slot:default="slotProps">
+    {{ slotProps.user.firstName }}
+  </template>
+</current-user>
+```
+
+### v-slot
+
+**使用位置**
+
+`v-slot` 只能添加在 `<template>` 上，除非只有一个默认的 `<slot>` 标签，不存在其它具名插槽时，`v-slot` 才可以直接用在组件标签上。
+
+```html
+<!-- Home.vue -->
+<current-user v-slot:default="slotProps">
+  {{ slotProps.user.firstName }}
+</current-user>
+```
+
+**不带参数简写**
+
+不带参数的 `v-slot` 直接对应默认插槽。
+
+```html
+<!-- Home.vue -->
+<current-user v-slot="slotProps">
+  {{ slotProps.user.firstName }}
+</current-user>
+```
+
+而该简写语法，不能与具名插槽混用。只要出现多个插槽，应始终为所有的插槽使用完整的基于 `<template>` 的语法。
+
+**动态插槽名**
+
+动态指令参数也可以用在 `v-slot` 上，来定义动态的插槽名：
+
+```html
+<base-layout>
+  <template v-slot:[dynamicSlotName]>
+    ...
+  </template>
+</base-layout>
+```
+
+**v-slot 的简写**
+
+`v-slot` 的简写是 `#`号。例如 `v-slot:header` 可以简写为 `#header`。和其它指令一样，该缩写只在其有参数的时候才可用。
+
+**解构插槽 Prop**
+
+插槽传参的内部工作原理是将插槽内容包括在传入一个函数的单个参数的里。所以 `v-slot` 的值就相当于函数接收一个对象参数。因此就可以使用解构来获取具体的插槽 prop：
+
+```html
+<current-user #default="{ user }">
+  {{ user.firstName }}
+</current-user>
+```
+
+同样解构的其它语法都可用，比如可以重命名，可以设置某个属性的默认值以防 prop 是 `undefined` 的情形。
