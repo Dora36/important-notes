@@ -1,6 +1,4 @@
-## Vue 实例
-
-### 响应式
+## 响应式
 
 只有当实例被创建时就已经存在于 `data` 中的属性才是 **响应式** 的。
 
@@ -13,9 +11,7 @@ new Vue({
 })
 ```
 
-## 模版语法
-
-### 动态绑定属性
+## 动态绑定属性
 
 ```html
 <a v-bind:[attributeName]="url" v-on:[eventName]="doSomething"> ... </a>
@@ -32,11 +28,9 @@ data(){
 
 在 HTML 文件里使用 vue 时，需要避免使用大写字符来命名键名，因为浏览器会把 attribute 名全部强制转为小写。
 
-### 指令
+## v-bind
 
-#### v-bind
-
-v-bind 指令用于响应式地更新 HTML 的属性，即属性值可以使用变量或表达式。
+`v-bind` 指令用于响应式地更新 HTML 的属性，即属性值可以使用变量或表达式。
 
 ```html
 <!-- 完整语法 -->
@@ -49,7 +43,7 @@ v-bind 指令用于响应式地更新 HTML 的属性，即属性值可以使用�
 <a :[key]="url"> ... </a>
 ```
 
-#### v-on
+## v-on
 
 ```html
 <!-- 完整语法 -->
@@ -60,6 +54,41 @@ v-bind 指令用于响应式地更新 HTML 的属性，即属性值可以使用�
 
 <!-- 动态参数的缩写 (2.6.0+) -->
 <a @[event]="doSomething"> ... </a>
+```
+
+### 事件中的 event
+
+**直接绑定**
+
+```html
+<!-- 直接绑定一个方法名 -->
+<input type="text" :value="textValue" @input="textInput">
+```
+
+```js
+methods: {
+  textInput(event){
+    // `event` 是原生 DOM 事件
+    this.textValue = $event.target.value
+  }
+}
+```
+
+**内联方法调用传参**
+
+```html
+<!-- 在内联 js 语句中调用方法并传参 -->
+<div @click="greet('hi', $event)"></div>
+```
+
+```js
+methods: {
+  greet: function (msg, event) {
+    if (event) {
+      console.log(event.target.tagName + ' say ' + msg);
+    }
+  }
+}
 ```
 
 ## 计算属性的缓存
@@ -249,4 +278,153 @@ methods: {
     })
   }
 }
+```
+
+## v-model 表单输入绑定
+
+可以用 `v-model` 指令在表单 `<input>`、`<textarea>` 及 `<select>` 元素上创建双向数据绑定。它会根据控件类型自动选取正确的方法来更新元素。
+
+但 `v-model` 本质上不过是语法糖。它负责监听用户的输入事件以更新数据，并对一些极端场景进行一些特殊处理。
+
+`v-model` 会忽略所有表单元素的 `value`、`checked`、`selected` 属性的初始值而总是将 Vue 实例的数据作为数据来源。因此应该在组件的 data 选项中声明初始值，即 `v-model` 的属性值。
+
+### `v-model` 原理
+
+`v-model` 在内部为不同的输入元素使用不同的属性并抛出不同的事件：
+
+- `text` 和 `textarea` 元素通过 `input` 事件改变 `value` 属性并返回 `value` 属性的值；
+- `checkbox` 和 `radio` 通过 `change` 事件改变选项的 `checked` 属性，并返回选中的 `value` 属性的值；
+- `select` 元素通过 `change` 事件改变 `option` 的 `selected` 属性，并返回 `option` 标签的 `value` 值或标签内容。
+
+### radio 单选按钮
+
+```html
+<div>
+  <input type="radio" id="one" value="One" v-model="picked">
+  <label for="one">One</label>
+  <br>
+  <input type="radio" id="two" value="Two" v-model="picked">
+  <label for="two">Two</label>
+  <br>
+  <span>Picked: {{ picked }}</span>
+</div>
+```
+
+```js
+data(){
+  return {
+    picked: '',
+  }
+}
+```
+
+`v-model` 返回选中的选项的 `value` 值。同一组的单选选项必须有一样的 `v-model` 变量，且如果要设默认选中的值，只需在 `data` 中将 `v-model` 的初始值设为要选中的选项的 `value` 值即可。
+
+### checkbox 复选框
+
+**只有一个复选框时**
+
+只有一个复选框时，`v-model` 绑定的初始值如果为基本类型的值，则切换状态时，`v-model` 返回布尔值类型。即复选框选中时，`v-model` 的值为 `true`；取消选中时，`v-model` 的值为 `false`。且如果初始值的类型为 truthy 时，复选框时选中状态。
+
+如果 `v-model` 绑定的初始值为数组类型时，`v-model` 返回复选框的 `value` 属性的值。即选中时，会向数组中 `push` 复选框 `value` 的值，取消选中时，删掉数组中 `value` 的值。
+
+**多个复选框时**
+
+多个复选框时，`v-model` 绑定值为一个数组，且初始值必须为数组类型。
+
+```html
+<div>
+  <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+  <label for="jack">Jack</label>
+  <input type="checkbox" id="john" value="John" v-model="checkedNames">
+  <label for="john">John</label>
+</div>
+```
+
+```js
+data(){
+  return {
+    checkedNames: [],
+  }
+}
+```
+
+选中时，会向数组中 `push` 选中项的 `value` 值。且如果选项的 `value` 值存在于初始值数组中，则这个选项就是默认选中状态。
+
+### select 下拉框
+
+**单选时**
+
+```html
+<div>
+  <select v-model="selected">
+    <option disabled value="">请选择</option>
+    <option value="aaa">A</option>
+    <option>B</option>
+    <option>C</option>
+  </select>
+</div>
+```
+
+```js
+data(){
+  return {
+    selected: '',
+  }
+}
+```
+
+返回选中的 `option` 选项的 `value` 值；或没有 `value` 属性时，返回 `option` 标签的内容。`v-model` 的初始值可匹配任何选项的 `value` 或 `option` 标签内容作为默认选中的选项。
+
+上例中，初始值为空字符串，匹配到第一个 `value` 为空的 `option` 选项。而如果初始值未能匹配任何选项，`<select>` 元素将被渲染为“未选中”状态。此时用户无法选择第一个选项，且不会触发 `change` 事件。因此建议，可以像上例一样提供一个值为空的禁用选项；或者初始值要始终匹配到一个默认值。
+
+**多选时**
+
+```html
+<div>
+  <select v-model="selected" multiple style="width:50px">
+    <option value="aaa">A</option>
+    <option>B</option>
+    <option>C</option>
+  </select>
+</div>
+```
+
+```js
+data(){
+  return {
+    selected: [],
+  }
+}
+```
+
+`v-model` 的初始值必须是数组类型。且无论选中的顺序如何，数组都是按照 `option` 标签的顺序排列的选中项。
+
+### v-model 修饰符
+
+#### `.lazy`
+
+在默认情况下，`v-model` 在每次 `input` 事件触发后将输入框的值与数据进行同步，可以添加 `lazy` 修饰符，从而转变为使用 `change` 事件进行同步。
+
+```html
+<!-- 在“change”时而非“input”时更新 -->
+<input v-model.lazy="msg" >
+```
+
+#### `.number`
+
+自动将用户的输入值转为数值类型，如果这个值无法被 `parseFloat()` 解析，则会返回原始的值。
+
+```html
+<input v-model.number="age" type="number">
+```
+
+这通常很有用，因为即使在 `type="number"` 时，HTML 输入元素的值也总会返回字符串。
+
+#### `.trim`
+
+可以自动过滤用户输入的首尾空白字符。
+
+```html
+<input v-model.trim="msg">
 ```

@@ -213,13 +213,6 @@ export default {
 <p mytitle="haha" myid="id">提示信息</p>
 ```
 
-## 自定义事件
-
-### 命名
-
-事件名不会被用作一个 js 变量名或属性名，所以就没有理由使用 camelCase 或 PascalCase 了。因此，推荐始终使用 kebab-case 给事件命名。
-
-
 ## slot 插槽
 
 如果一个组件模版没有包含 `<slot>` 元素，则该组件起始标签和结束标签之间的任何内容都会被抛弃。
@@ -360,3 +353,142 @@ export default {
 ```
 
 同样解构的其它语法都可用，比如可以重命名，可以设置某个属性的默认值以防 prop 是 `undefined` 的情形。
+
+## 自定义事件
+
+### 命名
+
+事件名不会被用作一个 js 变量名或属性名，所以就没有理由使用 camelCase 或 PascalCase 了。因此，推荐始终使用 kebab-case 给事件命名。
+
+### 事件触发
+
+**父组件定义自定义事件**
+
+父组件通过 `v-on` 自定义事件，`v-on` 的参数是自定义的事件名称。
+
+```html
+<my-component @my-event="eventFunction"></my-component>
+```
+
+```js
+methods: {
+  eventFunction(){
+    // ...
+  }
+}
+```
+
+**子组件触发自定义事件**
+
+子组件通过调用内建的 `$emit` 方法，并传入事件名称来触发事件：
+
+```html
+<!-- MyComponent.vue -->
+<div @click="$emit('my-event')"></div>
+```
+
+**自定义事件传参**
+
+`$emit` 的第二个参数可以用来向父组件的自定义事件传参。
+
+```html
+<!-- MyComponent.vue -->
+<div @click="$emit('my-event', 'msg')"></div>
+```
+
+在父级组件监听这个事件的时候，如果是内联 js 的写法，可直接通过 `$event` 访问到被抛出的这个值：
+
+```html
+<my-component @my-event="msg = $event"></my-component>
+```
+
+如果是一个方法，那么这个值将会作为第一个参数传入这个方法：
+
+```html
+<my-component @my-event="eventFunction"></my-component>
+```
+
+```js
+methods: {
+  eventFunction(msg){
+    this.msg = msg;
+  }
+}
+```
+
+## 自定义组件的 v-model
+
+`v-model` 的本质就是通过监听 `input` 事件，改变 `value` 属性的值，即：
+
+```html
+<input v-model="searchText">
+<!-- 等价于 -->
+<input
+  v-bind:value="searchText"
+  v-on:input="searchText = $event.target.value"
+>
+```
+
+当用在组件上时，`v-model` 的等价写法为：
+
+```html
+<custom-input
+  v-bind:value="searchText"
+  v-on:input="searchText = $event"
+></custom-input>
+<!-- 等价于 -->
+<custom-input v-model="searchText"></custom-input>
+```
+
+此时，自定义的组件中需要定义传入的 `value` 属性的 `props`，及通过 `$emit` 触发父组件的 `input` 事件，并将输入框的值传给父组件的 `input` 事件。
+
+```html
+<!-- CustomInpit.vue -->
+<input
+  v-bind:value="value"
+  v-on:input="$emit('input', $event.target.value)"
+>
+```
+
+```js
+export default {
+  props: ['value'],
+}
+```
+
+### 非 input 控件的自定义 v-model
+
+一个组件上的 `v-model` 默认会利用名为 `value` 的 prop 和名为 `input` 的事件，但是像单选框、复选框等类型的输入控件可能会有不同的处理办法。此时，可在组件选项中定义 `model` 选项来避免这样的冲突：
+
+```html
+<!-- BaseCheckbox.vue -->
+<template>
+  <div>
+    <input
+      type="checkbox"
+      v-bind:checked="checked"
+      v-on:change="$emit('change', $event.target.checked)"
+    >
+  </div>
+</template>
+
+<script>
+export default {
+  model: {
+    prop: 'checked',
+    event: 'change'
+  },
+  props: {
+    checked: Boolean
+  }
+};
+</script>
+```
+
+这时，就可直接使用这个组件的 v-model 了。
+
+```html
+<base-checkbox v-model="checkboxValue"></base-checkbox>
+```
+
+`checkboxValue` 的值将会传入名为 `checked` 的 prop。同时当 BaseCheckbox 组件的复选框触发 `change` 事件并附带一个新的值的时候，`checkboxValue` 的属性将会被更新。
