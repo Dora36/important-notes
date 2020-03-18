@@ -106,3 +106,9 @@ export default {
   </div>
 </template>
 ```
+
+### 其它组件中使用
+
+```js
+this.$snackbar(msg)
+```
