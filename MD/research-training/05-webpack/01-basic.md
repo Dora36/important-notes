@@ -50,7 +50,6 @@ module.exports = {
 };
 ```
 
-
 如果向 `entry` 属性传入一个数组，那么数组的每一项都会执行，并且将它们的依赖输出到一个出口文件中。
 
 ### 多入口
@@ -291,3 +290,61 @@ module.exports = {
 使用 `node` webpack 会编译为用于 `Node.js` 环境的代码。使用 `Node.js` 的 `require`，而不是使用任意内置模块（如 `fs` 或 `path`）来加载 chunk。
 
 每个 `target` 值都有各种部署/环境特定的附加项，以支持满足其需求。
+
+## 快速配置
+
+**安装**
+
+```shell
+npm init -y
+npm install webpack webpack-cli webpack-dev-server html-webpack-plugin -D
+npm install babel-loader @babel/core @babel/preset-env -D
+```
+
+**配置文件**
+
+```js
+// webpack.config.js
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  mode: 'development',
+  entry: './src/index.js',    // 默认
+  output: {                   // 默认 ./dist/main.js
+    publicPath: '/', 
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  devServer: {
+    contentBase: './dist'
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'index.html'
+    })
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      }
+    ]
+  }
+};
+```
+
+**启动配置 package.json**
+
+```json
+"scripts": {
+  "start": "webpack-dev-server",
+},
+```
