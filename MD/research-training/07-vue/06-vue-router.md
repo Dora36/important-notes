@@ -486,6 +486,14 @@ router.push({ path: `/user/${userId}` })          // -> /user/123
 
 Vue Router 的导航方法 (`push`、 `replace`、 `go`) 在各类路由模式 (`history`、 `hash` 和 `abstract`) 下表现一致。
 
+### router.addRoutes()
+
+动态添加更多的路由规则。参数必须是一个符合 `routes` 选项要求的数组。
+
+```js
+router.addRoutes(routes)
+```
+
 ## 其它配置
 
 ### 滚动行为
