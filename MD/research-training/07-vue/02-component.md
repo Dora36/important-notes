@@ -122,6 +122,13 @@ requireComponent.keys().forEach(fileName => {
 import '@/components/globals';
 ```
 
+在其他组件中使用的时候，就不需要再注册了，直接使用组件标签即可：
+
+```html
+<BaseButton></BaseButton>
+<base-button></base-button>
+```
+
 ## prop
 
 ### 子组件不可以改变 prop 的值
