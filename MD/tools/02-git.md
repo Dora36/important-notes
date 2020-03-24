@@ -269,7 +269,7 @@ $ git checkout -b bugFix    # 从当前分支检出新分支
 如果本地创建的分支需要和远程的分支关联，则可以使用：
 
 ```shell
-$ git checkout -b dev origin/dev   # 新分支与远程分支关联
+$ git checkout -b dev origin/dev   # 创建新的分支并与远程分支关联
 ```
 
 ### 5. 合并分支 
