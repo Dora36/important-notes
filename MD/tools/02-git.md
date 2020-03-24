@@ -263,13 +263,13 @@ $ git commit            # 先切换分支再提交，就会提交到新建的分
 ### 4. 创建并切换到新分支 `git checkout -b <分支名>` 
 
 ```shell
-$ git checkout -b bugFix
+$ git checkout -b bugFix    # 从当前分支检出新分支
 ```
 
 如果本地创建的分支需要和远程的分支关联，则可以使用：
 
 ```shell
-$ git checkout -b dev origin/dev
+$ git checkout -b dev origin/dev   # 新分支与远程分支关联
 ```
 
 ### 5. 合并分支 
@@ -324,6 +324,12 @@ $ git push origin --delete gh-pages
 ```shell
 $ git switch master    # 切换到已有分支
 $ git switch -c dev    # 创建并切换到新的 dev 分支
+```
+
+### 8. 更新本地分支
+
+```
+git remote update origin --prune
 ```
 
 ## 将本地仓库推送到远程仓库
