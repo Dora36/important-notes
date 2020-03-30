@@ -185,7 +185,7 @@ axios.get('/user/12345')
 
 ## 请求方法的别名
 
-在使用别名方法时，`url`、`method`、`data` 这些属性都不必在配置中指定。
+在使用别名方法时，`url`、`method`、`data` 这些属性都不必在 config 配置中指定。
 
 - `axios.request(config)`
 - `axios.get(url[, config])`
@@ -196,35 +196,6 @@ axios.get('/user/12345')
 - `axios.put(url[, data[, config]])`
 - `axios.patch(url[, data[, config]])`
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 参考链接：
 
 [axios中文文档](http://www.axios-js.com/zh-cn/docs/index.html)
-
-
