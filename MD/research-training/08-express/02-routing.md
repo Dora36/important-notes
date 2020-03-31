@@ -167,54 +167,118 @@ let someRouter = require('./routes/some')
 app.use('/some', someRouter)
 ```
 
+### Router
+
+router 对象是中间件和路由的实例，仅能够执行中间件和路由功能。每个 Express 应用程序都有一个内置的应用路由器。
+
+路由器类似于中间件，因此可以将其作为 `app.use()` 的参数或用作另一个路由实例的 `use()` 方法的参数。
+
+顶级 `express` 对象具有一个 `Router()` 方法，可以用该方法创建一个新的路由器。
+
+一旦创建路由器后，就可以像应用程序一样向其添加中间件和 HTTP 方法路由（例如 get，put，post 等）。 例如：
+
+```js
+var express = require('express');
+var router = express.Router();
+
+// 在匹配到任何进入该路由的请求时调用
+router.use(function (req, res, next) {
+  // 类似于其余中间件
+  next()
+})
+
+// 添加 http 方法
+router.get('/events', function (req, res, next) {
+  // ..
+})
+module.exports = router;
+```
+
+然后，可以将路由实例用于特定的根 URL，以这种方式将路由分为文件或甚至是微型应用程序：
+
+```js
+// 只有 /calendar/* 路径的请求，会被传递给 router
+app.use('/calendar', router)
+```
+
 ## Request 
 
 `req` 对象代表 HTTP 请求，并具有请求查询字符串，参数，body 体，HTTP 头等属性。
 
-- `req.app`：此属性保存对使用中间件的 Express 应用程序实例的引用。如果遵循创建仅导出中间件功能并将其在主文件中的 `require()` 的模块的模式，则中间件可以通过 `req.app` 访问 Express 实例。
+- `req.originalUrl`：请求的原始 url 的路径及查询参数部分。
 
 - `req.baseUrl`：路由器实例在 app 中挂载的 URL 路径。如 `app.use('/some', someRouter)` 中的 `/some`。
+
+- `req.url`：node 的 http 模块自有的属性，与 originalUrl 的区别是 不包含 baseUrl 部分。
+
+- `req.path`：请求 url 的路径部分，即 baseUrl 之后的路径部分。
+
+- `req.params`：是一个对象，包含路由参数（用冒号设置的 url 参数）的属性。该对象默认为 `{}`。
+
+- `req.query`：是一个对象，其中包含路由中每个查询字符串参数的属性。如果没有查询字符串，则为空对象 `{}`。
+
+    ```js
+    // app.js
+    app.use('/test', require('./routes/test'));
+    ```
+
+    ```js
+    // ./routes/test.js
+    // 请求的 url：'http://localhost:3000/test/post/36?a=9'
+    router.post('/post/:id', function (req, res) {
+      res.json({
+        originalUrl: req.originalUrl,    // "/test/post/36?a=9"
+        baseUrl: req.baseUrl,            // "/test"
+        url: req.url,                    // "/post/36?a=9"
+        path: req.path,                  // "/post/36"
+        params: req.params,              // {id: "36"}
+        query: req.query                 // {a: "9"}
+      })
+    })
+    ```
 
 - `req.body`：包含在请求正文中提交的数据的键值对，get 没有，post 有。默认情况下，是没有该属性的。会在通过 `express.json()` 或 `express.urlencoded()` 解析中间件时添加到 `req` 对象上。
 
 - `req.cookies`：默认没有该属性，只有使用 `cookie-parser` 中间件时，此属性是一个包含请求发送的 cookie 的对象。如果请求中不包含 Cookie，则默认为 `{}`。
 
-- `req.fresh`：
+- `req.signedCookies`：带签名的 cookie。
 
+    ```js
+    let express = require('express')
+    let app = express()
 
-```js
-let express = require('express')
-let app = express()
+    // 添加 body 属性
+    app.use(express.json())                          // 解析 application/json
+    app.use(express.urlencoded({ extended: false })) // 解析 application/x-www-form-urlencoded
 
-// 添加 body 属性
-app.use(express.json())                         // 解析 application/json
-app.use(express.urlencoded({ extended: false })) // 解析 application/x-www-form-urlencoded
+    // 添加 cookies 属性
+    let cookieParser = require('cookie-parser')
+    app.use(cookieParser())
 
-// 添加 cookies 属性
-let cookieParser = require('cookie-parser')
-app.use(cookieParser())
+    app.post('/profile', function (req, res, next) {
+      res.json(req.body)
+    })
+    ```
 
-app.post('/profile', function (req, res, next) {
-  console.log(req.body)
-  res.json(req.body)
-})
-```
+- `req.protocol`：请求的协议，http 或 https。
 
+- `req.secure`：是否是 https 请求，是为 true。
 
+- `req.hostname`：请求头中 `Host` 的主机名。如果配置了代理，则此属性将从 `X-Forwarded-Host` 头字段获取值。此字段可由客户端或代理设置。
 
+- `req.subdomains`：请求的域名中的子域数组。
 
+- `req.ip`：发送请求的远程IP地址。
 
+- `req.method`：发送请求的 HTTP 方法，GET，POST，PUT 等等。
 
+- `req.fresh`：表示请求是否 fresh，与 `req.stale` 相反。与请求头的配置有关，`cache-control` 头没有 `no-cache` 时为 `true` 等等。
 
-
-
-
-
-
-
-
+- `req.app`：此属性保存对使用中间件的 Express 应用程序实例的引用。如果遵循创建仅导出中间件功能并将其在主文件中的 `require()` 的模块的模式，则中间件可以通过 `req.app` 访问 Express 实例。
 
 ## Response
+
+res 对象表示 Express 应用在收到 HTTP 请求时发送的 HTTP 响应。
 
 下列响应对象 `res` 上的方法可以向客户端发送响应，并终止 请求 - 响应 周期。 如果路由处理中未调用这些方法，则客户端请求将被挂起。
 
@@ -227,3 +291,17 @@ app.post('/profile', function (req, res, next) {
 - `res.send()`：发送多种类型的响应。
 - `res.sendFile()`：将文件作为八位字节流发送。
 - `res.sendStatus()`：参数为 http 状态码，作用为设置响应状态代码，并将其字符串表示形式发送为响应正文。
+
+其余方法：
+
+- `res.append(field [, value])`：将指定的值附加到 HTTP 响应头。如果没有设置，则创建相应的头信息。value 参数可以是字符串或数组。
+
+- `res.set(field [, value])`：重置 HTTP 响应头。如果要一次设置多个字段，可传递一个对象作为参数。
+
+- `res.cookie()`：设置 cookie。
+
+- `res.clearCookie()`：清除指定属性名的 cookie 值。
+
+- `res.status(code)`：设置响应的 HTTP 状态。可链式调用，是 node 中的 `response.statusCode` 别名。
+
+- `res.type(type)`：设置 `Content-Type` 头信息。
