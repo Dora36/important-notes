@@ -258,6 +258,51 @@ Number.isSafeInteger(Number.MAX_SAFE_INTEGER + 1) // false
 Number.isSafeInteger(3.0000000000000002)  // true
 ```
 
+## 关于数字运算精度的问题
+
+```js
+0.1 + 0.2     // 0.30000000000000004
+5.06 * 100    // 505.99999999999994
+6 * 0.7       // 4.199999999999999
+0.3 / 0.1     // 2.9999999999999996
+```
+
+### 原生方法
+
+- 使用 `parseFloat(result.toFixed(10))`，但当运算结果比较大时，`toFixed` 的位数可能会不够用，因此该方法可计算数字比较小的运算。
+
+- 将浮点数转为整数运算，再对结果做除法。但也有不适用的，比如 `5.06 * 100 * 5 / 100`，得到 `25.299999999999997`。
+
+- 把浮点数转化为字符串，模拟实际运算的过程。大多第三方库用的就是这种方法。
+
+
+```js
+parseFloat((0.1 + 0.2).toFixed(10))    // 0.3
+parseFloat((5.06 * 100).toFixed(10))   // 506
+parseFloat((6 * 0.7).toFixed(10))      // 4.2
+parseFloat((0.3 / 0.1).toFixed(10))    // 3
+```
+
+### 第三方库 bignumber.js
+
+```shell
+npm install bignumber.js
+```
+
+```js
+const BigNumber = require('bignumber.js');
+
+let a = new BigNumber(0.1);
+let b = new BigNumber(0.2);
+let c = a.plus(b)
+let d = a.minus(b)
+let e = a.multipliedBy(b)
+let f = a.dividedBy(b)
+
+console.log(c);                // { s: 1, e: -1, c: [ 30000000000000 ] }
+console.log(c.toNumber());     // 0.3
+```
+
 参考链接：
  [*Number 对象*](https://wangdoc.com/javascript/stdlib/number.html)
  [*数值的扩展*](http://es6.ruanyifeng.com/#docs/number)
