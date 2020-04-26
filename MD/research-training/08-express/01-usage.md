@@ -55,7 +55,7 @@ DEBUG=my-express:* npm start
 
 ### 启动
 
-安装 `nodemon` 实时启动，即修改 `app.js` 后会自动更新。
+安装 `nodemon` 实现自动重启，即在检测到目录中的文件更改时，自动重启 `app.js`。
 
 ```shell
 npm install nodemon -D
@@ -65,9 +65,11 @@ npm install nodemon -D
 // package.json
 "scripts": {
   "start": "node ./bin/www",
-  "devstart": "nodemon ./bin/www"
+  "dev": "nodemon ./bin/www"
 }
 ```
+
+在 `nodemon` 运行时，可通过输入 `rs`，然后回车即可手动重新启动应用程序。
 
 ## 利用 Express 托管静态文件
 
