@@ -99,6 +99,30 @@ JavaScript 提供四个 URL 的编码/解码方法：
 
 - `decodeURIComponent()`：用于URL 片段的解码。它是 `encodeURIComponent()` 方法的逆运算。它接受一个参数，就是转码后的 URL 片段。
 
+## URL 构造函数
+
+`new URL(input[, base])`：通过将 `input` 相对于 `base` 进行解析，创建一个新的 URL 对象。
+
+- `input`：要解析的绝对或相对的 URL。如果 `input` 是相对路径，则需要 `base`。 如果 `input` 是绝对路径，则忽略 `base`。
+- `base`：如果 `input` 不是绝对路径，则为要解析的基本 URL。
+
+### url 对象
+
+URL 实例的属性与Location对象的属性基本一致，返回当前 URL 的信息。
+
+- `url.href`：返回整个 URL
+- `url.protocol`：返回协议，以冒号 `:` 结尾
+- `url.hostname`：返回域名
+- `url.host`：返回域名与端口，包含 `:` 号，默认的 `80` 和 `443` 端口会省略
+- `url.port`：返回端口
+- `url.origin`：返回协议、域名和端口
+- `url.pathname`：返回路径，以斜杠 `/` 开头
+- `url.search`：返回查询字符串，以问号 `?` 开头
+- `url.searchParams`：返回一个 `URLSearchParams` 实例，该属性是 Location 对象没有的
+- `url.hash`：返回片段识别符，以井号 `#` 开头
+- `url.password`：返回域名前面的密码
+- `url.username`：返回域名前面的用户名
+
 ## URLSearchParams 对象
 
 `URLSearchParams` 对象是浏览器的原生对象，用来构造、解析和处理 URL 的查询字符串（即 URL 问号后面的部分）。
