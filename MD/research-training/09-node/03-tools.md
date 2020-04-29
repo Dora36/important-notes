@@ -33,4 +33,10 @@ querystring.parse(str)                  // 返回 { foo: 'bar', baz: 'qux' }
 querystring.stringify(obj, ';', ':');   // 返回 'foo:bar;baz:qux'
 ```
 
-## path
+## assert
+
+assert 模块提供了一组简单的断言测试，可用于测试不变量。
+
+
+
+
