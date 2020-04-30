@@ -145,15 +145,12 @@ var params = new URLSearchParams({'foo' : 1 , 'bar' : 2});
 ### 实例方法
 
 - `toString()`：返回实例的字符串形式。
+- `append()`：用来追加一个查询参数。它接受两个参数，第一个为键名，第二个为键值，没有返回值。不会识别是否键名已经存在。
 
     ```js
     var params = new URLSearchParams('?foo=1&bar=2');
     params.toString()   // "foo=1&bar=2'
-    ```
 
-- `append()`：用来追加一个查询参数。它接受两个参数，第一个为键名，第二个为键值，没有返回值。不会识别是否键名已经存在。
-
-    ```js
     params.append('foo', 3);
     params.toString()       // "foo=1&bar=2&foo=3"
     ```
@@ -173,3 +170,25 @@ var params = new URLSearchParams({'foo' : 1 , 'bar' : 2});
 - `values()`：返回的是键值的遍历器。
 
 - `entries()`：返回的是键值对的遍历器。
+
+- `forEach()`：遍历每个键值对。
+
+```js
+let params = new URLSearchParams('a=3&b=6')
+
+params.forEach((value, key, params)=>{
+  console.log(value, key); // 3 a  // 6 b
+})
+
+for (const name of params.keys()) {
+  console.log(name);  // a  b
+}
+
+for (const name of params.values()) {
+  console.log(name);  // 3  6
+}
+
+for (const name of params.entries()) {
+  console.log(name);  // ['a', '3']  ['b', '6']
+}
+```
