@@ -27,7 +27,7 @@ const https = require('https');
   - `res.setHeader(name, value)`：为隐式响应头设置单个响应头的值。 如果此响应头已存在于待发送的响应头中，则其值将被替换。 
   - `res.writeHead(statusCode[, statusMessage][, headers])`：向请求发送响应头。
   - `res.getHeaders()`：返回当前传出的响应头的浅拷贝。 
-  - `res.write(chunk)`：将响应头信息和消息主体发送给客户端。chunk 可以是字符串或 buffer。
+  - `res.write(chunk)`：将响应头信息和消息主体发送给客户端。chunk 只能是字符串或 buffer。
   - `res.end([data[, encoding]][, callback])`：此方法向服务器发出信号，表明已发送所有响应头和主体，该服务器应该视为此消息已完成。必须在每个响应上调用此 `res.end()` 方法。如果指定了 `data`，则相当于调用 `res.write(data, encoding)` 之后再调用 `res.end(callback)`。如果指定了 `callback`，则当响应流完成时将调用它。
 
 ```js
@@ -207,7 +207,7 @@ const fs = require("fs");
 let server = http.createServer((req, res) => {
   fs.readFile(`static${req.url}`, (err, data) => { // 读取 static 中的文件返回给前端
     if (err) {
-      res.writeHead(404); // 这样在network中会报出404状态码.
+      res.writeHead(404);
       res.write("Not Found");
     } else {
       res.write(data);
@@ -290,7 +290,7 @@ server.listen(8080);
 
 **API**
 
-- `data` 事件：获取数据块，即有数据传输的时候，会触发 `data` 事件，数据会分段多次连续调用。如果响应主体为空，则根本不会触发 `data` 事件，例如在大多数重定向中。
+- `data` 事件：获取数据块，即有数据传输的时候，会触发 `data` 事件，数据会分段多次连续调用。如果响应主体为空，则不会触发 `data` 事件。传输的数据格式为 buffer 形式。
 - `end` 事件：响应中无数据时，会触发 `end` 事件。
 - `error` 事件
 - `pipe()`：将可读流的所有数据推送到绑定的可写流，数据流会被自动管理。
@@ -332,23 +332,80 @@ r.pipe(z).pipe(w);
 
 默认情况下，当来源可读流触发 `end` 事件时，目标可写流也会调用 `end()` 结束写入。若要禁用这种默认行为，`end` 选项应设为 `false`，这样目标流就会保持打开。
 
-如果可读流在处理期间发送错误，则可写流目标不会自动关闭。如果发生错误，则需要手动关闭每个流以防止内存泄漏。
+如果可读流在处理期间发送错误，则可写流目标不会自动关闭。如果发生错误，需要手动关闭每个流以防止内存泄漏。
+
+## http 数据交互
+
+一个 web 服务器的主要功能就是用于前后端数据交互。
+
+前后端数据交互需分情况处理：
+
+- 解析 get 发送的数据，传输内容在 url 里面，大小较小，< 32K。
+- 解析 post 发送的数据：传输内容在 body 中，空间较大，< 1G。一个大的数据包会切成很多小包传输。
+  - 不同类型的普通文本数据，json 形式，x-www-form-urlencoded 形式等。
+  - 文件数据。
+- 响应静态资源(fs)。
+- 操作数据库返回前端需要的数据。
 
 ```js
+// 解析 get 发送的数据  
+const http = require('http');
+const querystring = require('querystring');
+
+let server = http.createServer((req,res)=>{
+  let { pathname, searchParams } = new URL(req.url, `http://${req.headers.host}`);
+  let value = searchParams.get(key);
+
+  res.end('hello get');
+})
+
+server.listen(8080);
+```
+
+```js
+// 解析 post 发送的文本数据
+const http = require("http");
+const querystring = require('querystring');
+
 http.createServer((req, res) => {
-  let {pathname} = new URL(req.url);
+  let { pathname } = new URL(req.url, `http://${req.headers.host}`);
+  let contentType = req.headers['content-type'];
+
+  let str = '';
+  req.on('data', data => {
+    str += data;  // data 是 buffer 形式，+= 后是字符串形式
+  });
+
+  req.on('end', () => {
+    if(contentType === 'application/x-www-form-urlencoded') {
+      let postData = querystring.parse(str);
+    } else if(contentType === 'application/json') {
+      let postData = JSON.parse(str);
+    } else {
+      console.log(str);
+    };
+  });
+
+  res.end('hello post');
+
+}).server.listen(8080);
+```
+
+```js
+// 响应静态资源
+http.createServer((req, res) => {
+  let { pathname } = new URL(req.url, `http://${req.headers.host}`);
 
   let rs = fs.createReadStream(`static${pathname}`);
   let gz = zlib.createGzip();
-
-  //压缩头
-  res.setHeader('content-encoding','gzip');
+  
+  res.setHeader('content-encoding','gzip');  //压缩头
   rs.pipe(gz).pipe(res);
 
   rs.on('error',err=>{
-    res.writeHeader(404);
+    res.writeHead(404);
     res.write('Not Found');
-    res.end();  // 发生错误，手动关闭写入流
+    res.end();      // 发生错误，手动关闭写入流
   })
 });
 ```
