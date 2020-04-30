@@ -99,3 +99,49 @@ dns.resolve('baidu.com',(err,res)=>{
 
 ## path
 
+`path` 模块主要用于处理文件及目录的路径。
+
+```js
+const path = require('path');
+```
+
+- `path.sep`：返回平台特定的路径片段分隔符。Windows 上是 `\`，POSIX 上是 `/`。
+
+- `path.dirname(path)`：返回 `path` 的目录名，尾部的目录分隔符将被忽略。
+
+- `path.extname(path)`：返回参数 `path` 的扩展名，从最后一次出现 `.`（句点）字符到 `path` 最后一部分的字符串结束。如果除了第一个字符以外没有 `.`，则返回空字符串。
+
+- `path.isAbsolute(path)`：检测 `path` 是否为绝对路径。是绝对路径返回 `true`。
+
+- `path.relative(from, to)`：根据当前工作目录返回 `from` 到 `to` 的相对路径。
+
+- `path.join()`：将所有给定的 `path` 片段连接在一起，然后规范化生成的路径。
+
+- `path.parse(path)`：返回一个对象，其属性表示 `path` 的重要元素。尾部的目录分隔符将被忽略。
+  - `root`：
+  - `dir`：目录
+  - `base`：文件名 + 扩展名
+  - `ext`：扩展名
+  - `name`：文件名
+
+- `path.resolve([...paths])`：将路径或路径片段的序列解析为绝对路径。
+  - 给定的路径序列从右到左进行处理，每个后续的 `path` 前置，直到构造出一个绝对路径。
+  - 如果在处理完所有给定的 `path` 片段之后还未生成绝对路径，则再加上当前工作目录。
+  - 生成的路径已规范化，并且除非将路径解析为根目录，否则将删除尾部斜杠。
+  - 如果没有传入 `path` 片段，则 `path.resolve()` 将返回当前工作目录的绝对路径。
+
+```js
+path.parse(__filename)
+// {
+//   root: '/',
+//   dir: '/Users/dorawang/Documents/.../my-node',
+//   base: 'text.js',
+//   ext: '.js',
+//   name: 'text'
+// }
+
+path.resolve('/a/b', './c');       // 'a/b/c'
+path.resolve('/a/b', '/c', 'd');   // '/c/d'
+path.resolve('a/b', '../c');       // __dirname/a/c
+path.resolve(__dirname, 'static'); // __dirname/static
+```
