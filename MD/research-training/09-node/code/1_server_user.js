@@ -15,7 +15,7 @@ function md5(str) {
 }
 
 function md5_2(str) {
-	md5(md5(str)+_key);
+	return md5(md5(str)+_key);
 }
 
 

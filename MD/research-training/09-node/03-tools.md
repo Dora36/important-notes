@@ -37,6 +37,65 @@ querystring.stringify(obj, ';', ':');   // 返回 'foo:bar;baz:qux'
 
 assert 模块提供了一组简单的断言测试，可用于测试不变量。
 
+```js
+const assert = require('assert');
 
+// assert(条件语句,'条件不等于true时抛出的错误提示');
 
+function sum(a,b) {
+  assert(arguments.length === 2,'必须传2个参数');
+  assert(typeof a === 'number','第一个参数必须是数字');
+  assert(typeof b === 'number','第二个参数必须是数字');
+  return a+b;
+}
+console.log(sum(5,'4'));   // 报错直接退出应用程序
+```
+
+## crypto
+
+用于签名，如 md5、sha：
+
+```js
+const crypto = require('crypto');
+
+let obj = crypto.createHash('md5'); // 'sha1'
+obj.update('123456');
+
+console.log(obj.digest('hex')); // 以16进制的数字形式表现出来
+```
+
+**防破解 -** 加强加密：双层加密 + 混淆字符串
+
+```js
+const crypto = require('crypto');
+const _key = 'dora20190331'; // _key不能变，所以不能用时间戳
+
+function md5(str) {
+	let obj = crypto.createHash('md5');
+	obj.update(str);
+	return obj.digest('hex');
+}
+
+function md5_2(str) {
+	return md5(md5(str)+_key);
+}
+
+console.log(md5_2('123456'));
+```
+
+## dns
+
+```js
+const dns = require('dns');
+// dns解析
+dns.resolve('baidu.com',(err,res)=>{
+  if(err) {
+    console.log(err);
+  }else {
+    console.log(res);  // ip 地址
+  }
+})
+```
+
+## path
 
