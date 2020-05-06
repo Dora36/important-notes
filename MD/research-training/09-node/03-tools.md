@@ -118,8 +118,8 @@ const path = require('path');
 - `path.join()`：将所有给定的 `path` 片段连接在一起，然后规范化生成的路径。
 
 - `path.parse(path)`：返回一个对象，其属性表示 `path` 的重要元素。尾部的目录分隔符将被忽略。
-  - `root`：
-  - `dir`：目录
+  - `root`：文件的根路径，mac 上是 `/`，windows 上是盘符 `C:\\`。
+  - `dir`：目录，不包括尾部的目录分隔符。
   - `base`：文件名 + 扩展名
   - `ext`：扩展名
   - `name`：文件名
