@@ -27,15 +27,6 @@
 
 #### 8. Path - 路径相关
 
-    const path = require('path');
-    let str = '/var/local/www/aaa/1.png';
-
-    console.log(path.dirname(str));   // 目录名  /var/local/www/aaa
-    console.log(path.basename(str));  // 文件名  1.png
-    console.log(path.extname(str));   // 扩展名  .png
-
-    path.resolve('aaa/1.txt')  // 将相对路径解析为绝对路径
-
 #### 9. Events - 事件队列
 
 与函数最大的不同是可以解耦。
