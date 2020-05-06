@@ -315,7 +315,7 @@ server.listen(8080);
 - `options`
   - `end`：当读取器结束时终止写入器。默认值: `true`。
 
-`readable.pipe()` 方法绑定可写流到可读流，将可读流自动切换到流动模式，并将可读流的所有数据推送到绑定的可写流。 数据流会被自动管理，所以即使可读流更快，目标可写流也不会超负荷。
+`readable.pipe()` 方法绑定可写流到可读流，将可读流自动切换到流动模式，并将可读流的所有数据推送到绑定的可写流。数据流会被自动管理，所以即使可读流更快，目标可写流也不会超负荷。
 
 `readable.pipe()` 会返回目标流的引用，如果是 Duplex 流或 Transform 流则可以形成管道链：
 
@@ -340,12 +340,48 @@ r.pipe(z).pipe(w);
 
 前后端数据交互需分情况处理：
 
-- 解析 get 发送的数据，传输内容在 url 里面，大小较小，< 32K。
-- 解析 post 发送的数据：传输内容在 body 中，空间较大，< 1G。一个大的数据包会切成很多小包传输。
-  - 不同类型的普通文本数据，json 形式，x-www-form-urlencoded 形式等。
-  - 文件数据。
+- 解析 `get` 发送的数据，传输内容在 `url` 里面，大小较小，< 32K。
+- 解析 `post` 发送的数据：传输内容在 `body` 中，空间较大，< 1G。一个大的数据包会切成很多小包传输。
+  - 不同类型的普通文本数据，`json` 类型，`x-www-form-urlencoded` 类型等。
+  - formData 形式的数据，如文件等，`multipart/form-data ` 类型。
 - 响应静态资源(fs)。
 - 操作数据库返回前端需要的数据。
+
+### 表单 POST 的三种 Content-Type
+
+1. `text/plain`：用的很少，纯文字。
+2. `application/x-www-form-urlencoded`：默认，`url` 编码方式，`xxx=xxx&xxx=xx`。
+3. `multipart/form-data`：主要用于上传文件内容。
+
+```js
+// 响应静态资源
+const http = require("http");
+const fs = require('fs');
+const zlib = require('zlib');
+
+http.createServer((req, res) => {
+  let { pathname } = new URL(req.url, `http://${req.headers.host}`);
+
+  switch(pathname) {
+		//接口
+		case '/xxx':
+      // get || post 数据处理
+			break;
+		default:
+			let rs = fs.createReadStream(`static${pathname}`);
+			let gz = zlib.createGzip();
+			res.setHeader('content-encoding','gzip');  //压缩头
+			rs.pipe(gz).pipe(res);
+			
+			rs.on('error',err=>{
+				res.writeHeader(404);
+				res.write('Not Found');
+				res.end();      // 发生错误，手动关闭写入流
+			})
+			break;
+  }
+}).listen(8080);
+```
 
 ```js
 // 解析 get 发送的数据  
@@ -363,49 +399,37 @@ server.listen(8080);
 ```
 
 ```js
-// 解析 post 发送的文本数据
+// 解析 post 发送的数据
 const http = require("http");
 const querystring = require('querystring');
 
 http.createServer((req, res) => {
   let { pathname } = new URL(req.url, `http://${req.headers.host}`);
-  let contentType = req.headers['content-type'];
 
-  let str = '';
+  let contentType = req.headers['content-type'];
+  let arrBuffer = [];
   req.on('data', data => {
-    str += data;  // data 是 buffer 形式，+= 后是字符串形式
+    arrBuffer.push(data);
   });
 
   req.on('end', () => {
+    let bufferData = Buffer.concat(arrBuffer);
+
     if(contentType === 'application/x-www-form-urlencoded') {
-      let postData = querystring.parse(str);
+      let postData = querystring.parse(bufferData.toString());
+      res.end('hello post urlencoded');
     } else if(contentType === 'application/json') {
-      let postData = JSON.parse(str);
+      let postData = JSON.parse(bufferData.toString());
+      res.end('hello post json');
+    } else if(contentType.startsWith('multipart/form-data')) {
+      // 处理 formData 形式的数据
+      res.end('hello formData');
     } else {
-      console.log(str);
+      console.log(bufferData);
+      res.end('hello');
     };
   });
 
-  res.end('hello post');
-
-}).server.listen(8080);
+}).listen(8080);
 ```
 
-```js
-// 响应静态资源
-http.createServer((req, res) => {
-  let { pathname } = new URL(req.url, `http://${req.headers.host}`);
-
-  let rs = fs.createReadStream(`static${pathname}`);
-  let gz = zlib.createGzip();
-  
-  res.setHeader('content-encoding','gzip');  //压缩头
-  rs.pipe(gz).pipe(res);
-
-  rs.on('error',err=>{
-    res.writeHead(404);
-    res.write('Not Found');
-    res.end();      // 发生错误，手动关闭写入流
-  })
-});
-```
