@@ -1,5 +1,3 @@
-# 解构赋值
-
 ## 数组解构
 
 只要等号两边的模式相同，左边的变量就会被赋予对应的值。
@@ -221,6 +219,38 @@ console.log(id, status, number);
 let { log, sin, cos } = Math;
 
 const { SourceMapConsumer, SourceNode } = require("source-map");
+```
+
+## `...`
+
+### 函数的 rest 参数
+
+ES6 引入 `rest` 参数，形式为 `...变量名`，用于获取函数的多余参数，该变量是一个数组，用于将剩余的参数放入数组中，`rest` 参数只能是最后一个参数，否则会报错。
+
+```js
+add(2, 5, 3)
+
+function add(...values) {
+  console.log(values.constructor.name)  // Array
+  console.log(values)                   // [2, 5, 3]
+}
+```
+
+### 扩展运算符
+
+扩展运算符是三个点 `...`。用于将一个数组转为用逗号分隔的参数序列，是函数 `rest` 参数的逆运算。
+
+```js
+console.log(...[1, 2, 3])         // 1 2 3
+console.log(1, ...[2, 3, 4], 5)   // 1 2 3 4 5
+```
+
+该运算符主要用于函数调用。
+
+```js
+function push(array, ...items) {
+  array.push(...items);
+}
 ```
 
 参考链接：
