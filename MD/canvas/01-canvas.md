@@ -28,6 +28,10 @@
 </canvas>
 ```
 
+### `<canvas>` 元素生成图片
+
+- `toDataURL()`：返回 `<canvas>` 标签生成的图片的 base64 编码的字符串。
+
 ## 渲染上下文 context
 
 `<canvas>` 元素相当于画布，本身并没有绘制能力。需要使用 js 脚本来完成实际的绘图任务。而 js 脚本中用于在画布上绘图的方法和属性则由 `getContext()` 方法返回的对象来提供。
@@ -140,7 +144,7 @@ Canvas API 只支持两种形式的图形绘制：矩形和路径（由一系列
 
 ### 获取图片
 
-- html 中的 `img` 元素。或在 js 中 `new Image()`。
+- html 中的 `img` 元素。或在 js 中 `new Image()`。也可在路径的地方使用 base64。
 - 其它 `canvas` 元素，可通过 `document.getElementById` 等方法获取。
 - 使用 `<video>` 中的视频帧（即便视频是不可见的）。通过 dom 方法获取 `video` 元素，即可得到当前帧的图像。
 
@@ -148,9 +152,18 @@ Canvas API 只支持两种形式的图形绘制：矩形和路径（由一系列
 
 图片绘制必须在图片加载完成后进行。
 
-- 正常 `drawImage(image, x, y)`：image 是获得的图片，`x`，`y` 是图片在 canvas 中的起始坐标。
+- 正常 `drawImage(image, x, y)`：image 是获得的图片对象，`x`，`y` 是图片在 canvas 中的起始坐标。
 - 缩放 `drawImage(image, x, y, width, height)`：`width` 和 `height` 两个参数用来控制图片应该缩放的大小。
-- 切片 `drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)`：`image` 是图片，接着 4 个参数是原图像的剪切位置坐标和宽高大小，最后 4 个参数是切片在 canvas 中显示的位置坐标和大小。
+- 切片 `drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)`：`image` 是图片，接着 4 个参数是原图像的剪切位置坐标和宽高大小，最后 4 个参数是切片在 canvas 中显示的位置坐标和宽高大小。
+
+```js
+let oImg = new Image();
+oImg.src = './img/img.jpg'
+
+oImg.onload= function(){
+  ctx.drawImage(oImg, 10, 10)
+}
+```
 
 ## canvas 的变形
 
@@ -179,7 +192,7 @@ Canvas API 只支持两种形式的图形绘制：矩形和路径（由一系列
 2. 设置笔触样式。
     - `ctx.lineWidth = 2;`
     - `ctx.fillStyle = "orange";`
-3. 绘制内容：绘制图形，矩形或路径；绘制文本；图片操作。
+3. 绘制内容：绘制图形，矩形或路径；绘制文本；图片操作等。
 4. 绘制路径的步骤：
     - `beginPath()`：一切新的路径操作之前都要新建路径。
     - `moveTo()`
@@ -214,7 +227,9 @@ window.onload=function (){
 };
 ```
 
+## Canvas 与 SVG 的区别
 
+- canvas：位图，缩放会失真；不保留绘出来的图形，因此不能修改、没有事件；性能非常高。适合游戏、大型图表等。
+- svg：矢量图，缩放不失真；会保留绘出来的图形，因此能修改、有事件；但性能一般(类似普通标签)。适合交互频繁的普通图表。
 
 [参考链接](https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API)
-
