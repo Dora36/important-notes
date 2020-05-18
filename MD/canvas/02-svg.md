@@ -53,13 +53,30 @@ svg 的属性都没有单位，因为矢量图都没有单位。
 
 ## `<path>` 标签
 
+### d 属性
 
+- Moveto
+  - M x y：绝对坐标。
+  - m dx dy：相对于当前点的距离，分别是向右和向下的距离。
 
+- Lineto
+  - L x y：绝对坐标。
+  - l dx dy：向右和向下的相对距离。
+  - H x / h x：水平线。
+  - V y / v y：垂直线。
 
+- A（Arcto）：rx,ry xAxisRotate LargeArcFlag,SweepFlag x,y
+  - rx ry：x 和 y 方向的半径
+  - xAxisRotate：x 轴旋转的角度。
+  - LargeArcFlag：画大弧为 1，画小弧为 0。
+  - SweepFlag：弧的方向，顺时针为 1，逆时针为 0。
+  - x y：目的地的坐标。
 
+- Curveto：C c1x,c1y c2x,c2y x,y
+  - c1x、c1y，c2x、c2y：是分别是初始点和结束点的绝对坐标。
+  - x,y：控制点的绝对坐标。
 
-
-
-
+- ClosePath
+  - Z / z：从当前点到第一个点简单画一条直线。
 
 [参考链接](https://developer.mozilla.org/zh-CN/docs/Web/SVG)
