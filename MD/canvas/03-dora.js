@@ -17,7 +17,6 @@ function dora(oX, oY, s) {
   // 16777216 是 FFFFFF 的十进制
   let color = Math.floor(Math.random() * 16777216).toString(16);
   while (color.length < 6) { color = '0' + color; }
-  console.log(color);
 
   oP.style.fill = 'none'
   oP.style.stroke = '#' + color

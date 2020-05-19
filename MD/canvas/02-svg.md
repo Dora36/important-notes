@@ -45,12 +45,6 @@ svg 的属性都没有单位，因为矢量图都没有单位。
 </svg>
 ```
 
-### js 操作标签
-
-- 事件：html 标签可用的事件都可用。
-- 样式：`this.style.xxx`
-- 属性：通过 `setAttribute()` 设置属性，通过 `getAttribute()` 获取 svg 标签属性。
-
 ## `<path>` 标签
 
 ### d 属性
@@ -78,5 +72,45 @@ svg 的属性都没有单位，因为矢量图都没有单位。
 
 - ClosePath
   - Z / z：从当前点到第一个点简单画一条直线。
+
+```js
+<svg width="800" height="600" id="svg">
+  <path d="M 100 100 L 300 100 L 200 300 z"
+  fill="orange" stroke="black" stroke-width="3" ></path>
+</svg>
+```
+
+## js 操作标签
+
+- 创建 svg 标签元素：`document.createElementNS('http://www.w3.org/2000/svg','line')`，NS 即命名空间。
+- 事件：html 标签可用的事件都可用，可利用 `onmouseover`、`onclick` 等事件实现动画。
+- 样式：`this.style.xxx`
+- 属性：通过 `setAttribute()` 设置属性，通过 `getAttribute()` 获取 svg 标签属性。
+
+```js
+// document.createElement('p') === document.createElementNS('http://www.w3.org/1999/xhtml','p')
+
+let svg = document.createElementNS('http://www.w3.org/2000/svg','svg')
+svg.setAttribute('width', 800)
+svg.setAttribute('height', 600)
+
+let oP = document.createElementNS('http://www.w3.org/2000/svg','path')
+
+let arr=[];
+arr.push(`M 100 100 L 100 300`);
+arr.push(`A 100 100 0 0 0 100 100`);
+oP.setAttribute('d', arr.join(' '));
+
+// 随机颜色， 16777216 是 FFFFFF 的十进制
+let color = Math.floor(Math.random() * 16777216).toString(16);
+while(color.length < 6){color = '0' + color;}
+
+oP.style.fill = 'none'
+oP.style.stroke = '#'+color
+oP.style.strokeWidth = 6
+
+svg.appendChild(oP)
+document.body.appendChild(svg)
+```
 
 [参考链接](https://developer.mozilla.org/zh-CN/docs/Web/SVG)
