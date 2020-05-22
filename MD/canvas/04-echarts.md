@@ -81,17 +81,22 @@ ECharts 默认使用 Canvas 绘制图表，但在初始化图表实例时，设�
 
 ### 基本语法
 
+一个网页中可以创建多个 echarts 实例。每个 echarts 实例中可以创建多个图表和坐标系等等（用 option 来描述）。
+
 ```html
 <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.7.0/echarts.js"> </script>
 <div id="main" style="width: 600px;height:400px;"></div>
 <script>
   // 1. 初始化 echarts 实例
-  let myChart = echarts.init(document.getElementById('main'))
+  let echartsDom = document.getElementById('main')
+  // echarts.init(dom, '主题', { renderer: 'canvas / svg'})
+  let myChart = echarts.init(echartsDom)  // 默认 canvas 渲染
 
   // 2. 指定图表配置项和数据，其中的每一个属性都是一类组件。
   let option = {
     title: {},   // 标题
     tooltip: {}, // 悬浮提示框
+    dataset: [], // 可被多个图表复用的数据集
     xAxis: [],   // x 坐标轴
     yAxix: [],   // y 坐标轴
     grid: [],    // 直角坐标系底板
@@ -104,10 +109,16 @@ ECharts 默认使用 Canvas 绘制图表，但在初始化图表实例时，设�
 </script>
 ```
 
-### 示例
+### 图表事件处理
 
-```html
+ECharts 支持常规的鼠标事件类型，包括 `click`、`dblclick`、`mousedown`、`mousemove`、`mouseup`、`mouseover`、`mouseout`、`globalout`、`contextmenu` 事件。
 
+```js
+myChart.on('click', function (params) {
+  console.log(params.name);
+  // 跳转到相应的百度搜索页面
+  window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+});
 ```
 
-## D3
+## [D3](https://d3js.org/)
