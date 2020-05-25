@@ -126,5 +126,3 @@ myChart.on('click', function (params) {
   window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
 });
 ```
-
-## [D3](https://d3js.org/)
