@@ -77,11 +77,17 @@
 
 ECharts 是一个使用 JavaScript 实现的开源可视化库，可以流畅的运行在 PC 和移动设备上，兼容当前绝大部分浏览器（IE8/9/10/11，Chrome，Firefox，Safari等），底层依赖轻量级的矢量图形库 ZRender，提供直观，交互丰富，可高度个性化定制的数据可视化图表。
 
-ECharts 默认使用 Canvas 绘制图表，但在初始化图表实例时，设置 renderer 参数为 svg 即可指定 svg 渲染器，`echarts.init(dom, null, {renderer: 'svg'})`。
-
 ### 基本语法
 
-一个网页中可以创建多个 echarts 实例。每个 echarts 实例中可以创建多个图表和坐标系等等（用 option 来描述）。
+**`echarts.init(dom, theme, {renderer: 'canvas / svg'})`**
+
+- ECharts 默认使用 canvas 绘制图表，但在初始化图表实例时，设置 `renderer` 参数为 `svg` 即可指定 svg 渲染器，`echarts.init(dom, null, {renderer: 'svg'})`。
+
+- 其中第二个参数是主题，可使用 canvas 默认的 `light` 或 `dark` 主题，也可使用 [自定义主题](https://www.echartsjs.com/theme-builder/)。使用方式为下载主题的 js 文件，引入到项目中，传入 主题名 作为第二个参数。
+
+**基本语法**
+
+一个网页中可以创建多个 echarts 实例。每个 echarts 实例中可以创建多个图表和坐标系等等（用 `option` 来描述）。
 
 ```html
 <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.7.0/echarts.js"> </script>
