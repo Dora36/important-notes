@@ -1,3 +1,90 @@
+## import 命令
+
+使用 `export` 命令定义了模块的对外接口以后，其他 JS 文件就可以通过 `import` 命令加载这个模块。
+
+### 语法
+
+`import` 命令接受一对 `{}` 大括号，里面指定要从其他模块导入的变量名。大括号里面的变量名，必须与被导入模块对外接口的名称相同。
+
+```js
+import { name, hi } from './greet.js';
+```
+
+同时输入 `default` 默认接口和其他接口：
+
+```js
+import _, { each, forEach } from 'lodash';
+```
+
+**as 重命名**
+
+如果想为输入的变量重新取一个名字，`import` 命令要使用 `as` 关键字，将输入的变量重命名。
+
+```js
+import { name, hi as greet } from './greet.js';
+```
+
+**通过 `*` 号整体加载模块**
+
+除了指定加载某个输出值，还可以使用整体加载，即用星号 `*` 指定一个 **对象**，所有输出值都加载在这个对象上面。
+
+```js
+// circle.js
+export function area(radius) {
+  return Math.PI * radius * radius;
+}
+
+export function circumference(radius) {
+  return 2 * Math.PI * radius;
+}
+```
+
+```js
+import * as circle from './circle';
+
+console.log('圆面积：' + circle.area(4));
+console.log('圆周长：' + circle.circumference(14));
+```
+
+### 输入接口
+
+`import` 命令输入的变量都是只读的，因为它的本质是输入接口。也就是说，不允许在加载模块的脚本里面，改写接口。但是，如果是一个对象，改写属性是可以成功的，并且其他模块也可以读到改写后的值。
+
+不过，这种写法很难查错，建议凡是输入的变量，都当作完全只读，不要轻易改变它的属性。
+
+```js
+import { a } from './xxx.js'
+
+a = {};             // Syntax Error : 'a' is read-only;
+a.foo = 'hello';    // 合法操作
+```
+
+### 加载执行
+
+**后缀名**
+
+`import` 后面的 `from` 指定模块文件的位置，可以是相对路径，也可以是绝对路径，`.js` 后缀可以省略。如果只是模块名，不带有路径，那么 **必须** 有配置文件，告诉 JavaScript 引擎该模块的位置。
+
+**静态编译**
+
+`import` 命令具有提升效果，会提升到整个模块的头部，首先执行。
+
+```js
+foo();
+
+import { foo } from 'my_module';
+```
+
+这种行为的本质是，`import` 命令是在代码运行之前的编译阶段执行的。所以不能使用表达式和变量，这些只有在运行时才能得到结果的语法结构。在静态分析阶段，这些语法都是没法得到值的。
+
+**执行**
+
+`import` 语句会执行所加载模块中的代码，因此可以不指定输入接口，只引入模块执行其中语句。如果多次重复 `import` 同一个模块，只会执行一次，而不会执行多次。
+
+```js
+import 'lodash';   // 执行lodash模块，但是不输入任何值。
+```
+
 ## export 命令
 
 模块功能主要由两个命令构成：`export` 和 `import`。`export` 命令用于规定模块的对外接口，`import` 命令用于输入模块提供的功能。
@@ -138,7 +225,7 @@ export default a;
 export default var a = 1;
 ```
 
-其中 `export default a` 的含义是将变量 `a` 的值赋给变量 `default`。同样地，因为 `export default` 命令的本质是将后面的值，赋给 `default`t 变量，所以可以直接将一个值写在 `export default` 之后。
+其中 `export default a` 的含义是将变量 `a` 的值赋给变量 `default`。同样地，因为 `export default` 命令的本质是将后面的值，赋给 `default` 变量，所以可以直接将一个值写在 `export default` 之后。
 
 ```js
 export 42;          // 报错  因为没有指定对外的接口
@@ -150,93 +237,6 @@ export default 42;  // 正确  因为指定对外接口为 default
 `export` 命令可以出现在模块的任何位置，只要处于模块顶层就可以。如果处于块级作用域内，就会报错，`import` 命令也是如此。这是因为处于条件代码块之中，就没法做静态优化了，违背了 ES6 模块的设计初衷。
 
 ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。这种加载称为“编译时加载”或者静态加载，即 ES6 可以在编译时就完成模块加载，效率要比 CommonJS 模块的加载方式高。
-
-## import 命令
-
-使用 `export` 命令定义了模块的对外接口以后，其他 JS 文件就可以通过 `import` 命令加载这个模块。
-
-### 语法
-
-`import` 命令接受一对 `{}` 大括号，里面指定要从其他模块导入的变量名。大括号里面的变量名，必须与被导入模块对外接口的名称相同。
-
-```js
-import { name, hi } from './greet.js';
-```
-
-同时输入 `default` 默认接口和其他接口：
-
-```js
-import _, { each, forEach } from 'lodash';
-```
-
-**as 重命名**
-
-如果想为输入的变量重新取一个名字，`import` 命令要使用 `as` 关键字，将输入的变量重命名。
-
-```js
-import { name, hi as greet } from './greet.js';
-```
-
-**通过 `*` 号整体加载模块**
-
-除了指定加载某个输出值，还可以使用整体加载，即用星号 `*` 指定一个 **对象**，所有输出值都加载在这个对象上面。
-
-```js
-// circle.js
-export function area(radius) {
-  return Math.PI * radius * radius;
-}
-
-export function circumference(radius) {
-  return 2 * Math.PI * radius;
-}
-```
-
-```js
-import * as circle from './circle';
-
-console.log('圆面积：' + circle.area(4));
-console.log('圆周长：' + circle.circumference(14));
-```
-
-### 输入接口
-
-`import` 命令输入的变量都是只读的，因为它的本质是输入接口。也就是说，不允许在加载模块的脚本里面，改写接口。但是，如果是一个对象，改写属性是可以成功的，并且其他模块也可以读到改写后的值。
-
-不过，这种写法很难查错，建议凡是输入的变量，都当作完全只读，不要轻易改变它的属性。
-
-```js
-import { a } from './xxx.js'
-
-a = {};             // Syntax Error : 'a' is read-only;
-a.foo = 'hello';    // 合法操作
-```
-
-### 加载执行
-
-**后缀名**
-
-`import` 后面的 `from` 指定模块文件的位置，可以是相对路径，也可以是绝对路径，`.js` 后缀可以省略。如果只是模块名，不带有路径，那么 **必须** 有配置文件，告诉 JavaScript 引擎该模块的位置。
-
-**静态编译**
-
-`import` 命令具有提升效果，会提升到整个模块的头部，首先执行。
-
-```js
-foo();
-
-import { foo } from 'my_module';
-```
-
-这种行为的本质是，`import` 命令是在代码运行之前的编译阶段执行的。所以不能使用表达式和变量，这些只有在运行时才能得到结果的语法结构。在静态分析阶段，这些语法都是没法得到值的。
-
-**执行**
-
-`import` 语句会执行所加载模块中的代码，因此可以不指定输入接口，只引入模块执行其中语句。如果多次重复 `import` 同一个模块，只会执行一次，而不会执行多次。
-
-```js
-import 'lodash';   // 执行lodash模块，但是不输入任何值。
-```
 
 ## export 与 import 的复合写法
 
@@ -258,6 +258,7 @@ export { foo, bar };
 export { foo as myFoo } from 'my_module';  // 重命名输出
 export * from 'my_module';                 // 整体输出，会忽略模块的 default 方法。
 export { default } from 'foo';             // 默认接口输出
+export { default as foo } from 'foo';      // 默认接口重命名输出
 ```
 
 ### 用途示例
