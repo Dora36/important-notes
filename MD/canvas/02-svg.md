@@ -4,7 +4,7 @@ SVG（Scalable Vector Graphics）是可缩放矢量图形，是一种用于描�
 
 SVG 是由各种标签组成的，然后通过标签的各种属性定义形状和样式，也可通过 js 处理标签的各种事件，通过事件修改样式或定义行为。
 
-## svg 图形标签
+## svg 标签
 
 ### 图形标签
 
@@ -42,6 +42,22 @@ svg 的属性都没有单位，因为矢量图都没有单位。
 <svg>
   <line x1="10" y1="10" x2="200" y2="30" stroke="#000" stroke-width="20"></line>
   <line x1="10" y1="10" x2="200" y2="30" style="stroke:#000;stroke-width:20"></line>
+</svg>
+```
+
+### g 标签
+
+元素 `<g>` 是用来组合图形对象的容器。添加到 `<g>` 元素上的变换会应用到其所有的子元素上。添加到 `<g>` 元素的属性会被其所有的子元素继承。
+
+```html
+<svg width="100%" height="100%">
+  <!-- 会应用到所有的圆 -->
+  <g stroke="green" fill="white" stroke-width="5">
+    <circle cx="25" cy="25" r="15" />
+    <circle cx="40" cy="25" r="15" />
+    <circle cx="55" cy="25" r="15" />
+    <circle cx="70" cy="25" r="15" />
+  </g>
 </svg>
 ```
 
