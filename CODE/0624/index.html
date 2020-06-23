@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="">
+          <img src="https://cdn.jsdelivr.net/gh/vmlite/s/bulma/images/bulma-logo.png" width="112" height="28">
+          <span>Company name</span>
+        </a>
+        <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+    
+      <div id="navMenu" class="navbar-menu">
+        <div class="navbar-end">
+          <a class="navbar-item" href="#"> Home </a>
+          <a class="navbar-item" href="#"> Features </a>
+          <a class="navbar-item" href="#"> Details </a>
+          <a class="navbar-item" href="#"> Offer </a>
+          <a class="navbar-item" href="#"> Gallery </a>
+          <a class="navbar-item" href="#blog"> Blog </a>
+          <a class="navbar-item" href="#"> Subscribe </a>
+          <a class="navbar-item" href="#"> Testimonials </a>
+          <a class="navbar-item" href="#"> About </a>
+        </div>
+      </div>
+    </nav>
+
+
+
+
+  <section class="section">
+    <div class="container">
+
+      <h1 class="title">
+        Hello World
+      </h1>
+      <p class="subtitle">
+        My first website with <strong>Bulma</strong>!
+      </p>
+
+      <button class="button">
+        Button
+      </button>
+      
+      <button class="button is-primary">
+        Primary button
+      </button>
+      
+      <button class="button is-large">
+        Large button
+      </button>
+      
+      <button class="button is-loading">
+        Loading button
+      </button>
+      <div class="columns">
+        <div class="column">1</div>
+        <div class="column">2</div>
+        <div class="column">3</div>
+        <div class="column">4</div>
+        <div class="column">5</div>
+      </div>
+    </div>
+  </section>
+
+
+
+    <section class="blog" id="blog">
+      <h2 class="title is-2">Our Blog</h2>
+
+      <div class="tabs is-centered is-toggle is-toggle-rounded">
+        <ul>
+          <li class="is-active"><a>Latest</a></li>
+          <li><a>Business</a></li>
+          <li><a>Tech</a></li>
+          <li><a>Science</a></li>
+        </ul>
+      </div>
+
+      <div class="columns">
+        <div class="column">
+          <div class="card">
+            <div class="card-image">
+              <figure class="image is-4by3">
+                <img src="https://bulma.zcopy.site/images/placeholders/1280x960.png" alt="Placeholder image">
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content-title">
+                <p>Article of Lorem Lpsum </p>
+              </div>
+          
+              <div class="content">
+                There are many dolor sit amet, consectetur adipiscing elit.
+                Phasellus nec iaculis mauris.
+                <br>
+                <span class="time">Yesterday</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="card">
+            <div class="card-image">
+              <figure class="image is-4by3">
+                <img src="https://bulma.zcopy.site/images/placeholders/1280x960.png" alt="Placeholder image">
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content-title">
+                <p>Lorem Lpsum Details of New Features </p>
+              </div>
+          
+              <div class="content">
+                There are many dolor sit amet, consectetur adipiscing elit.
+                Phasellus nec iaculis mauris.
+                <br>
+                <span class="time">3 days ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="card">
+            <div class="card-image">
+              <figure class="image is-4by3">
+                <img src="https://bulma.zcopy.site/images/placeholders/1280x960.png" alt="Placeholder image">
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content-title">
+                <p>Article of Lorem Lpsum </p>
+              </div>
+          
+              <div class="content">
+                There are many dolor sit amet, consectetur adipiscing elit.
+                Phasellus nec iaculis mauris.
+                <br>
+                <span class="time">15 min ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+    </section>
+
+
+    
+
+
+
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    
+    if ($navbarBurgers.length > 0) {
+
+      $navbarBurgers.forEach( el => {
+        el.addEventListener('click', () => {
+
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+
+        });
+      });
+    }
+
+    });
+  </script>
+  </body>
+</html>
