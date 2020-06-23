@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="index.css">
   </head>
   <body>
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+    <nav class="navbar container" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="">
           <img src="https://cdn.jsdelivr.net/gh/vmlite/s/bulma/images/bulma-logo.png" width="112" height="28">
@@ -26,58 +26,143 @@
           <a class="navbar-item" href="#"> Home </a>
           <a class="navbar-item" href="#"> Features </a>
           <a class="navbar-item" href="#"> Details </a>
-          <a class="navbar-item" href="#"> Offer </a>
-          <a class="navbar-item" href="#"> Gallery </a>
+          <a class="navbar-item" href="#offer"> Offer </a>
+          <a class="navbar-item" href="#gallery"> Gallery </a>
           <a class="navbar-item" href="#blog"> Blog </a>
-          <a class="navbar-item" href="#"> Subscribe </a>
+          <a class="navbar-item" href="#subscribe"> Subscribe </a>
           <a class="navbar-item" href="#"> Testimonials </a>
-          <a class="navbar-item" href="#"> About </a>
+          <a class="navbar-item" href="#about"> About </a>
         </div>
       </div>
     </nav>
 
-
-
-
-  <section class="section">
-    <div class="container">
-
-      <h1 class="title">
-        Hello World
-      </h1>
-      <p class="subtitle">
-        My first website with <strong>Bulma</strong>!
-      </p>
-
-      <button class="button">
-        Button
-      </button>
-      
-      <button class="button is-primary">
-        Primary button
-      </button>
-      
-      <button class="button is-large">
-        Large button
-      </button>
-      
-      <button class="button is-loading">
-        Loading button
-      </button>
-      <div class="columns">
-        <div class="column">1</div>
-        <div class="column">2</div>
-        <div class="column">3</div>
-        <div class="column">4</div>
-        <div class="column">5</div>
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Section</h1>
+        <h2 class="subtitle">
+          A simple container to divide your page into <strong>sections</strong>, like the one you're currently reading
+        </h2>
       </div>
-    </div>
-  </section>
+    </section>
 
 
 
-    <section class="blog" id="blog">
-      <h2 class="title is-2">Our Blog</h2>
+
+    <section class="section">
+      <div class="container">
+
+        <h1 class="title">
+          Hello World
+        </h1>
+        <p class="subtitle">
+          My first website with <strong>Bulma</strong>!
+        </p>
+
+        <button class="button">
+          Button
+        </button>
+        
+        <button class="button is-primary">
+          Primary button
+        </button>
+        
+        <button class="button is-large">
+          Large button
+        </button>
+        
+        <button class="button is-loading">
+          Loading button
+        </button>
+        <div class="columns">
+          <div class="column">1</div>
+          <div class="column">2</div>
+          <div class="column">3</div>
+          <div class="column">4</div>
+          <div class="column">5</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery" class="gallery">
+      <div class="columns is-multiline">
+        <div class="column is-half">
+          <div class="gallery-card gallery-flex has-text-centered gallery-color-1">
+            <h3 class="title gallery-card-title has-text-weight-bold">LOREM DAFFEF</h3>
+            <p class="gallery-card-content">There are many variations of passages of A simple container to divide your page into sections</p>
+            <p class="gallery-card-more">MORE</p>
+          </div>
+        </div>
+        <div class="column is-one-quarter">
+          <figure class="image">
+            <img src="https://bulma.zcopy.site/images/placeholders/128x128.png">
+          </figure>
+        </div>
+        <div class="column is-one-quarter">
+          <div class="gallery-card gallery-flex  gallery-color-2">
+            <p class="gallery-card-title has-text-weight-bold">LOREM DAFFEF</p>
+            <p class="gallery-card-content">
+              There are many variations of passages of A simple container to divide your page into sections
+            </p>
+          </div>
+        </div>
+        <div class="column is-one-quarter">
+          <div class="gallery-card gallery-flex  gallery-color-3">
+            <p class="gallery-card-title has-text-weight-bold">There are many variations of passages of A</p>
+            <p class="gallery-card-content">MORE</p>
+          </div>
+        </div>
+        <div class="column is-one-quarter">
+          <figure class="image">
+            <img src="https://bulma.zcopy.site/images/placeholders/128x128.png">
+          </figure>
+        </div>
+        <div class="column is-one-quarter">
+          <div class="gallery-card gallery-flex  gallery-color-4">
+            <p class="gallery-card-title has-text-weight-bold">There are many variations of passages of A</p>
+            <p class="gallery-card-content">MORE</p>
+          </div>
+        </div>
+        <div class="column is-one-quarter">
+          <figure class="image">
+            <img src="https://bulma.zcopy.site/images/placeholders/128x128.png">
+          </figure>
+        </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="offer" class="offer">
+      <h2 class="has-text-centered title-2">Special Offer For You</h2>
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <p class="has-text-centered subtitle-2">
+            There are many variations of passages of A simple container to divide your page into sections, like the one you're currently reading
+          </h3>
+        </div>
+      </div>
+
+      <div class="level">
+        <div class="level-item has-text-centered">
+          <button class="button is-primary">
+            Primary button
+          </button>
+        </div>
+      </div>
+    </section>
+
+
+
+    <section id="blog" class="blog">
+      <h2 class="has-text-centered title-2">Our Blog</h2>
+
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <p class="has-text-centered subtitle-2">
+            There are many variations of passages of A simple container to divide your page into sections, like the one you're currently reading
+          </p>
+        </div>
+      </div>
 
       <div class="tabs is-centered is-toggle is-toggle-rounded">
         <ul>
@@ -88,7 +173,7 @@
         </ul>
       </div>
 
-      <div class="columns">
+      <div class="card-col columns">
         <div class="column">
           <div class="card">
             <div class="card-image">
@@ -104,9 +189,8 @@
               <div class="content">
                 There are many dolor sit amet, consectetur adipiscing elit.
                 Phasellus nec iaculis mauris.
-                <br>
-                <span class="time">Yesterday</span>
               </div>
+              <p class="time">Yesterday</p>
             </div>
           </div>
         </div>
@@ -125,9 +209,8 @@
               <div class="content">
                 There are many dolor sit amet, consectetur adipiscing elit.
                 Phasellus nec iaculis mauris.
-                <br>
-                <span class="time">3 days ago</span>
               </div>
+              <p class="time">3 days ago</p>
             </div>
           </div>
         </div>
@@ -146,25 +229,125 @@
               <div class="content">
                 There are many dolor sit amet, consectetur adipiscing elit.
                 Phasellus nec iaculis mauris.
-                <br>
-                <span class="time">15 min ago</span>
               </div>
+              <p class="time">15 min ago</p>
             </div>
           </div>
         </div>
       </div>
+    </section>
 
+    <section id="subscribe" class="subscribe">
+      <div class="columns is-centered">
+        <div class="column is-6">
+          <div class="about-content">
+            <h2 class="title-2">Subscribe</h2>
+            <p class="subtitle-2">
+              There are many variations of passages of A simple container to divide your page into sections, like the one you're currently reading
+            </p>
+          </div>
+        </div>
+        <div class="column is-4">
+          <div class="form-flex has-text-centered">
+            <div class="control has-icons-right">
+              <input class="input" type="text" placeholder="Text input">
+              <span class="icon is-small is-right">
+                <i class="fas fa-check"></i>
+              </span>
+            </div>
+            <div class="control has-icons-right">
+              <input class="input" type="text" placeholder="Text input">
+              <span class="icon is-small is-right">
+                <i class="fas fa-check"></i>
+              </span>
+            </div>
+            <div class="field">
+              <div class="control">
+                <label class="checkbox">
+                  <input type="checkbox">
+                  I agree with all conditions
+                </label>
+              </div>
+            </div>
+            <button class="button is-primary is-fullwidth">
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-
-
-
-
-
+    <section id="about" class="about">
+      <div class="columns">
+        <div class="column is-half">
+          <figure class="image">
+            <img src="https://bulma.zcopy.site/images/placeholders/128x128.png">
+          </figure>
+        </div>
+        <div class="column is-half">
+          <div class="about-content">
+            <h3 class="title has-text-weight-bold">LOREM INFORMATION</h3>
+            <p class="">There are many variations of passages of A simple container to divide your page into sectionsThere are many variations of passages of A simple container to divide your page into sections</p>
+            <p class="">There are many variations of passages of A simple container to divide your page into sectionsThere are many variations</p>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-half">
+          <div class="about-content">
+            <h3 class="title has-text-weight-bold">LOREM INFORMATION</h3>
+            <p class="">There are many variations of passages of A simple container to divide your page into sectionsThere are many variations of passages of A simple container to divide your page into sections</p>
+            <p class="">There are many variations of passages of A simple container to divide your page into sectionsThere are many variations</p>
+          </div>
+        </div>
+        <div class="column is-half">
+          <figure class="image">
+            <img src="https://bulma.zcopy.site/images/placeholders/128x128.png">
+          </figure>
+        </div>
+      </div>
     </section>
 
 
     
+    <footer class="footer">
+      <div class="level">
+        <div class="level-item has-text-centered">
+          <img src="https://cdn.jsdelivr.net/gh/vmlite/s/bulma/images/bulma-logo.png" width="112" height="28">
+          <span>BELSTAR</span>
+        </div>
+      </div>
+      <div class="footer-nav level">
+        <nav class="level-item has-text-centered">
+          <a class="nav-item" href="#"> Home </a>
+          <a class="nav-item" href="#"> Features </a>
+          <a class="nav-item" href="#"> Details </a>
+          <a class="nav-item" href="#"> Offer </a>
+          <a class="nav-item" href="#"> Gallery </a>
+          <a class="nav-item" href="#blog"> Blog </a>
+          <a class="nav-item" href="#"> Subscribe </a>
+          <a class="nav-item" href="#"> Testimonials </a>
+          <a class="nav-item" href="#"> About </a>
+        </nav>
+      </div>
+      <div class="level">
+        <div class="level-item has-text-centered">
+          <figure class="image is-32x32">
+            <img src="https://bulma.zcopy.site/images/placeholders/128x128.png">
+          </figure>
+          <figure class="image is-32x32">
+            <img src="https://bulma.zcopy.site/images/placeholders/128x128.png">
+          </figure>
+          <figure class="image is-32x32">
+            <img src="https://bulma.zcopy.site/images/placeholders/128x128.png">
+          </figure>
+          <figure class="image is-32x32">
+            <img src="https://bulma.zcopy.site/images/placeholders/128x128.png">
+          </figure>
+        </nav>
+      </div>
 
+    </footer>
 
 
 
