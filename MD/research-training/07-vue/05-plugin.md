@@ -69,6 +69,8 @@ MyPlugin.install = function (Vue, options) {
 
 ### 全局提示信息示例
 
+#### 插件形式
+
 ```html
 <!-- ./views/component/snackbar/SnackBar.vue -->
 <template>
@@ -126,7 +128,15 @@ SnackBar.install = (Vue)=>{
       instance.show(titleTip, "error");
     }
   }
-  vue.prototype.$snackbar = showMethods;
+  vue.prototype.$snackbar = function (extend){
+    router.afterEach(() => {
+      if(!extend){
+        instance.close();
+      }
+    })
+    return {...showMethods};
+  }
+
 }
 
 export default SnackBar
@@ -137,11 +147,105 @@ export default SnackBar
 ```js
 // main.js
 import SnackBar from '@/views/components/snackbar/index';
-Vue.use(SnackBar);
+Vue.use(SnackBar, {router});
 ```
 
 在其他组件中使用：
 
 ```js
-this.$snackbar.showOk();
+this.$snackbar().showOk();         // 切换页面 snackbar 关闭
+this.$snackbar('extend').showOk(); // 切换页面 snackbar 保持
+```
+
+#### 组件形式
+
+由于 vuetify 升级到 2 版本以后，snackbar 也必须包含在 `v-app` 中，因此 snackbar 通过插件形式插入到 `body` 中已经不适用了，也可通过组件形式实现全局提示信息。
+
+```html
+<!-- ./views/layout/partials/SnackBar.vue -->
+<template>
+  <v-snackbar :color="color" :top=true :right=true v-model="snackbar" :timeout="timeout">
+    <template>
+      <v-icon color="white" class="mr-3" size="20">{{alertTip}}</v-icon>
+    </template>
+    {{titleTip}}
+    <template v-slot:action="{ attrs }">
+      <v-icon v-bind="attrs" color="white" size="16" @click="close">clear</v-icon>
+    </template>
+  </v-snackbar>
+</template>
+
+<script>
+import Vue from 'vue'
+export default {
+  data() {
+    return {
+      snackbar: false,
+      color:"info",
+      titleTip:"提示信息",
+      alertTip:"info",
+      timeout: 3000,
+      extend: 'extend'
+    };
+  },
+  created(){
+    Vue.prototype.$snackbar = (extend) => {
+      this.extend = extend;
+      return {
+        showOk: this.showOk,
+        showError: this.showError
+      };
+    }
+  },
+  watch: {
+    $route(){
+      if(!this.extend) {
+        this.close();
+      }
+    }
+  },
+  methods: {
+    close() {
+      this.snackbar = false;
+    },
+    show(titleTip, color = "info", alertTip = "info") {
+      this.snackbar = true;
+      this.color = color;
+      this.titleTip = titleTip;
+      this.alertTip = alertTip;
+    },
+    showOk(titleTip = '搜索成功'){
+      this.show(titleTip, "info");
+    },
+    showError(titleTip = '获取数据失败，请刷新重试'){
+      this.show(titleTip, "error", 'add_alert');
+    }
+  }
+};
+</script>
+```
+
+在 layout 中引入：
+
+```html
+<template>
+  <v-app>
+    <snack-bar />
+  </v-app>
+</template>
+
+<script>
+import SnackBar from './partials/SnackBar.vue';
+
+export default {
+  components: { SnackBar }
+}
+</script>
+```
+
+在其他组件中使用：
+
+```js
+this.$snackbar().showOk();         // 切换页面 snackbar 关闭
+this.$snackbar('extend').showOk(); // 切换页面 snackbar 保持
 ```
