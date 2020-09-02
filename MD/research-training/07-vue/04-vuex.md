@@ -552,7 +552,7 @@ modules: {
 
 ### 使用辅助函数绑定局部模块
 
-当使用 mapState, mapGetters, mapActions 和 mapMutations 这些函数来绑定带命名空间的模块时，按照嵌套模块的路径写起来比较繁琐：
+当使用 `mapState`, `mapGetters`, `mapActions` 和 `mapMutations` 这些函数来绑定带命名空间的模块时，按照嵌套模块的路径写起来比较繁琐：
 
 ```js
 computed: {

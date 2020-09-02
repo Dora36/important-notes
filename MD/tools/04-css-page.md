@@ -137,6 +137,45 @@ h1 {
 }
 ```
 
+### 文件标题和章节标题
+
+```css
+h1.title {
+  string-set: doctitle content();
+  counter-reset: chapnum 0;
+}
+h2.sub-title {
+  string-set: chaptitle content();
+  counter-increment: chapnum;
+}
+div.content {
+  counter-reset: page 1;
+}
+
+@page {
+  @top-center {
+    content: string(doctitle)
+  }
+  @top-left {
+    content: string(chaptitle)
+  }
+  @bottom-center {
+    content: counter(page)
+  }
+}
+@page:first {
+  @top-center {
+    content: normal
+  }
+  @top-left {
+    content: normal
+  }
+  @bottom-center {
+    content: normal
+  }
+}
+```
+
 - [打印](https://www.softwhy.com/article-5613-1.html)
 
 - [CSS 属性大全](https://www.nhooo.com/css-reference/css-reference.html)
