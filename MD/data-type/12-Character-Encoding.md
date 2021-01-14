@@ -85,5 +85,6 @@ function b64Decode(str) {
 ```
 
 参考链接：
+ [*Unicode*](https://home.unicode.org/)
  [*字符编码笔记*](http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html)
  [*Unicode与JavaScript详解*](http://www.ruanyifeng.com/blog/2014/12/unicode.html)
