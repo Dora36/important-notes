@@ -58,6 +58,24 @@ HMACSHA256(
 
 算出签名以后，把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用"点"（`.`）分隔，然后返回给用户。
 
+### Base64Url
+
+Base64URL 算法跟 Base64 算法基本类似，但有一些小的不同。
+
+JWT 有些场合可能会放到 URL（比如 api.example.com/?token=xxx）。Base64 有三个字符 `+`、`/` 和 `=`，在 URL 里面有特殊含义，所以要被替换掉：`=` 被省略、`+` 替换成 `-`，`/` 替换成 `_` 。这就是 Base64Url 算法。
+
+```js
+// node-jws 的源码
+function base64url(string, encoding = 'utf8') {
+  return Buffer
+    .from(string, encoding)
+    .toString('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+}
+```
+
 ## JWT 的使用方式
 
 客户端收到服务器返回的 JWT，可以储存在 Cookie 里面，也可以储存在 localStorage。
