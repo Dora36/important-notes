@@ -84,6 +84,15 @@ function b64Decode(str) {
 }
 ```
 
+#### 在 node 环境中转码
+
+使用 Buffer 对象
+
+```js
+Buffer.from(string).toString('base64')  // 将字符串转码为 base64
+Buffer.from(base, 'base64').toString()  // 将 base64 转码为字符串
+```
+
 参考链接：
  [*Unicode*](https://home.unicode.org/)
  [*字符编码笔记*](http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html)
