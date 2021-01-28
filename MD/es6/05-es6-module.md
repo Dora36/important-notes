@@ -332,3 +332,59 @@ import('./bbb.js').then(({ export1, default: export}) => {
   // export1 接口 和 default 的具名接口
 })
 ```
+
+## 循环引用
+
+ES6 处理“循环加载”与 CommonJS 有本质的不同。CommonJS 是获取的缓存，因此在彼此循环的两个文件里，有一个文件永远获取不到完整的输出值。而 ES6 模块是动态引用，输出变量不会被缓存，而是成为一个指向被加载模块的引用，因此可以通过 js 特有的语法编译（变量提升）保证真正取值的时候能够取到值。
+
+```js
+// a.mjs
+import {bar} from './b.mjs';
+console.log('a.mjs');
+console.log(bar);
+export let foo = 'foo';
+
+// b.mjs
+import {foo} from './a.mjs';
+console.log('b.mjs');
+console.log(foo);
+export let bar = 'bar';
+```
+
+通过 node 运行，结果如下：
+
+```shell
+$ node --experimental-modules a.mjs
+b.mjs
+ReferenceError: Cannot access 'foo' before initialization
+```
+
+上述代码，由于循环引用，并且 `let` 声明不会提升，导致在 `b.mjs` 中循环引用 `a.mjs` 时，由于 `a.mjs` 已经执行，因此 `a.mjs` 不会再次执行，会默认已经指向了变量引用，从而在执行到 `console.log(foo);` 时，并没有获取到 `foo` 的值。
+
+解决这个问题的方法，就是让 `b.mjs` 运行的时候，`foo` 已经有定义了。这可以通过将 `foo` 写成函数来解决，函数具有提升作用，因此在最开始 `a.mjs` 引用 `b.mjs` 执行前，即 `import {bar} from './b.mjs'`  执行时，函数 `foo` 就已经有定义了，所以 `b.mjs` 加载的时候不会报错。这也意味着，如果把函数 `foo` 改写成函数表达式，也会报错。
+
+```js
+// a.mjs
+import {bar} from './b.mjs';
+console.log('a.mjs');
+console.log(bar());
+function foo() { return 'foo' }
+export {foo};
+
+// b.mjs
+import {foo} from './a.mjs';
+console.log('b.mjs');
+console.log(foo());
+function bar() { return 'bar' }
+export {bar};
+```
+
+这时再执行 `a.mjs` 就可以得到预期结果：
+
+```shell
+$ node --experimental-modules a.mjs
+b.mjs
+foo
+a.mjs
+bar
+```

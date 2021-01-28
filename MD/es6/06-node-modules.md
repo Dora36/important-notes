@@ -185,9 +185,82 @@ CommonJS 的一个模块，就是一个脚本文件。`require` 命令第一次�
 
 以后需要用到这个模块的时候，就会到 `exports` 属性上面取值。即使再次执行 `require` 命令，也不会再次执行该模块，而是到缓存之中取值。也就是说，CommonJS 模块无论加载多少次，都只会在第一次加载时运行一次，以后再加载，就返回第一次运行的结果，除非手动清除系统缓存。
 
+```js
+// a.js
+console.log('this is a')
+exports.a = 'a'
+```
+
+```js
+// b.js
+const a = require('./a.js');
+exports.b = 'b'
+```
+
+```js
+// main.js
+const a1 = require('./a.js');
+const a2 = require('./a.js');
+const b = require('./b.js');
+console.log('a1', a1);
+console.log('a2', a2);
+
+// $ node main.js 运行结果如下：
+// this is a      只在第一次 require 时执行，即使是多个文件 require。
+// a1 { a: 'a' }
+// a2 { a: 'a' }  返回缓存的 exports 对象
+```
+
 ### CommonJS 模块的循环加载
 
-CommonJS 模块的重要特性是加载时执行，即脚本代码在 `require` 的时候，就会全部执行。一旦出现某个模块被"循环加载"，就只输出已经执行的部分，还未执行的部分不会输出。
+CommonJS 模块的重要特性是加载时执行，即脚本代码在 `require` 的时候，就会全部执行。一旦出现某个模块被“循环加载”，就只输出已经执行的部分，还未执行的部分不会输出。
 
 另外，由于 CommonJS 模块遇到循环加载时，返回的是当前已经执行的部分的值，而不是代码全部执行后的值，两者可能会有差异。
 
+```js
+// a.js
+console.log('a 开始');
+exports.done = false;
+const b = require('./b.js');
+console.log('在 a 中，b =', b);
+exports.done = true;
+console.log('a 结束');
+```
+
+```js
+// b.js
+console.log('b 开始');
+exports.done = false;
+const a = require('./a.js');
+console.log('在 b 中，a =', a);
+exports.done = true;
+console.log('b 结束');
+```
+
+```js
+// main.js
+console.log('main 开始');
+const a = require('./a.js');
+const b = require('./b.js');
+console.log('在 main 中，a =', a);
+console.log('在 main 中，b =',b);
+```
+
+当 `main.js` 加载这两个模块时，它们都已经完成加载。因此，该程序的输出会是：
+
+```shell
+$ node main.js
+main 开始
+a 开始
+b 开始
+在 b 中，a = { done: false }
+b 结束
+在 a 中，b = { done: true }
+a 结束
+在 main 中，a = { done: true }
+在 main 中，b = { done: true }
+```
+
+`b.js` 中循环加载 `a.js` 时，为了防止无限循环，`b.js` 中得到的 `a` 的 `exports` 并未完全生成，此时得到的只是 `a.js` 中 `require('./b.js')` 之前的 `exports` 赋值，如果在此之前 `a` 的 `exports` 没有赋值，则返回空对象 `{}`，即所有变量为 `undefined`。因此在 `b.js` 中不能正确得到 `a.js` 的输出对象。
+
+而在 `main.js` 中，不存在循环引用，因此 `a` 和 `b` 会依次同步加载完成，并都会获得完整的 `exports` 输出对象。因此在复杂的业务场景中，如果遇到循环引用的问题时，需要仔细的规划，以使循环模块依赖在应用程序内正常工作.
