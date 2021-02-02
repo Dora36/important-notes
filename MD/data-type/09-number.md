@@ -368,7 +368,9 @@ y.div(3)                        // 0.333333333
 
 - `integerValue([rm])`：根据 rm 指定的 `ROUNDING_MODE` 取整。
 
-- `decimalPlaces()` / `dp([dp [, rm]])`：根据 `rm` 指定的 `ROUNDING_MODE` 保留 `dp` 小数位数。 
+- `decimalPlaces()` / `dp([dp [, rm]])`：根据 `rm` 指定的 `ROUNDING_MODE` 保留 `dp` 小数位数。
+
+- `negated()`：取反，相当于乘以 `-1`。
 
 - `toFixed([dp [, rm]])`：返回字符串，该字符串使用 `rm` 舍入模式将此 BigNumber 的值舍入到 `dp` 小数位。
 
