@@ -283,7 +283,7 @@ parseFloat((6 * 0.7).toFixed(10))      // 4.2
 parseFloat((0.3 / 0.1).toFixed(10))    // 3
 ```
 
-### 第三方库 bignumber.js
+## 第三方库 bignumber.js
 
 ```shell
 npm install bignumber.js
@@ -303,6 +303,82 @@ console.log(c);                // { s: 1, e: -1, c: [ 30000000000000 ] }
 console.log(c.toNumber());     // 0.3
 ```
 
+### `BigNumber(n [, base])`
+
+- `n`：`number`|`string`|`BigNumber`
+- `base`：表示 `n` 的进制数，范围为 2-36。
+
+返回 BigNumber 对象。如果指定了 `base`，则会根据当前的 `DECIMAL_PLACES` 和 `ROUNDING_MODE` 设置将 `n` 舍入。
+
+```js
+BigNumber.config({ DECIMAL_PLACES: 5, ROUNDING_MODE: 4 }) // or
+BigNumber.set({ DECIMAL_PLACES: 5, ROUNDING_MODE: 4 })
+
+new BigNumber(1.23456789, 10)      // '1.23457'
+```
+
+### clone([config]) 
+
+根据 `config` 参数返回一个新的独立的 BigNumber 构造函数。
+
+```js
+BigNumber.config({ DECIMAL_PLACES: 5 })
+let BN = BigNumber.clone({ DECIMAL_PLACES: 9 })
+
+let x = new BigNumber(1)
+let y = new BN(1)
+
+x.div(3)                        // 0.33333
+y.div(3)                        // 0.333333333
+```
+
+### 舍入属性 ROUNDING_MODE
+
+- `ROUND_UP`：0，入。away from zero.
+- `ROUND_DOWN`：1，舍。towards zero.
+- `ROUND_CEIL`：2，向上取大，正数入，负数舍。
+- `ROUND_FLOOR`：3，向下取小，正数舍，负数入。
+- `ROUND_HALF_UP`：4，**默认值**。四舍五入。
+- `ROUND_HALF_DOWN`：5，五舍六入。
+- `ROUND_HALF_EVEN`：6，四舍六入五取偶。
+- `ROUND_HALF_CEIL`：7，四舍六入五取大。
+- `ROUND_HALF_FLOOR`：8，四舍六入五取小。
+
+### 方法
+
+**静态方法**：
+
+- `BigNumber.sum(n...)`：返回一个 BigNumber，其值为参数的总和。参数可以是 number|string|BigNumber。
+
+**实例方法**：
+
+- `plus(n [, base])`：加。
+
+- `minus(n [, base])`：减。
+
+- `multipliedBy()` / `times(n [, base])`：乘。
+
+- `dividedBy()` / `div(n [, base])`：除，会根据 `DECIMAL_PLACES` 和 `ROUNDING_MODE` 设置保留小数点位数。
+
+- `dividedToIntegerBy()` / `idiv(n [, base])`：返回除以 `n` 的整数部分。
+
+- `exponentiatedBy()` / `pow(n [, m])`：返回 `n` 次幂。如果 `n` 是负数，会根据 `DECIMAL_PLACES` 和 `ROUNDING_MODE` 设置保留小数点位数。
+
+- `mod(n [, base])`：获取余数。
+
+- `integerValue([rm])`：根据 rm 指定的 `ROUNDING_MODE` 取整。
+
+- `decimalPlaces()` / `dp([dp [, rm]])`：根据 `rm` 指定的 `ROUNDING_MODE` 保留 `dp` 小数位数。 
+
+- `toFixed([dp [, rm]])`：返回字符串，该字符串使用 `rm` 舍入模式将此 BigNumber 的值舍入到 `dp` 小数位。
+
+- `toFormat([dp [, rm[, format]]])`：返回字符串，该字符串使用 `rm` 舍入模式舍入到 `dp` 小数位后根据 `format` 格式化。如 `1，000`。
+
+- `toNumber()`：将 BigNumber 对象转换为 js 原生数字形式。
+
+- `toString([base])`：返回指定进制的字符串。
+
 参考链接：
  [*Number 对象*](https://wangdoc.com/javascript/stdlib/number.html)
  [*数值的扩展*](http://es6.ruanyifeng.com/#docs/number)
+ [*BigNumber.js API*](https://mikemcl.github.io/bignumber.js/#)
