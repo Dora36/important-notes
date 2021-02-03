@@ -366,9 +366,11 @@ y.div(3)                        // 0.333333333
 
 - `mod(n [, base])`：获取余数。
 
-- `integerValue([rm])`：根据 rm 指定的 `ROUNDING_MODE` 取整。
+- `integerValue([rm])`：根据 `rm`指定的 `ROUNDING_MODE` 取整。
 
-- `decimalPlaces()` / `dp([dp [, rm]])`：根据 `rm` 指定的 `ROUNDING_MODE` 保留 `dp` 小数位数。
+- `isInteger()`：如果是整数，返回 `true`。
+
+- `decimalPlaces()` / `dp([dp [, rm]])`：根据 `rm` 指定的 `ROUNDING_MODE` 保留 `dp` 小数位数。如果 `dp` 为 `null` 或 `undefined`，返回数值的小数位数。
 
 - `negated()`：取反，相当于乘以 `-1`。
 
