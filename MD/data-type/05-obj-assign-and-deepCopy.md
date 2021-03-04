@@ -260,19 +260,26 @@ console.log(cloneObj); // {name: "dora"}
 ### 2. 利用递归对每一层都重新创建对象并赋值从而实现深拷贝
 
 ```js
-function deepClone(source){
-  let targetObj = source.constructor === Array ? [] : {}; 
-  for(let keys in source){
-    if(source.hasOwnProperty(keys)){
-      if(source[keys] && typeof source[keys] === 'object'){
-        targetObj[keys] = source[keys].constructor === Array ? [] : {};
-        targetObj[keys] = deepClone(source[keys]);
-      }else{
-        targetObj[keys] = source[keys];
-      }
-    }
+function deepClone(value){
+  let result = Array.isArray(value) ? [] : {};
+
+  if (value === null || typeof value !== 'object') {
+    return value;
   }
-  return targetObj;
+
+  let keysArr = Object.keys(value)
+  if(keysArr.length === 0) {
+    return value
+  }
+
+  keysArr.forEach(key => {
+    if(typeof value[key] === 'object') {
+      result[key] = deepClone(value[key])
+    } else {
+      result[key] = value[key]
+    }
+  })
+  return result
 }
 
 let obj = {
