@@ -49,7 +49,7 @@ INSERT INTO table_name VALUES (valueA1,valueA2,...valueAN);
 
 ## DELETE
 
-DELETE 语句用于删除表中的记录。
+`DELETE` 语句用于删除表中的记录。
 
 ```sql
 DELETE FROM table_name
@@ -60,7 +60,7 @@ WHERE some_column=some_value;
 
 ## UPDATE
 
-UPDATE 语句用于更新表中的记录。
+`UPDATE` 语句用于更新表中的记录。
 
 ```sql
 UPDATE table_name
@@ -123,7 +123,7 @@ SELECT * FROM table_name LIMIT 15 OFFSET 10;
 
 ### WHERE 
 
-WHERE 子句用于过滤满足指定条件的记录。
+`WHERE` 子句用于过滤满足指定条件的记录。
 
 ```sql
 SELECT column_name,column_name
@@ -131,7 +131,7 @@ FROM table_name
 WHERE column_name operator value;
 ```
 
-其中 value 值如果是字符串需要使用 `''` 单引号括起来；如果是数值，则不要使用引号。
+其中 `value` 值如果是字符串需要使用 `''` 单引号括起来；如果是数值，则不要使用引号。
 
 #### operator 运算符
 
@@ -150,7 +150,7 @@ WHERE column_name operator value;
 
 #### 逻辑运算符
 
-逻辑运算符可以和任意一个 operator 运算符配合使用。
+逻辑运算符可以和任意一个 `operator` 运算符配合使用。
 
 - `AND`：与，条件都成立
 - `OR`：或，条件中只要有一个成立
@@ -190,7 +190,7 @@ ON table1.column_name=table2.column_name;
 #### Aggregate 函数
 
 - `AVG()`：返回指定列的平均值，`SELECT AVG(column_name) FROM table_name;`。
-- `COUNT()`：返回指定列的数目（NULL 不计入），`SELECT COUNT(column_name) FROM table_name;`。
+- `COUNT()`：返回指定列的数目（`NULL` 不计入），`SELECT COUNT(column_name) FROM table_name;`。
 - `MAX()`：返回指定列的最大值，`SELECT MAX(column_name) FROM table_name;`。
 - `MIN()`：返回指定列的最小值，`SELECT MIN(column_name) FROM table_name;`。
 - `SUM()`：返回指定列的总和，`SELECT SUM(column_name) FROM table_name;`。
@@ -243,4 +243,38 @@ FROM table_name
 WHERE column_name operator value
 GROUP BY column_name
 HAVING aggregate_function(column_name) operator value;
+```
+
+### CONCAT 函数
+
+#### CONCAT
+
+`CONCAT()` 函数用于将多个字符串连接成一个字符串。返回结果为连接参数产生的字符串，如果有任何一个参数为 `null`，则返回值为 `null`。
+
+```sql
+SELECT CONCAT(str1,str2,...) FROM table_name
+```
+
+可在每个字符串中间使用 `seperator` 分隔符，返回结果为连接参数产生的字符串并且有分隔符，如果有任何一个参数为 `null`，则返回值为 `null`。
+
+```sql
+CONCAT(str1, seperator,str2,seperator,...)
+```
+
+#### CONCAT_WS
+
+`CONCAT_WS()` 函数和 `CONCAT()` 一样，将多个字符串连接成一个字符串，但是可以一次性指定分隔符（`CONCAT_WS` 就是concat with separator）。
+
+第一个参数指定分隔符。需要注意的是分隔符不能为 `null`，如果为 `null`，则返回结果为 `null`。
+
+```sql
+CONCAT_WS(separator, str1, str2, ...)
+```
+
+#### GROUP_CONCAT
+
+`GROUP_CONCAT()` 函数用于将 `GROUP BY` 产生的同一个分组中的值连接起来，返回一个字符串结果。
+
+```sql
+SELECT GROUP_CONCAT([DISTINCT] column_name, column_name [ORDER BY column_name ASC/DESC] [SEPARATOR '分隔符'] ) AS group_name FROM table_name GROUP BY column_name
 ```
