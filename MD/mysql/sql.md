@@ -249,7 +249,7 @@ HAVING aggregate_function(column_name) operator value;
 
 #### CONCAT
 
-`CONCAT()` 函数用于将多个字符串连接成一个字符串。返回结果为连接参数产生的字符串，如果有任何一个参数为 `null`，则返回值为 `null`。
+`CONCAT()` 函数用于将同一行数据的多个字段连接成一个字符串。返回结果为连接参数产生的字符串，如果有任何一个参数为 `null`，则返回值为 `null`。
 
 ```sql
 SELECT CONCAT(str1,str2,...) FROM table_name
@@ -263,7 +263,7 @@ CONCAT(str1, seperator,str2,seperator,...)
 
 #### CONCAT_WS
 
-`CONCAT_WS()` 函数和 `CONCAT()` 一样，将多个字符串连接成一个字符串，但是可以一次性指定分隔符（`CONCAT_WS` 就是concat with separator）。
+`CONCAT_WS()` 函数和 `CONCAT()` 一样，将同一行数据的多个字段连接成一个字符串，但是可以一次性指定分隔符（`CONCAT_WS` 就是concat with separator）。
 
 第一个参数指定分隔符。需要注意的是分隔符不能为 `null`，如果为 `null`，则返回结果为 `null`。
 
@@ -273,7 +273,7 @@ CONCAT_WS(separator, str1, str2, ...)
 
 #### GROUP_CONCAT
 
-`GROUP_CONCAT()` 函数用于将 `GROUP BY` 产生的同一个分组中的值连接起来，返回一个字符串结果。
+`GROUP_CONCAT()` 函数用于将 `GROUP BY` 产生的同一个分组中的不同字段值连接起来，返回一个字符串结果。
 
 ```sql
 SELECT GROUP_CONCAT([DISTINCT] column_name, column_name [ORDER BY column_name ASC/DESC] [SEPARATOR '分隔符'] ) AS group_name FROM table_name GROUP BY column_name
