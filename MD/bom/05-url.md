@@ -131,15 +131,15 @@ URL 实例的属性与Location对象的属性基本一致，返回当前 URL 的
 
 ```js
 // 方法一：传入字符串
-var params = new URLSearchParams('?foo=1&bar=2');
+let params = new URLSearchParams('?foo=1&bar=2');
 // 等同于
-var params = new URLSearchParams(document.location.search);
+let params = new URLSearchParams(document.location.search);
 
 // 方法二：传入数组
-var params = new URLSearchParams([['foo', 1], ['bar', 2]]);
+let params = new URLSearchParams([['foo', 1], ['bar', 2]]);
 
 // 方法三：传入对象
-var params = new URLSearchParams({'foo' : 1 , 'bar' : 2});
+let params = new URLSearchParams({'foo' : 1 , 'bar' : 2});
 ```
 
 ### 实例方法
@@ -148,7 +148,7 @@ var params = new URLSearchParams({'foo' : 1 , 'bar' : 2});
 - `append()`：用来追加一个查询参数。它接受两个参数，第一个为键名，第二个为键值，没有返回值。不会识别是否键名已经存在。
 
     ```js
-    var params = new URLSearchParams('?foo=1&bar=2');
+    let params = new URLSearchParams('?foo=1&bar=2');
     params.toString()   // "foo=1&bar=2'
 
     params.append('foo', 3);
